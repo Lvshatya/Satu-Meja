@@ -24,6 +24,10 @@
 <body>
 
 ```
+<!-- =========================
+     NAVBAR
+========================== -->
+
 <header class="navbar">
 
     <button
@@ -40,6 +44,10 @@
 
 </header>
 
+
+<!-- =========================
+     REVIEW FORM
+========================== -->
 
 <main class="review-page">
 
@@ -61,7 +69,9 @@
 
     <form id="review-form">
 
-        <!-- RATING -->
+        <!-- =========================
+             RATING
+        ========================== -->
 
         <div class="form-group">
 
@@ -73,35 +83,35 @@
 
                 <button
                     type="button"
-                    onclick="setRating(1)"
+                    data-rating="1"
                 >
                     ☆
                 </button>
 
                 <button
                     type="button"
-                    onclick="setRating(2)"
+                    data-rating="2"
                 >
                     ☆
                 </button>
 
                 <button
                     type="button"
-                    onclick="setRating(3)"
+                    data-rating="3"
                 >
                     ☆
                 </button>
 
                 <button
                     type="button"
-                    onclick="setRating(4)"
+                    data-rating="4"
                 >
                     ☆
                 </button>
 
                 <button
                     type="button"
-                    onclick="setRating(5)"
+                    data-rating="5"
                 >
                     ☆
                 </button>
@@ -115,7 +125,9 @@
         </div>
 
 
-        <!-- REVIEW -->
+        <!-- =========================
+             REVIEW TEXT
+        ========================== -->
 
         <div class="form-group">
 
@@ -132,13 +144,17 @@
         </div>
 
 
-        <!-- FOTO -->
+        <!-- =========================
+             FOTO
+        ========================== -->
 
         <div class="form-group">
 
             <label for="review-photo">
                 Tambahkan foto
-                <span>(opsional, maksimal 5 foto)</span>
+                <span>
+                    (opsional, maksimal 5 foto)
+                </span>
             </label>
 
             <input
@@ -155,7 +171,9 @@
         </div>
 
 
-        <!-- PREVIEW FOTO -->
+        <!-- =========================
+             PHOTO PREVIEW
+        ========================== -->
 
         <div
             id="photo-preview"
@@ -163,7 +181,9 @@
         ></div>
 
 
-        <!-- BUTTON -->
+        <!-- =========================
+             SUBMIT
+        ========================== -->
 
         <button
             type="submit"
@@ -177,59 +197,92 @@
 </main>
 
 
-<!-- RATING SCRIPT -->
+<!-- =========================
+     SUPABASE
+========================== -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script src="supabase.js"></script>
+
+<script src="script.js"></script>
+
+
+<!-- =========================
+     RATING HANDLER
+========================== -->
 
 <script>
 
-    let selectedRating = 0;
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
 
-    function setRating(rating) {
+            let selectedRating = 0;
 
-        selectedRating = rating;
 
-        const stars =
-            document.querySelectorAll(
-                ".star-rating button"
-            );
+            const stars =
+                document.querySelectorAll(
+                    ".star-rating button"
+                );
 
-        stars.forEach(
-            function(star, index) {
 
-                if (index < rating) {
+            const ratingText =
+                document.getElementById(
+                    "rating-text"
+                );
 
-                    star.textContent = "★";
 
-                } else {
+            stars.forEach(
+                function (star) {
 
-                    star.textContent = "☆";
+                    star.addEventListener(
+                        "click",
+                        function () {
+
+                            selectedRating =
+                                Number(
+                                    this.dataset.rating
+                                );
+
+
+                            stars.forEach(
+                                function (item) {
+
+                                    const itemRating =
+                                        Number(
+                                            item.dataset.rating
+                                        );
+
+
+                                    item.textContent =
+                                        itemRating <=
+                                        selectedRating
+                                            ? "★"
+                                            : "☆";
+
+                                }
+                            );
+
+
+                            if (ratingText) {
+
+                                ratingText.textContent =
+                                    selectedRating +
+                                    " / 5";
+
+                            }
+
+                        }
+                    );
 
                 }
-
-            }
-        );
-
-        const ratingText =
-            document.getElementById(
-                "rating-text"
             );
 
-        if (ratingText) {
-
-            ratingText.textContent =
-                rating + " / 5";
-
         }
-
-    }
+    );
 
 </script>
-
-
-<!-- SUPABASE -->
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase.js"></script>
-<script src="script.js"></script>
 ```
 
 </body>
