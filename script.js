@@ -58,7 +58,7 @@ if (loginForm) {
 
     loginForm.addEventListener(
         "submit",
-        function(event) {
+        async function(event) {
 
             event.preventDefault();
 
@@ -68,28 +68,40 @@ if (loginForm) {
             const message =
                 document.getElementById("login-message");
 
-            if (
-                (user === "Ella" &&
-                    password === "ella123") ||
+            const emailMap = {
+                Ella: "elfishasatya@gmail.com",
+                Arka: "naufalkenz@gmail.com"
+            };
 
-                (user === "Arka" &&
-                    password === "arka123")
-            ) {
+            const email = emailMap[user];
 
-                localStorage.setItem(
-                    "loggedIn",
-                    "true"
-                );
+            if (!email) {
+                message.textContent =
+                    "User tidak ditemukan ♡";
+                return;
+            }
 
-                window.location.href =
-                    "dashboard.html";
+            const { error } =
+                await supabaseClient.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
 
-            } else {
+            if (error) {
 
                 message.textContent =
                     "Password salah ♡";
 
+                return;
             }
+
+            localStorage.setItem(
+                "loggedIn",
+                "true"
+            );
+
+            window.location.href =
+                "dashboard.html";
 
         }
     );
@@ -112,46 +124,12 @@ function goBack() {
 // DATA RESTORAN
 // ======================
 
-const defaultRestaurants = [
-
-    {
-        name: "Mie Gacoan",
-        location: "Bandung",
-        rating: 4.5,
-        image:
-            "https://images.unsplash.com/photo-1552611052-33e04de081de"
-    },
-
-    {
-        name: "Sushi Place",
-        location: "Jakarta",
-        rating: 5,
-        image:
-            "https://images.unsplash.com/photo-1579871494447-9811cf80d66c"
-    }
-
-];
-
-
 let savedRestaurants =
     JSON.parse(
         localStorage.getItem("restaurants")
-    );
+    ) || [];
 
-
-if (!savedRestaurants) {
-
-    savedRestaurants =
-        defaultRestaurants;
-
-    localStorage.setItem(
-        "restaurants",
-        JSON.stringify(savedRestaurants)
-    );
-
-}
-
-
+    
 // ======================
 // KOMPRES FOTO
 // ======================
