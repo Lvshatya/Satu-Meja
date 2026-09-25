@@ -1,185 +1,189 @@
-```html
 <!DOCTYPE html>
+
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+```
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Tambah Review — Satu Meja</title>
+<title>Tambah Review — Satu Meja</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+<link
+    rel="stylesheet"
+    href="style.css"
+>
+```
+
 </head>
 
 <body>
 
-    <header class="navbar">
+```
+<header class="navbar">
 
-        <button
-            class="back-dashboard"
-            type="button"
-            onclick="window.location.href='restaurant.html'"
-        >
-            ← Kembali
-        </button>
+    <button
+        class="back-dashboard"
+        type="button"
+        onclick="window.location.href='restaurant.html'"
+    >
+        ← Kembali
+    </button>
 
-        <div class="nav-logo">
-            Satu Meja
+    <div class="nav-logo">
+        Satu Meja
+    </div>
+
+</header>
+
+
+<main class="review-page">
+
+    <p class="small-title">
+        OUR FOOD JOURNEY
+    </p>
+
+    <h1>
+        Tambah Review ♡
+    </h1>
+
+    <p
+        id="review-restaurant"
+        class="review-restaurant-name"
+    >
+        Nama Restoran
+    </p>
+
+
+    <form id="review-form">
+
+        <!-- RATING -->
+
+        <div class="form-group">
+
+            <label>
+                Kasih rating yuk
+            </label>
+
+            <div class="star-rating">
+
+                <button
+                    type="button"
+                    onclick="setRating(1)"
+                >
+                    ☆
+                </button>
+
+                <button
+                    type="button"
+                    onclick="setRating(2)"
+                >
+                    ☆
+                </button>
+
+                <button
+                    type="button"
+                    onclick="setRating(3)"
+                >
+                    ☆
+                </button>
+
+                <button
+                    type="button"
+                    onclick="setRating(4)"
+                >
+                    ☆
+                </button>
+
+                <button
+                    type="button"
+                    onclick="setRating(5)"
+                >
+                    ☆
+                </button>
+
+            </div>
+
+            <p id="rating-text">
+                Belum ada rating
+            </p>
+
         </div>
 
-    </header>
+
+        <!-- REVIEW -->
+
+        <div class="form-group">
+
+            <label for="review-text">
+                Ceritain pengalamanmu
+            </label>
+
+            <textarea
+                id="review-text"
+                placeholder="Makanannya enak? Tempatnya nyaman? Ceritain di sini..."
+                required
+            ></textarea>
+
+        </div>
 
 
-    <main class="review-page">
+        <!-- FOTO -->
 
-        <p class="small-title">
-            OUR FOOD JOURNEY
-        </p>
+        <div class="form-group">
 
-        <h1>
-            Tambah Review ♡
-        </h1>
+            <label for="review-photo">
+                Tambahkan foto
+                <span>(opsional, maksimal 5 foto)</span>
+            </label>
 
-        <p
-            id="review-restaurant"
-            class="review-restaurant-name"
-        >
-            Nama Restoran
-        </p>
-
-
-        <form id="review-form">
-
-            <!-- RATING -->
-
-            <div class="form-group">
-
-                <label>
-                    Kasih rating yuk
-                </label>
-
-                <div class="star-rating">
-
-                    <button
-                        type="button"
-                        onclick="setRating(1)"
-                    >
-                        ☆
-                    </button>
-
-                    <button
-                        type="button"
-                        onclick="setRating(2)"
-                    >
-                        ☆
-                    </button>
-
-                    <button
-                        type="button"
-                        onclick="setRating(3)"
-                    >
-                        ☆
-                    </button>
-
-                    <button
-                        type="button"
-                        onclick="setRating(4)"
-                    >
-                        ☆
-                    </button>
-
-                    <button
-                        type="button"
-                        onclick="setRating(5)"
-                    >
-                        ☆
-                    </button>
-
-                </div>
-
-                <p id="rating-text">
-                    Belum ada rating
-                </p>
-
-            </div>
-
-
-            <!-- REVIEW -->
-
-            <div class="form-group">
-
-                <label for="review-text">
-                    Ceritain pengalamanmu
-                </label>
-
-                <textarea
-                    id="review-text"
-                    placeholder="Makanannya enak? Tempatnya nyaman? Ceritain di sini..."
-                    required
-                ></textarea>
-
-            </div>
-
-
-            <!-- FOTO -->
-
-            <div class="form-group">
-
-                <label for="review-photo">
-                    Tambahkan foto
-                    <span>(opsional, maksimal 5 foto)</span>
-                </label>
-
-                <input
-                    type="file"
-                    id="review-photo"
-                    accept="image/*"
-                    multiple
-                >
-
-                <p class="photo-hint">
-                    Kamu bisa pilih beberapa foto sekaligus ♡
-                </p>
-
-            </div>
-
-
-            <!-- PREVIEW FOTO -->
-
-            <div
-                id="photo-preview"
-                class="photo-preview"
-            ></div>
-
-
-            <!-- BUTTON -->
-
-            <button
-                type="submit"
-                class="submit-review-button"
+            <input
+                type="file"
+                id="review-photo"
+                accept="image/*"
+                multiple
             >
-                Simpan Review ♡
-            </button>
 
-        </form>
+            <p class="photo-hint">
+                Kamu bisa pilih beberapa foto sekaligus ♡
+            </p>
 
-    </main>
+        </div>
 
 
-    <!-- SUPABASE -->
+        <!-- PREVIEW FOTO -->
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
-    <script src="script.js"></script>
+        <div
+            id="photo-preview"
+            class="photo-preview"
+        ></div>
+
+
+        <!-- BUTTON -->
+
+        <button
+            type="submit"
+            class="submit-review-button"
+        >
+            Simpan Review ♡
+        </button>
+
+    </form>
+
+</main>
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="script.js"></script>
+```
 
 </body>
 
 </html>
-```
