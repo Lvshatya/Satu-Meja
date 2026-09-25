@@ -2818,106 +2818,64 @@ function openFavoriteRestaurant(
 // =====================================================
 
 const littleNotes = [
-
     "Meals always taste better together ♡",
-
     "One table, countless stories.",
-
     "Every place holds a story of its own.",
-
     "May there always be new places for us to discover.",
-
     "Food first, memories forever.",
-
     "Sometimes, a meal becomes a memory.",
-
     "From one place to another.",
-
     "May this little list keep growing.",
-
     "Small moments can become the sweetest memories.",
-
     "One review, one little story.",
-
     "Different places, the same memories.",
-
     "Some meals become memories.",
-
     "It was never just about the food.",
-
     "May we always find good food and new stories.",
-
     "A little food diary of us.",
-
     "Keeping our little stories here ♡",
-
     "Every table has a story.",
-
     "Eat, talk, and keep the memories.",
-
     "Another place, another memory.",
-
     "For all the little stories we have shared."
-
 ];
-
 
 function showRandomLittleNote() {
 
     const noteText =
-        document.getElementById(
-            "little-note-text"
-        );
-
+        document.getElementById("little-note-text");
 
     if (!noteText) {
         return;
     }
 
-
     let lastNote =
-        localStorage.getItem(
-            "lastLittleNote"
-        );
-
+        localStorage.getItem("lastLittleNote");
 
     let availableNotes =
-        littleNotes.filter(
-            function(note) {
-
-                return note !== lastNote;
-
-            }
-        );
-
+        littleNotes.filter(function(note) {
+            return note !== lastNote;
+        });
 
     if (availableNotes.length === 0) {
-
         availableNotes = littleNotes;
-
     }
-
 
     const randomIndex =
         Math.floor(
-            Math.random() *
-            availableNotes.length
+            Math.random() * availableNotes.length
         );
-
 
     const selectedNote =
         availableNotes[randomIndex];
 
-
     noteText.textContent =
         selectedNote;
-
 
     localStorage.setItem(
         "lastLittleNote",
         selectedNote
     );
-
 }
 
 
