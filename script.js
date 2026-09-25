@@ -3592,7 +3592,7 @@ if (resetPasswordForm) {
     */
 
     if (
-        typeof supabaseClient ===
+        typeof window.supabaseClient ===
         "undefined"
     ) {
 
