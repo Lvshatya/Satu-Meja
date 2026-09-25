@@ -3746,17 +3746,58 @@ function () {
     */
 
     if (
-        document.getElementById(
-            "restaurant-detail"
-        )
-    ) {
+    document.getElementById(
+        "restaurant-detail"
+    )
+) {
 
-        console.log(
-            "Restaurant page loaded."
+    console.log(
+        "Restaurant page loaded."
+    );
+
+
+    // =========================
+    // ADD REVIEW BUTTON
+    // =========================
+
+    const addReviewButton =
+        document.getElementById(
+            "add-review-button"
+        );
+
+
+    if (addReviewButton) {
+
+        addReviewButton.addEventListener(
+            "click",
+            function () {
+
+                const restaurantId =
+                    localStorage.getItem(
+                        "selectedRestaurantId"
+                    );
+
+
+                if (!restaurantId) {
+
+                    alert(
+                        "Restoran belum dipilih."
+                    );
+
+                    return;
+
+                }
+
+
+                window.location.href =
+                    "review.html";
+
+            }
         );
 
     }
 
+}
 
     /*
        Halaman Review
