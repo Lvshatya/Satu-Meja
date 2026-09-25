@@ -286,6 +286,8 @@ if (forgotPasswordButton) {
 }
 
 
+
+
 // ======================
 // HELPER SUPABASE
 // ======================
@@ -766,6 +768,30 @@ async function logout() {
 
 }
 
+// =========================
+// KE HALAMAN REVIEW
+// =========================
+
+function goToReview() {
+
+    const restaurantId =
+        localStorage.getItem(
+            "selectedRestaurantId"
+        );
+
+    if (!restaurantId) {
+
+        alert(
+            "Restoran belum dipilih."
+        );
+
+        return;
+
+    }
+
+    window.location.href =
+        "review.html";
+}
 
 // ======================
 // TAMBAH RESTORAN
@@ -3688,64 +3714,468 @@ function requireSupabase(
 // =====================================================
 
 document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        /*
-           Dashboard
-        */
-
-        if (
-            document.getElementById(
-                "food-journey-list"
-            )
-        ) {
-
-            renderFoodJourney();
-
-            renderInteractiveFoodJourney();
-
-            renderFavoritePlaces();
-
-            showRandomLittleNote();
-
-            renderLittleThings();
-
-        }
+"DOMContentLoaded",
+function () {
 
 
-        /*
-           Halaman restaurant
-        */
+    /*
+       Dashboard
+    */
 
-        if (
-            document.getElementById(
-                "restaurant-detail"
-            )
-        ) {
+    if (
+        document.getElementById(
+            "food-journey-list"
+        )
+    ) {
 
-            console.log(
-                "Restaurant page loaded."
-            );
+        renderFoodJourney();
 
-        }
+        renderInteractiveFoodJourney();
 
+        renderFavoritePlaces();
 
-        /*
-           Halaman review
-        */
+        showRandomLittleNote();
 
-        if (
-            document.getElementById(
-                "review-form"
-            )
-        ) {
-
-            console.log(
-                "Review page loaded."
-            );
-
-        }
+        renderLittleThings();
 
     }
-);
+
+
+    /*
+       Halaman restaurant
+    */
+
+    if (
+        document.getElementById(
+            "restaurant-detail"
+        )
+    ) {
+
+        console.log(
+            "Restaurant page loaded."
+        );
+
+    }
+
+
+    /*
+       Halaman Review
+    */
+
+    if (
+        document.getElementById(
+            "review-form"
+        )
+    ) {
+
+        console.log(
+            "Review page loaded."
+        );
+
+
+        const reviewForm =
+            document.getElementById(
+                "review-form"
+            );
+
+
+        const reviewText =
+            document.getElementById(
+                "review-text"
+            );
+
+
+        const photoInput =
+            document.getElementById(
+                "review-photo"
+            );
+
+
+        // =========================
+        // SUBMIT REVIEW
+        // =========================
+
+        reviewForm.addEventListener(
+            "submit",
+            async function (event) {
+
+                event.preventDefault();
+
+
+                console.log(
+                    "Submit review..."
+                );
+
+
+                // =========================
+                // CEK SUPABASE
+                // =========================
+
+                if (
+                    typeof supabaseClient ===
+                    "undefined"
+                ) {
+
+                    alert(
+                        "Koneksi database belum tersedia ♡"
+                    );
+
+                    return;
+
+                }
+
+
+                // =========================
+                // CEK RATING
+                // =========================
+
+                const rating =
+                    window.selectedRating || 0;
+
+
+                if (
+                    rating === 0
+                ) {
+
+                    alert(
+                        "Jangan lupa kasih rating dulu ♡"
+                    );
+
+                    return;
+
+                }
+
+
+                // =========================
+                // CEK REVIEW
+                // =========================
+
+                const text =
+                    reviewText.value.trim();
+
+
+                if (!text) {
+
+                    alert(
+                        "Tulis review kamu dulu ya ♡"
+                    );
+
+                    return;
+
+                }
+
+
+                // =========================
+                // USER LOGIN
+                // =========================
+
+                const {
+                    data: {
+                        user
+                    },
+                    error: userError
+                } =
+                    await supabaseClient
+                        .auth
+                        .getUser();
+
+
+                if (
+                    userError ||
+                    !user
+                ) {
+
+                    console.error(
+                        "User tidak ditemukan:",
+                        userError
+                    );
+
+                    alert(
+                        "Kamu harus login terlebih dahulu."
+                    );
+
+                    return;
+
+                }
+
+
+                // =========================
+                // CARI RESTORAN
+                // =========================
+
+                const restaurantId =
+                    localStorage.getItem(
+                        "selectedRestaurantId"
+                    );
+
+
+                if (!restaurantId) {
+
+                    alert(
+                        "Restoran belum dipilih."
+                    );
+
+                    console.error(
+                        "selectedRestaurantId tidak ditemukan."
+                    );
+
+                    return;
+
+                }
+
+
+                // =========================
+                // AMBIL PROFILE
+                // =========================
+
+                const {
+                    data: profile,
+                    error: profileError
+                } =
+                    await supabaseClient
+                        .from("profiles")
+                        .select("name")
+                        .eq(
+                            "id",
+                            user.id
+                        )
+                        .single();
+
+
+                if (
+                    profileError ||
+                    !profile
+                ) {
+
+                    console.error(
+                        "Profile error:",
+                        profileError
+                    );
+
+                    alert(
+                        "Data profile tidak ditemukan."
+                    );
+
+                    return;
+
+                }
+
+
+                // =========================
+                // SIMPAN REVIEW
+                // =========================
+
+                const {
+                    data: review,
+                    error: reviewError
+                } =
+                    await supabaseClient
+                        .from("reviews")
+                        .insert({
+
+                            restaurant_id:
+                                restaurantId,
+
+                            user_id:
+                                user.id,
+
+                            user_name:
+                                profile.name,
+
+                            rating:
+                                rating,
+
+                            review_text:
+                                text
+
+                        })
+                        .select()
+                        .single();
+
+
+                if (
+                    reviewError
+                ) {
+
+                    console.error(
+                        "Gagal menyimpan review:",
+                        reviewError
+                    );
+
+                    alert(
+                        "Review gagal disimpan ♡"
+                    );
+
+                    return;
+
+                }
+
+
+                console.log(
+                    "Review berhasil disimpan:",
+                    review
+                );
+
+
+                // =========================
+                // SIMPAN FOTO
+                // =========================
+
+                if (
+                    photoInput &&
+                    photoInput.files.length > 0
+                ) {
+
+                    const files =
+                        Array.from(
+                            photoInput.files
+                        ).slice(
+                            0,
+                            5
+                        );
+
+
+                    for (
+                        const file of files
+                    ) {
+
+                        try {
+
+                            let compressed =
+                                file;
+
+
+                            // Compress kalau fungsi tersedia
+                            if (
+                                typeof compressImage ===
+                                "function"
+                            ) {
+
+                                compressed =
+                                    await compressImage(
+                                        file
+                                    );
+
+                            }
+
+
+                            const fileName =
+                                user.id +
+                                "/" +
+                                Date.now() +
+                                "-" +
+                                Math.random()
+                                    .toString(36)
+                                    .substring(
+                                        2,
+                                        8
+                                    ) +
+                                ".jpg";
+
+
+                            // =========================
+                            // UPLOAD FOTO
+                            // =========================
+
+                            const {
+                                error:
+                                    uploadError
+                            } =
+                                await supabaseClient
+                                    .storage
+                                    .from(
+                                        "review-photos"
+                                    )
+                                    .upload(
+                                        fileName,
+                                        compressed,
+                                        {
+                                            contentType:
+                                                "image/jpeg"
+                                        }
+                                    );
+
+
+                            if (
+                                uploadError
+                            ) {
+
+                                console.error(
+                                    "Foto gagal diupload:",
+                                    uploadError
+                                );
+
+                                continue;
+
+                            }
+
+
+                            // =========================
+                            // SIMPAN DATA FOTO
+                            // =========================
+
+                            const {
+                                error:
+                                    photoError
+                            } =
+                                await supabaseClient
+                                    .from(
+                                        "review_photos"
+                                    )
+                                    .insert({
+
+                                        review_id:
+                                            review.id,
+
+                                        photo_url:
+                                            fileName
+
+                                    });
+
+
+                            if (
+                                photoError
+                            ) {
+
+                                console.error(
+                                    "Data foto gagal disimpan:",
+                                    photoError
+                                );
+
+                            }
+
+                        } catch (
+                            error
+                        ) {
+
+                            console.error(
+                                "Error foto:",
+                                error
+                            );
+
+                        }
+
+                    }
+
+                }
+
+
+                // =========================
+                // SELESAI
+                // =========================
+
+                alert(
+                    "Review berhasil disimpan ♡"
+                );
+
+
+                window.location.href =
+                    "restaurant.html";
+
+            }
+        );
+
+    }
+
+
+}); 
