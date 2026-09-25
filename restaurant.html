@@ -1,281 +1,288 @@
 <!DOCTYPE html>
+
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+```
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-    <title>Restaurant — Satu Meja</title>
+<title>Restaurant — Satu Meja</title>
 
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+<link
+    rel="stylesheet"
+    href="style.css"
+>
+```
+
 </head>
 
 <body>
 
-    <!-- NAVBAR -->
-
-    <header class="navbar">
-
-        <button
-            class="back-dashboard"
-            onclick="goToDashboard()"
-        >
-            ← Satu Meja
-        </button>
-
-        <button
-            class="logout-button"
-            onclick="logout()"
-        >
-            Keluar
-        </button>
-
-    </header>
-
-
-    <!-- RESTAURANT DETAIL -->
-
-    <main class="restaurant-detail">
-
-        <div class="restaurant-detail-image">
-
-            <img
-                id="detail-image"
-                src=""
-                alt="Restaurant"
-            >
-
-        </div>
-
-
-        <div class="restaurant-detail-content">
-
-            <p class="small-title">
-                OUR FOOD JOURNEY
-            </p>
-
-
-            <h1 id="detail-name">
-                Nama Restoran
-            </h1>
-
-
-            <p
-                class="detail-location"
-                id="detail-location"
-            >
-                📍 Lokasi
-            </p>
-
-
-            <div class="detail-rating">
-
-                <span id="detail-rating">
-                    ☆ Belum ada rating
-                </span>
-
-                <span class="rating-label">
-                    overall rating
-                </span>
-
-            </div>
-
-
-            <!-- OWNER ACTIONS -->
-
-            <div
-                id="restaurant-actions"
-                class="restaurant-actions"
-            >
-
-                <button
-                    type="button"
-                    class="edit-restaurant-button"
-                    onclick="editRestaurant()"
-                >
-                    ✏️ Edit Restoran
-                </button>
-
-
-                <button
-                    type="button"
-                    class="delete-restaurant-button"
-                    onclick="deleteRestaurant()"
-                >
-                    🗑️ Hapus Restoran
-                </button>
-
-            </div>
-
-
-            <div class="detail-divider"></div>
-
-
-            <!-- REVIEWS -->
-
-            <section class="reviews-section">
-
-                <div class="section-heading">
-
-                    <h2>
-                        Our Reviews
-                    </h2>
-
-                    <span>
-                        cerita dari kita
-                    </span>
-
-                </div>
-
-
-                <!-- REVIEW DUMMY -->
-
-                <div class="review-card">
-
-                    <div class="review-header">
-
-                        <div>
-
-                            <h3>
-                                Ella ♡
-                            </h3>
-
-                            <p class="review-stars">
-                                ⭐⭐⭐⭐⭐
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <p class="review-text">
-                        Belum ada review dari Ella.
-                    </p>
-
-                </div>
-
-
-                <div class="review-card">
-
-                    <div class="review-header">
-
-                        <div>
-
-                            <h3>
-                                Arka ♡
-                            </h3>
-
-                            <p class="review-stars">
-                                ⭐⭐⭐⭐⭐
-                            </p>
-
-                        </div>
-
-                    </div>
-
-
-                    <p class="review-text">
-                        Belum ada review dari Arka.
-                    </p>
-
-                </div>
-
-
-                <!-- REVIEW ASLI -->
-
-                <div id="saved-reviews"></div>
-
-
-                <!-- ADD REVIEW -->
-
-                <button
-                    type="button"
-                    id="add-review-button"
-                    class="add-review-button"
-                    onclick="window.location.href='review.html'"
-                >
-                    + Tambah Review
-                </button>
-
-            </section>
-
-        </div>
-
-    </main>
-
-
-    <!-- =========================
-         PHOTO LIGHTBOX
-    ========================== -->
-
-    <div
-        id="photo-lightbox"
-        class="photo-lightbox"
-        onclick="closePhotoViewer(event)"
+```
+<!-- NAVBAR -->
+
+<header class="navbar">
+
+    <button
+        class="back-dashboard"
+        type="button"
+        onclick="window.location.href='index.html'"
     >
+        ← Satu Meja
+    </button>
 
-        <button
-            type="button"
-            class="lightbox-close"
-            onclick="closePhotoViewer()"
-        >
-            ×
-        </button>
+    <button
+        class="logout-button"
+        type="button"
+        onclick="logout()"
+    >
+        Keluar
+    </button>
+
+</header>
 
 
-        <button
-            type="button"
-            id="lightbox-prev"
-            class="lightbox-nav lightbox-prev"
-            onclick="previousPhoto(event)"
-        >
-            ‹
-        </button>
+<!-- RESTAURANT DETAIL -->
 
+<main class="restaurant-detail">
+
+    <div class="restaurant-detail-image">
 
         <img
-            id="lightbox-image"
-            class="lightbox-image"
+            id="detail-image"
             src=""
-            alt="Foto review"
+            alt="Restaurant"
         >
-
-
-        <button
-            type="button"
-            id="lightbox-next"
-            class="lightbox-nav lightbox-next"
-            onclick="nextPhoto(event)"
-        >
-            ›
-        </button>
-
-
-        <div
-            id="lightbox-counter"
-            class="lightbox-counter"
-        >
-            1 / 1
-        </div>
 
     </div>
 
 
-    <!-- SUPABASE -->
+    <div class="restaurant-detail-content">
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
-    <script src="script.js"></script>
+        <p class="small-title">
+            OUR FOOD JOURNEY
+        </p>
+
+
+        <h1 id="detail-name">
+            Nama Restoran
+        </h1>
+
+
+        <p
+            class="detail-location"
+            id="detail-location"
+        >
+            📍 Lokasi
+        </p>
+
+
+        <div class="detail-rating">
+
+            <span id="detail-rating">
+                ☆ Belum ada rating
+            </span>
+
+            <span class="rating-label">
+                overall rating
+            </span>
+
+        </div>
+
+
+        <!-- OWNER ACTIONS -->
+
+        <div
+            id="restaurant-actions"
+            class="restaurant-actions"
+        >
+
+            <button
+                type="button"
+                class="edit-restaurant-button"
+                onclick="editRestaurant()"
+            >
+                ✏️ Edit Restoran
+            </button>
+
+
+            <button
+                type="button"
+                class="delete-restaurant-button"
+                onclick="deleteRestaurant()"
+            >
+                🗑️ Hapus Restoran
+            </button>
+
+        </div>
+
+
+        <div class="detail-divider"></div>
+
+
+        <!-- REVIEWS -->
+
+        <section class="reviews-section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Our Reviews
+                </h2>
+
+                <span>
+                    cerita dari kita
+                </span>
+
+            </div>
+
+
+            <!-- REVIEW DUMMY -->
+
+            <div class="review-card">
+
+                <div class="review-header">
+
+                    <div>
+
+                        <h3>
+                            Ella ♡
+                        </h3>
+
+                        <p class="review-stars">
+                            ⭐⭐⭐⭐⭐
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <p class="review-text">
+                    Belum ada review dari Ella.
+                </p>
+
+            </div>
+
+
+            <div class="review-card">
+
+                <div class="review-header">
+
+                    <div>
+
+                        <h3>
+                            Arka ♡
+                        </h3>
+
+                        <p class="review-stars">
+                            ⭐⭐⭐⭐⭐
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <p class="review-text">
+                    Belum ada review dari Arka.
+                </p>
+
+            </div>
+
+
+            <!-- REVIEW ASLI -->
+
+            <div id="saved-reviews"></div>
+
+
+            <!-- ADD REVIEW -->
+
+            <button
+                type="button"
+                id="add-review-button"
+                class="add-review-button"
+                onclick="window.location.href='review.html'"
+            >
+                + Tambah Review
+            </button>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<!-- =========================
+     PHOTO LIGHTBOX
+========================== -->
+
+<div
+    id="photo-lightbox"
+    class="photo-lightbox"
+    onclick="closePhotoViewer(event)"
+>
+
+    <button
+        type="button"
+        class="lightbox-close"
+        onclick="closePhotoViewer()"
+    >
+        ×
+    </button>
+
+
+    <button
+        type="button"
+        id="lightbox-prev"
+        class="lightbox-nav lightbox-prev"
+        onclick="previousPhoto(event)"
+    >
+        ‹
+    </button>
+
+
+    <img
+        id="lightbox-image"
+        class="lightbox-image"
+        src=""
+        alt="Foto review"
+    >
+
+
+    <button
+        type="button"
+        id="lightbox-next"
+        class="lightbox-nav lightbox-next"
+        onclick="nextPhoto(event)"
+    >
+        ›
+    </button>
+
+
+    <div
+        id="lightbox-counter"
+        class="lightbox-counter"
+    >
+        1 / 1
+    </div>
+
+</div>
+
+
+<!-- SUPABASE -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="supabase.js"></script>
+<script src="script.js"></script>
+```
 
 </body>
 
 </html>
-
