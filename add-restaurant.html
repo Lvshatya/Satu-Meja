@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>Tambah Restoran — Satu Meja</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+</head>
+
+
+<body>
+
+    <header class="navbar">
+
+        <button
+            class="back-dashboard"
+            onclick="goToDashboard()"
+        >
+            ← Satu Meja
+        </button>
+
+        <div class="nav-logo">
+            Satu Meja
+        </div>
+
+    </header>
+
+
+    <main class="review-page">
+
+        <p class="small-title">
+            OUR FOOD JOURNEY
+        </p>
+
+
+        <h1>
+            Tambah Restoran ♡
+        </h1>
+
+
+        <p class="review-restaurant-name">
+            Tambahkan tempat makan baru ke cerita kita.
+        </p>
+
+
+        <form id="restaurant-form">
+
+
+            <!-- NAMA RESTORAN -->
+
+            <div class="form-group">
+
+                <label for="restaurant-name">
+                    Nama restoran
+                </label>
+
+                <input
+                    type="text"
+                    id="restaurant-name"
+                    placeholder="Contoh: Mie Gacoan"
+                    required
+                >
+
+            </div>
+
+
+            <!-- LOKASI -->
+
+            <div class="form-group">
+
+                <label for="restaurant-location">
+                    Lokasi
+                </label>
+
+                <input
+                    type="text"
+                    id="restaurant-location"
+                    placeholder="Contoh: Bandung"
+                    required
+                >
+
+            </div>
+
+
+            <!-- FOTO -->
+
+            <div class="form-group">
+
+                <label for="restaurant-image">
+                    Foto restoran
+                    <span>(opsional)</span>
+                </label>
+
+                <input
+                    type="file"
+                    id="restaurant-image"
+                    accept="image/*"
+                >
+
+            </div>
+
+
+            <!-- BUTTON -->
+
+            <button
+                type="submit"
+                class="submit-review-button"
+            >
+                Simpan Restoran ♡
+            </button>
+
+
+        </form>
+
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Satu Meja</title>
+
+    <link rel="stylesheet"
+        href="style.css">
+
+</head>
+
+<body>
+
+    <header class="navbar">
+
+        <div class="nav-logo">
+            Satu Meja
+        </div>
+
+        <button
+            class="logout-button"
+            onclick="logout()">
+
+            Keluar
+
+        </button>
+
+    </header>
+
+
+    <main class="dashboard">
+
+        <section class="hero">
+
+            <p class="small-title">
+                OUR FOOD JOURNEY
+            </p>
+
+            <h1 id="welcome-title">
+                Hai, Ella! ♡
+            </h1>
+
+            <p>
+                Tempat makan, cerita kita.
+            </p>
+
+        </section>
+
+        <!-- LITTLE NOTES -->
+<section class="little-notes-section">
+
+    <div class="little-note-card">
+
+        <div class="little-note-icon">
+            ♡
+        </div>
+
+        <p class="little-note-label">
+            LITTLE NOTE
+        </p>
+
+        <p
+            class="little-note-text"
+            id="little-note-text"
+        >
+            Every meal becomes a little memory
+            when we share the same table.
+        </p>
+
+        <div class="little-note-decoration">
+            ─── ♡ ───
+        </div>
+
+    </div>
+
+</section>
+
+        <section class="search-section">
+
+            <input
+                type="text"
+                id="search-input"
+                placeholder="🔍  Cari tempat makan..."
+            >
+
+        </section>
+
+
+        <section
+            class="action-section"
+            id="owner-actions">
+
+            <button
+                class="add-restaurant-button"
+                onclick="addRestaurant()">
+
+                + Tambah Restoran
+
+            </button>
+
+        </section>
+
+
+        <section class="restaurant-section">
+
+            <div class="section-heading">
+
+                <h2>
+                    Our Places
+                </h2>
+
+                <span id="restaurant-count">
+                    2 places
+                </span>
+
+            </div>
+
+
+            <div
+                class="restaurant-grid"
+                id="restaurant-list">
+
+                <!-- Restaurant cards akan muncul di sini -->
+
+            </div>
+
+        </section>
+
+        <!-- FOOD JOURNEY -->
+<section class="food-journey-section">
+
+    <div class="food-journey-title">
+        <h2>Our Journey</h2>
+        <span>little memories ♡</span>
+    </div>
+
+    <div class="journey-filter">
+
+    <button
+        class="active"
+        onclick="filterFoodJourney('all', this)"
+    >
+        Semua
+    </button>
+
+    <button
+        onclick="filterFoodJourney('Ella', this)"
+    >
+        Ella
+    </button>
+
+    <button
+        onclick="filterFoodJourney('Arka', this)"
+    >
+        Arka
+    </button>
+
+</div>
+
+    <div class="journey-stats">
+
+        <div class="journey-stat-card">
+            <span
+                class="journey-stat-number"
+                id="journey-place-count"
+            >
+                0
+            </span>
+
+            <span class="journey-stat-label">
+                Places
+            </span>
+        </div>
+
+        <div class="journey-stat-card">
+            <span
+                class="journey-stat-number"
+                id="journey-review-count"
+            >
+                0
+            </span>
+
+            <span class="journey-stat-label">
+                Reviews
+            </span>
+        </div>
+
+        <div class="journey-stat-card">
+            <span
+                class="journey-stat-number"
+                id="journey-average-rating"
+            >
+                0.0
+            </span>
+
+            <span class="journey-stat-label">
+                Average Rating
+            </span>
+        </div>
+
+    </div>
+
+    <div
+        class="food-journey-list"
+        id="food-journey-list"
+    ></div>
+
+</section>
+
+<!-- OUR FAVORITE PLACES -->
+<section class="favorite-places-section">
+
+    <div class="favorite-places-title">
+        <div>
+            <h2>Our Favorite Places</h2>
+            <p>places we loved ♡</p>
+        </div>
+
+        <span id="favorite-place-count">
+            0 places
+        </span>
+    </div>
+
+    <div
+        class="favorite-places-grid"
+        id="favorite-places-list"
+    ></div>
+
+</section>
+
+<!-- LITTLE THINGS ABOUT US -->
+<section class="little-things-section">
+
+    <div class="little-things-title">
+        <h2>Little Things About Us</h2>
+        <span>just a few numbers ♡</span>
+    </div>
+
+    <div class="little-things-grid">
+
+        <div class="little-thing-card">
+            <span class="little-thing-icon">🍜</span>
+
+            <span
+                class="little-thing-value"
+                id="most-visited-place"
+            >
+                —
+            </span>
+
+            <span class="little-thing-label">
+                Most Visited
+            </span>
+        </div>
+
+
+        <div class="little-thing-card">
+            <span class="little-thing-icon">♡</span>
+
+            <span
+                class="little-thing-value"
+                id="ella-review-count"
+            >
+                0
+            </span>
+
+            <span class="little-thing-label">
+                Ella's Reviews
+            </span>
+        </div>
+
+
+        <div class="little-thing-card">
+            <span class="little-thing-icon">♡</span>
+
+            <span
+                class="little-thing-value"
+                id="arka-review-count"
+            >
+                0
+            </span>
+
+            <span class="little-thing-label">
+                Arka's Reviews
+            </span>
+        </div>
+
+
+        <div class="little-thing-card">
+            <span class="little-thing-icon">📖</span>
+
+            <span
+                class="little-thing-value"
+                id="total-memory-count"
+            >
+                0
+            </span>
+
+            <span class="little-thing-label">
+                Total Memories
+            </span>
+        </div>
+
+    </div>
+
+</section>
+
+    </main>
+
+
+    <script src="script.js"></script>
+
+</body>
+
+</html>

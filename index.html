@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Satu Meja</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <main class="landing">
+
+        <div class="card">
+
+            <div class="logo">♡</div>
+
+            <h1>Satu Meja</h1>
+
+            <p class="tagline">
+                tempat makan, cerita kita.
+            </p>
+
+            <div class="divider"></div>
+
+            <p class="question">
+                Kamu siapa?
+            </p>
+
+            <div class="user-buttons">
+
+                <button onclick="selectUser('Ella')">
+                    <span>♡</span>
+                    Ella
+                </button>
+
+                <button onclick="selectUser('Arka')">
+                    <span>♡</span>
+                    Arka
+                </button>
+
+                <button onclick="selectUser('Tamu')">
+                    <span>◌</span>
+                    Tamu
+                </button>
+
+            </div>
+
+        </div>
+
+    </main>
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+
+</body>
+
+</html>

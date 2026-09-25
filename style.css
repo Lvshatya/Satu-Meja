@@ -1,0 +1,2240 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f5eee7;
+    color: #3f332c;
+}
+
+.landing {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 24px;
+}
+
+.card {
+    width: 100%;
+    max-width: 430px;
+
+    background: #fffdf9;
+
+    padding: 55px 35px;
+
+    text-align: center;
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 15px 40px rgba(63, 51, 44, 0.08);
+}
+
+.logo {
+    font-size: 32px;
+    margin-bottom: 18px;
+
+    color: #a86752;
+}
+
+h1 {
+    font-size: 42px;
+    font-weight: normal;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 10px;
+}
+
+.tagline {
+    font-size: 15px;
+
+    color: #8b7b71;
+
+    letter-spacing: 0.5px;
+}
+
+.divider {
+    width: 50px;
+    height: 1px;
+
+    background: #c9aaa0;
+
+    margin: 35px auto;
+}
+
+.question {
+    font-size: 17px;
+
+    margin-bottom: 20px;
+}
+
+.user-buttons {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.user-buttons button {
+    width: 100%;
+
+    padding: 15px 20px;
+
+    border: 1px solid #e6d9d0;
+
+    border-radius: 15px;
+
+    background: transparent;
+
+    color: #4a3b34;
+
+    font-family: inherit;
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.user-buttons button span {
+    margin-right: 8px;
+
+    color: #a86752;
+}
+
+.user-buttons button:hover {
+    background: #a86752;
+
+    color: white;
+
+    border-color: #a86752;
+
+    transform: translateY(-2px);
+}* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Georgia, 'Times New Roman', serif;
+    background: #f5eee7;
+    color: #3f332c;
+}
+
+.landing {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 24px;
+}
+
+.card {
+    width: 100%;
+    max-width: 430px;
+
+    background: #fffdf9;
+
+    padding: 55px 35px;
+
+    text-align: center;
+
+    border-radius: 28px;
+
+    box-shadow:
+        0 15px 40px rgba(63, 51, 44, 0.08);
+}
+
+.logo {
+    font-size: 32px;
+    margin-bottom: 18px;
+
+    color: #a86752;
+}
+
+h1 {
+    font-size: 42px;
+    font-weight: normal;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 10px;
+}
+
+.tagline {
+    font-size: 15px;
+
+    color: #8b7b71;
+
+    letter-spacing: 0.5px;
+}
+
+.divider {
+    width: 50px;
+    height: 1px;
+
+    background: #c9aaa0;
+
+    margin: 35px auto;
+}
+
+.question {
+    font-size: 17px;
+
+    margin-bottom: 20px;
+}
+
+.user-buttons {
+    display: flex;
+    flex-direction: column;
+
+    gap: 12px;
+}
+
+.user-buttons button {
+    width: 100%;
+
+    padding: 15px 20px;
+
+    border: 1px solid #e6d9d0;
+
+    border-radius: 15px;
+
+    background: transparent;
+
+    color: #4a3b34;
+
+    font-family: inherit;
+    font-size: 16px;
+
+    cursor: pointer;
+
+    transition: all 0.25s ease;
+}
+
+.user-buttons button span {
+    margin-right: 8px;
+
+    color: #a86752;
+}
+
+.user-buttons button:hover {
+    background: #a86752;
+
+    color: white;
+
+    border-color: #a86752;
+
+    transform: translateY(-2px);
+}
+
+#login-form {
+    display: flex;
+    flex-direction: column;
+
+    text-align: left;
+
+    gap: 10px;
+}
+
+#login-form label {
+    font-size: 14px;
+
+    color: #6f5e55;
+}
+
+#password {
+    width: 100%;
+
+    padding: 14px 16px;
+
+    border: 1px solid #e6d9d0;
+
+    border-radius: 12px;
+
+    background: #fffdf9;
+
+    color: #3f332c;
+
+    font-family: inherit;
+
+    outline: none;
+}
+
+#password:focus {
+    border-color: #a86752;
+}
+
+.login-button {
+    margin-top: 10px;
+
+    padding: 14px;
+
+    border: none;
+
+    border-radius: 13px;
+
+    background: #a86752;
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 16px;
+
+    cursor: pointer;
+}
+
+.login-button:hover {
+    opacity: 0.9;
+}
+
+#login-message {
+    margin-top: 15px;
+
+    font-size: 14px;
+
+    color: #a86752;
+}
+
+.back-button {
+    margin-top: 25px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #8b7b71;
+
+    font-family: inherit;
+
+    cursor: pointer;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+body {
+    min-height: 100vh;
+}
+
+.navbar {
+    width: 100%;
+
+    padding: 22px 6%;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    border-bottom: 1px solid #eadfd7;
+
+    background: #fffdf9;
+}
+
+.nav-logo {
+    font-family: Georgia, serif;
+
+    font-size: 24px;
+
+    color: #3f332c;
+}
+
+.logout-button {
+    border: none;
+
+    background: transparent;
+
+    color: #8b7b71;
+
+    font-family: inherit;
+
+    cursor: pointer;
+}
+
+.dashboard {
+    width: 90%;
+    max-width: 1100px;
+
+    margin: auto;
+
+    padding: 55px 0 80px;
+}
+
+.hero {
+    margin-bottom: 35px;
+}
+
+.small-title {
+    font-size: 12px;
+
+    letter-spacing: 3px;
+
+    color: #a86752;
+
+    margin-bottom: 12px;
+}
+
+.hero h1 {
+    font-size: 38px;
+
+    margin-bottom: 8px;
+}
+
+.hero > p:last-child {
+    color: #8b7b71;
+}
+
+
+/* SEARCH */
+
+.search-section {
+    margin-bottom: 20px;
+}
+
+#search-input {
+    width: 100%;
+
+    padding: 16px 20px;
+
+    border: 1px solid #e6d9d0;
+
+    border-radius: 15px;
+
+    background: #fffdf9;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    outline: none;
+}
+
+#search-input:focus {
+    border-color: #a86752;
+}
+
+
+/* ADD BUTTON */
+
+.action-section {
+    margin-bottom: 45px;
+}
+
+.add-restaurant-button {
+    padding: 14px 22px;
+
+    border: none;
+
+    border-radius: 13px;
+
+    background: #a86752;
+
+    color: white;
+
+    font-family: inherit;
+
+    font-size: 15px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.add-restaurant-button:hover {
+    transform: translateY(-2px);
+
+    opacity: 0.9;
+}
+
+
+/* SECTION */
+
+.section-heading {
+    display: flex;
+
+    justify-content: space-between;
+    align-items: center;
+
+    margin-bottom: 20px;
+}
+
+.section-heading h2 {
+    font-size: 25px;
+
+    font-weight: normal;
+}
+
+#restaurant-count {
+    font-size: 13px;
+
+    color: #9b8c83;
+}
+
+
+/* RESTAURANT GRID */
+
+.restaurant-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(2, 1fr);
+
+    gap: 20px;
+}
+
+
+/* RESTAURANT CARD */
+
+.restaurant-card {
+    overflow: hidden;
+
+    background: #fffdf9;
+
+    border: 1px solid #eadfd7;
+
+    border-radius: 20px;
+
+    transition: 0.25s;
+}
+
+.restaurant-card:hover {
+    transform: translateY(-4px);
+
+    box-shadow:
+        0 12px 30px
+        rgba(63, 51, 44, 0.08);
+}
+
+.restaurant-image {
+    width: 100%;
+
+    height: 210px;
+
+    object-fit: cover;
+
+    background: #eee4dc;
+}
+
+.restaurant-info {
+    padding: 18px;
+}
+
+.restaurant-name {
+    font-size: 20px;
+
+    margin-bottom: 5px;
+}
+
+.restaurant-location {
+    font-size: 13px;
+
+    color: #94857d;
+
+    margin-bottom: 14px;
+}
+
+.restaurant-rating {
+    font-size: 14px;
+
+    color: #a86752;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 650px) {
+
+    .dashboard {
+        width: 90%;
+
+        padding-top: 40px;
+    }
+
+    .hero h1 {
+        font-size: 30px;
+    }
+
+    .restaurant-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .restaurant-image {
+        height: 230px;
+    }
+
+}
+
+/* =========================
+   RESTAURANT DETAIL
+========================= */
+
+.back-dashboard {
+    border: none;
+    background: transparent;
+    color: #3f332c;
+    font-family: inherit;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+
+.restaurant-detail {
+    width: 90%;
+    max-width: 900px;
+    margin: auto;
+    padding: 50px 0 80px;
+}
+
+
+.restaurant-detail-image {
+    width: 100%;
+    height: 420px;
+    overflow: hidden;
+    border-radius: 24px;
+    background: #eee4dc;
+}
+
+
+.restaurant-detail-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+
+.restaurant-detail-content {
+    padding: 40px 10px;
+}
+
+
+.restaurant-detail-content h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+
+.detail-location {
+    color: #8b7b71;
+    font-size: 15px;
+}
+
+
+.detail-rating {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+#detail-rating {
+    color: #a86752;
+    font-size: 17px;
+}
+
+
+.rating-label {
+    color: #9b8c83;
+    font-size: 13px;
+}
+
+
+.detail-divider {
+    width: 100%;
+    height: 1px;
+    background: #eadfd7;
+    margin: 40px 0;
+}
+
+
+.reviews-section {
+    width: 100%;
+}
+
+
+.reviews-section .section-heading {
+    margin-bottom: 25px;
+}
+
+
+.reviews-section .section-heading span {
+    font-size: 13px;
+    color: #9b8c83;
+}
+
+
+.review-card {
+    background: #fffdf9;
+    border: 1px solid #eadfd7;
+    border-radius: 18px;
+    padding: 22px;
+    margin-bottom: 15px;
+}
+
+
+.review-header {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.review-header h3 {
+    font-size: 18px;
+    font-weight: normal;
+    margin-bottom: 7px;
+}
+
+
+.review-stars {
+    font-size: 14px;
+    color: #a86752;
+}
+
+
+.review-text {
+    margin-top: 15px;
+    color: #6f5e55;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+
+.add-review-button {
+    width: 100%;
+    padding: 15px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 13px;
+    background: #a86752;
+    color: white;
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+
+.add-review-button:hover {
+    opacity: 0.9;
+    transform: translateY(-2px);
+}
+
+
+@media (max-width: 650px) {
+
+    .restaurant-detail {
+        padding-top: 30px;
+    }
+
+
+    .restaurant-detail-image {
+        height: 280px;
+        border-radius: 20px;
+    }
+
+
+    .restaurant-detail-content h1 {
+        font-size: 32px;
+    }
+
+}
+
+/* =========================
+   ADD REVIEW
+========================= */
+
+.review-page {
+    width: 90%;
+    max-width: 650px;
+    margin: auto;
+    padding: 55px 0 80px;
+}
+
+.review-page h1 {
+    font-size: 38px;
+    margin-bottom: 8px;
+}
+
+.review-restaurant-name {
+    color: #8b7b71;
+    margin-bottom: 40px;
+}
+
+.form-group {
+    margin-bottom: 28px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 15px;
+    margin-bottom: 12px;
+}
+
+.form-group label span {
+    color: #9b8c83;
+    font-size: 13px;
+}
+
+.star-rating {
+    display: flex;
+    gap: 5px;
+}
+
+.star-rating button {
+    border: none;
+    background: transparent;
+    color: #a86752;
+    font-size: 38px;
+    cursor: pointer;
+    padding: 0;
+    transition: 0.2s;
+}
+
+.star-rating button:hover {
+    transform: scale(1.1);
+}
+
+#rating-text {
+    margin-top: 8px;
+    color: #9b8c83;
+    font-size: 13px;
+}
+
+#review-text {
+    width: 100%;
+    min-height: 150px;
+    padding: 15px;
+    border: 1px solid #e6d9d0;
+    border-radius: 14px;
+    background: #fffdf9;
+    color: #3f332c;
+    font-family: inherit;
+    font-size: 15px;
+    resize: vertical;
+    outline: none;
+}
+
+#review-text:focus {
+    border-color: #a86752;
+}
+
+#review-photo {
+    width: 100%;
+    padding: 12px;
+    border: 1px dashed #d8c6bc;
+    border-radius: 13px;
+    background: #fffdf9;
+    font-family: inherit;
+}
+
+.submit-review-button {
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 14px;
+    background: #a86752;
+    color: white;
+    font-family: inherit;
+    font-size: 15px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.submit-review-button:hover {
+    transform: translateY(-2px);
+    opacity: 0.9;
+}
+
+@media (max-width: 650px) {
+
+    .review-page {
+        padding-top: 35px;
+    }
+
+    .review-page h1 {
+        font-size: 31px;
+    }
+
+    .star-rating button {
+        font-size: 34px;
+    }
+
+}
+
+/* =========================
+   REVIEW PHOTO
+========================= */
+
+.review-photo {
+    width: 100%;
+    max-height: 350px;
+    object-fit: cover;
+    border-radius: 14px;
+    margin-top: 18px;
+}
+
+/* =========================
+   REVIEW ACTIONS
+========================= */
+
+.review-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.review-actions button {
+    padding: 8px 14px;
+    border-radius: 10px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.edit-review-button {
+    border: 1px solid #d8c6bc;
+    background: #fffdf9;
+    color: #6f5e55;
+}
+
+.delete-review-button {
+    border: 1px solid #e4c7c0;
+    background: #fff7f5;
+    color: #a86752;
+}
+
+.review-actions button:hover {
+    transform: translateY(-1px);
+    opacity: 0.85;
+}
+
+/* =========================
+   ADD RESTAURANT
+========================= */
+
+#restaurant-form {
+    display: flex;
+    flex-direction: column;
+}
+
+#restaurant-form input[type="text"] {
+    width: 100%;
+    padding: 15px 16px;
+    border: 1px solid #e6d9d0;
+    border-radius: 13px;
+    background: #fffdf9;
+    color: #3f332c;
+    font-family: inherit;
+    font-size: 15px;
+    outline: none;
+}
+
+#restaurant-form input[type="text"]:focus {
+    border-color: #a86752;
+}
+
+#restaurant-image {
+    width: 100%;
+    padding: 12px;
+    border: 1px dashed #d8c6bc;
+    border-radius: 13px;
+    background: #fffdf9;
+    font-family: inherit;
+}
+
+/* =========================
+   RESTAURANT ACTIONS
+========================= */
+
+.restaurant-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: 25px;
+}
+
+
+.restaurant-actions button {
+    padding: 10px 16px;
+    border-radius: 11px;
+    font-family: inherit;
+    font-size: 13px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+
+.edit-restaurant-button {
+    border: 1px solid #d8c6bc;
+    background: #fffdf9;
+    color: #6f5e55;
+}
+
+
+.delete-restaurant-button {
+    border: 1px solid #e4c7c0;
+    background: #fff7f5;
+    color: #a86752;
+}
+
+
+.restaurant-actions button:hover {
+    transform: translateY(-1px);
+    opacity: 0.85;
+}
+
+
+@media (max-width: 650px) {
+
+    .restaurant-actions {
+        flex-direction: column;
+    }
+
+    .restaurant-actions button {
+        width: 100%;
+    }
+
+}
+
+/* =========================
+   EMPTY SEARCH RESULT
+========================= */
+
+.empty-result {
+    width: 100%;
+    padding: 60px 20px;
+    text-align: center;
+    background: #fffdf9;
+    border: 1px dashed #e1d3ca;
+    border-radius: 20px;
+    grid-column: 1 / -1;
+}
+
+.empty-result p {
+    font-size: 18px;
+    margin-bottom: 8px;
+}
+
+.empty-result span {
+    font-size: 13px;
+    color: #9b8c83;
+}
+
+
+/* =========================
+   MULTI PHOTO REVIEW
+========================= */
+
+.photo-hint {
+    margin-top: 8px;
+    font-size: 12px;
+    color: #9b8c83;
+}
+
+.photo-preview {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: -10px;
+    margin-bottom: 28px;
+}
+
+.photo-preview img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid #eadfd7;
+}
+
+.review-photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.review-photo-gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+}
+
+@media (max-width: 650px) {
+
+    .photo-preview,
+    .review-photo-gallery {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+}
+
+css
+/* =========================
+   PHOTO LIGHTBOX
+========================= */
+
+.photo-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    padding: 60px;
+
+    background: rgba(35, 27, 23, 0.92);
+
+    opacity: 0;
+
+    transition:
+        opacity 0.25s ease;
+}
+
+.photo-lightbox.active {
+    display: flex;
+    opacity: 1;
+}
+
+
+.lightbox-image {
+    max-width: 90vw;
+    max-height: 82vh;
+
+    object-fit: contain;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 20px 60px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+/* CLOSE */
+
+.lightbox-close {
+    position: absolute;
+
+    top: 20px;
+    right: 25px;
+
+    width: 45px;
+    height: 45px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 30px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.22);
+
+    transform:
+        rotate(90deg);
+}
+
+
+/* PREV / NEXT */
+
+.lightbox-nav {
+    position: absolute;
+
+    top: 50%;
+
+    transform:
+        translateY(-50%);
+
+    width: 50px;
+    height: 50px;
+
+    border: none;
+    border-radius: 50%;
+
+    background:
+        rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 42px;
+    line-height: 42px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.lightbox-nav:hover {
+    background:
+        rgba(255, 255, 255, 0.22);
+}
+
+
+.lightbox-prev {
+    left: 25px;
+}
+
+
+.lightbox-next {
+    right: 25px;
+}
+
+
+.lightbox-counter {
+    position: absolute;
+
+    bottom: 20px;
+    left: 50%;
+
+    transform:
+        translateX(-50%);
+
+    color: white;
+
+    font-size: 13px;
+
+    letter-spacing: 1px;
+
+    background:
+        rgba(0, 0, 0, 0.25);
+
+    padding:
+        7px 12px;
+
+    border-radius: 20px;
+}
+
+
+/* =========================
+   REVIEW PHOTO CLICK
+========================= */
+
+.review-photo-gallery img {
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.review-photo-gallery img:hover {
+    transform:
+        scale(1.03);
+
+    opacity: 0.9;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 650px) {
+
+    .photo-lightbox {
+        padding: 25px;
+    }
+
+
+    .lightbox-image {
+        max-width: 92vw;
+        max-height: 75vh;
+
+        border-radius: 10px;
+    }
+
+
+    .lightbox-close {
+        top: 15px;
+        right: 15px;
+
+        width: 40px;
+        height: 40px;
+
+        font-size: 27px;
+    }
+
+
+    .lightbox-nav {
+        width: 42px;
+        height: 42px;
+
+        font-size: 34px;
+        line-height: 34px;
+    }
+
+
+    .lightbox-prev {
+        left: 10px;
+    }
+
+
+    .lightbox-next {
+        right: 10px;
+    }
+
+}
+
+/* =====================================================
+   FIX GALERI FOTO
+   Thumbnail tetap 1:1, foto saat dibuka tampil UTUH
+===================================================== */
+
+/* Thumbnail di halaman review tetap kotak */
+.review-photo-gallery img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 12px;
+    cursor: pointer;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.review-photo-gallery img:hover {
+    transform: scale(1.03);
+    opacity: 0.9;
+}
+
+
+/* =====================================================
+   LIGHTBOX
+===================================================== */
+
+.photo-lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+
+    display: none;
+    justify-content: center;
+    align-items: center;
+
+    padding: 60px;
+
+    background: rgba(35, 27, 23, 0.92);
+
+    opacity: 0;
+    transition: opacity 0.25s ease;
+
+    overflow: hidden;
+}
+
+.photo-lightbox.active {
+    display: flex;
+    opacity: 1;
+}
+
+
+/*
+   PENTING:
+   width & height auto supaya ukuran/aspect ratio
+   mengikuti foto aslinya.
+
+   Jadi:
+   9:16  → tetap 9:16
+   16:9  → tetap 16:9
+   1:1   → tetap 1:1
+*/
+.photo-lightbox .lightbox-image {
+    display: block;
+
+    width: auto !important;
+    height: auto !important;
+
+    max-width: calc(100vw - 120px) !important;
+    max-height: calc(100vh - 120px) !important;
+
+    min-width: 0 !important;
+    min-height: 0 !important;
+
+    object-fit: contain !important;
+    object-position: center !important;
+
+    border-radius: 12px;
+
+    box-shadow:
+        0 20px 60px
+        rgba(0, 0, 0, 0.35);
+}
+
+
+/* =====================================================
+   TOMBOL CLOSE
+===================================================== */
+
+.lightbox-close {
+    position: absolute;
+
+    top: 20px;
+    right: 25px;
+
+    width: 45px;
+    height: 45px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+    font-size: 30px;
+    line-height: 1;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.lightbox-close:hover {
+    background: rgba(255, 255, 255, 0.22);
+
+    transform: rotate(90deg);
+}
+
+
+/* =====================================================
+   TOMBOL NEXT / PREVIOUS
+===================================================== */
+
+.lightbox-nav {
+    position: absolute;
+
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    width: 50px;
+    height: 50px;
+
+    border: none;
+    border-radius: 50%;
+
+    background: rgba(255, 255, 255, 0.12);
+
+    color: white;
+
+    font-family: Arial, sans-serif;
+
+    font-size: 42px;
+    line-height: 42px;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+.lightbox-nav:hover {
+    background: rgba(255, 255, 255, 0.22);
+}
+
+.lightbox-prev {
+    left: 25px;
+}
+
+.lightbox-next {
+    right: 25px;
+}
+
+
+/* =====================================================
+   COUNTER
+===================================================== */
+
+.lightbox-counter {
+    position: absolute;
+
+    bottom: 20px;
+    left: 50%;
+
+    transform: translateX(-50%);
+
+    color: white;
+
+    font-size: 13px;
+    letter-spacing: 1px;
+
+    background: rgba(0, 0, 0, 0.25);
+
+    padding: 7px 12px;
+
+    border-radius: 20px;
+}
+
+
+/* =====================================================
+   MOBILE
+===================================================== */
+
+@media (max-width: 650px) {
+
+    .photo-lightbox {
+        padding: 20px;
+    }
+
+    .photo-lightbox .lightbox-image {
+        width: auto !important;
+        height: auto !important;
+
+        max-width: calc(100vw - 40px) !important;
+        max-height: calc(100vh - 120px) !important;
+
+        min-width: 0 !important;
+        min-height: 0 !important;
+
+        object-fit: contain !important;
+
+        border-radius: 10px;
+    }
+
+    .lightbox-close {
+        top: 15px;
+        right: 15px;
+
+        width: 40px;
+        height: 40px;
+
+        font-size: 27px;
+    }
+
+    .lightbox-nav {
+        width: 42px;
+        height: 42px;
+
+        font-size: 34px;
+        line-height: 34px;
+    }
+
+    .lightbox-prev {
+        left: 10px;
+    }
+
+    .lightbox-next {
+        right: 10px;
+    }
+}
+
+/* =====================================================
+   FOOD JOURNEY + STATISTICS
+===================================================== */
+
+.journey-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 35px 0 55px;
+}
+
+.journey-stat-card {
+    background: #fffdf9;
+    border: 1px solid #eadfd7;
+    border-radius: 18px;
+    padding: 22px 15px;
+    text-align: center;
+}
+
+.journey-stat-number {
+    display: block;
+    font-size: 28px;
+    color: #a86752;
+    margin-bottom: 6px;
+}
+
+.journey-stat-label {
+    font-size: 12px;
+    color: #9b8c83;
+    letter-spacing: 0.5px;
+}
+
+.food-journey-section {
+    margin-top: 20px;
+}
+
+.food-journey-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.food-journey-title h2 {
+    font-size: 25px;
+    font-weight: normal;
+}
+
+.food-journey-title span {
+    font-size: 13px;
+    color: #9b8c83;
+}
+
+.food-journey-list {
+    position: relative;
+    padding-left: 28px;
+}
+
+.food-journey-list::before {
+    content: "";
+    position: absolute;
+    left: 7px;
+    top: 5px;
+    bottom: 5px;
+    width: 1px;
+    background: #ddc9bf;
+}
+
+.journey-item {
+    position: relative;
+    margin-bottom: 28px;
+}
+
+.journey-item::before {
+    content: "♡";
+    position: absolute;
+    left: -28px;
+    top: 0;
+    width: 16px;
+    height: 16px;
+    color: #a86752;
+    background: #f5eee7;
+    font-size: 13px;
+    line-height: 16px;
+    text-align: center;
+}
+
+.journey-date {
+    font-size: 12px;
+    color: #a86752;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.journey-card {
+    background: #fffdf9;
+    border: 1px solid #eadfd7;
+    border-radius: 18px;
+    padding: 18px 20px;
+}
+
+.journey-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.journey-restaurant {
+    font-size: 18px;
+    margin-bottom: 4px;
+}
+
+.journey-user {
+    font-size: 12px;
+    color: #9b8c83;
+}
+
+.journey-rating {
+    color: #a86752;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.journey-review {
+    margin-top: 13px;
+    color: #6f5e55;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.journey-empty {
+    background: #fffdf9;
+    border: 1px dashed #e1d3ca;
+    border-radius: 18px;
+    padding: 35px 20px;
+    text-align: center;
+    color: #9b8c83;
+    font-size: 14px;
+}
+
+@media (max-width: 650px) {
+
+    .journey-stats {
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 40px;
+    }
+
+    .journey-stat-card {
+        padding: 17px;
+    }
+
+    .journey-stat-number {
+        font-size: 24px;
+    }
+
+    .food-journey-title {
+        align-items: flex-end;
+    }
+
+    .food-journey-title h2 {
+        font-size: 22px;
+    }
+
+    .journey-card-header {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .journey-rating {
+        white-space: normal;
+    }
+}
+
+/* =====================================================
+   INTERACTIVE FOOD JOURNEY
+===================================================== */
+
+.journey-filter {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+}
+
+.journey-filter button {
+    padding: 8px 15px;
+
+    border: 1px solid #e1d3ca;
+    border-radius: 20px;
+
+    background: #fffdf9;
+    color: #8b7b71;
+
+    font-family: inherit;
+    font-size: 12px;
+
+    cursor: pointer;
+
+    transition: all 0.2s ease;
+}
+
+.journey-filter button:hover {
+    border-color: #a86752;
+    color: #a86752;
+}
+
+.journey-filter button.active {
+    background: #a86752;
+    border-color: #a86752;
+    color: white;
+}
+
+
+/* JOURNEY CARD CLICKABLE */
+
+.journey-card {
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.journey-card:hover {
+    transform: translateY(-3px);
+
+    border-color: #d8b8aa;
+
+    box-shadow:
+        0 10px 25px
+        rgba(63, 51, 44, 0.08);
+}
+
+
+.journey-card::after {
+    content: "Lihat tempat →";
+
+    display: block;
+
+    margin-top: 14px;
+
+    color: #a86752;
+
+    font-size: 11px;
+
+    opacity: 0;
+    transform: translateY(3px);
+
+    transition:
+        opacity 0.2s ease,
+        transform 0.2s ease;
+}
+
+.journey-card:hover::after {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+@media (max-width: 650px) {
+
+    .journey-filter {
+        gap: 6px;
+    }
+
+    .journey-filter button {
+        padding: 7px 12px;
+    }
+
+    .journey-card::after {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+/* =====================================================
+   OUR FAVORITE PLACES
+===================================================== */
+
+.favorite-places-section {
+    margin-top: 65px;
+    padding-bottom: 40px;
+}
+
+.favorite-places-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 25px;
+    gap: 20px;
+}
+
+.favorite-places-title h2 {
+    font-size: 25px;
+    font-weight: normal;
+    margin-bottom: 5px;
+}
+
+.favorite-places-title p {
+    color: #9b8c83;
+    font-size: 13px;
+}
+
+.favorite-places-title > span {
+    color: #9b8c83;
+    font-size: 12px;
+}
+
+.favorite-places-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+}
+
+.favorite-place-card {
+    background: #fffdf9;
+    border: 1px solid #eadfd7;
+    border-radius: 18px;
+    overflow: hidden;
+    cursor: pointer;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.favorite-place-card:hover {
+    transform: translateY(-4px);
+    border-color: #d8b8aa;
+
+    box-shadow:
+        0 12px 30px
+        rgba(63, 51, 44, 0.09);
+}
+
+.favorite-place-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.favorite-place-content {
+    padding: 17px 18px 19px;
+}
+
+.favorite-place-rank {
+    color: #a86752;
+    font-size: 11px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+}
+
+.favorite-place-name {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.favorite-place-location {
+    color: #9b8c83;
+    font-size: 12px;
+    margin-bottom: 12px;
+}
+
+.favorite-place-rating {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.favorite-place-stars {
+    color: #a86752;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
+.favorite-place-score {
+    color: #6f5e55;
+    font-size: 12px;
+}
+
+.favorite-place-reviews {
+    margin-top: 8px;
+    color: #9b8c83;
+    font-size: 11px;
+}
+
+.favorite-place-empty {
+    grid-column: 1 / -1;
+
+    background: #fffdf9;
+    border: 1px dashed #e1d3ca;
+    border-radius: 18px;
+
+    padding: 35px 20px;
+    text-align: center;
+
+    color: #9b8c83;
+    font-size: 14px;
+}
+
+@media (max-width: 850px) {
+
+    .favorite-places-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+
+    .favorite-places-section {
+        margin-top: 50px;
+    }
+
+    .favorite-places-title {
+        align-items: flex-end;
+    }
+
+    .favorite-places-title h2 {
+        font-size: 22px;
+    }
+
+    .favorite-places-grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .favorite-place-image {
+        height: 200px;
+    }
+}
+
+/* =====================================================
+   LITTLE NOTES - SMALL VERSION
+===================================================== */
+
+.little-notes-section {
+    margin-top: 35px;
+    padding-bottom: 20px;
+}
+
+.little-note-card {
+    max-width: 520px;
+    margin: 0 auto;
+
+    padding: 20px 28px;
+
+    background: #fffaf5;
+
+    border: 1px solid #eadfd7;
+    border-radius: 16px;
+
+    text-align: center;
+
+    box-shadow:
+        0 6px 18px
+        rgba(63, 51, 44, 0.04);
+}
+
+.little-note-icon {
+    font-size: 17px;
+    margin-bottom: 7px;
+}
+
+.little-note-label {
+    font-size: 8px;
+    letter-spacing: 1.8px;
+    margin-bottom: 10px;
+}
+
+.little-note-text {
+    max-width: 420px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.little-note-decoration {
+    margin-top: 12px;
+    font-size: 9px;
+}
+
+@media (max-width: 650px) {
+
+    .little-notes-section {
+        margin-top: 30px;
+        padding-bottom: 15px;
+    }
+
+    .little-note-card {
+        max-width: 100%;
+        padding: 18px 20px;
+        border-radius: 14px;
+    }
+
+    .little-note-text {
+        font-size: 13px;
+    }
+}
+
+/* =====================================================
+   LITTLE THINGS ABOUT US - RESTORE SIZE
+===================================================== */
+
+.little-things-section {
+    margin-top: 65px;
+    padding-bottom: 45px;
+}
+
+.little-things-title h2 {
+    font-size: 25px;
+}
+
+.little-things-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.little-thing-card {
+    padding: 23px 15px;
+}
+
+.little-thing-icon {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.little-thing-value {
+    font-size: 18px;
+    margin-bottom: 7px;
+}
+
+.little-thing-label {
+    font-size: 11px;
+}
+
+@media (max-width: 850px) {
+
+    .little-things-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+
+    .little-things-section {
+        margin-top: 50px;
+    }
+
+    .little-things-title h2 {
+        font-size: 22px;
+    }
+
+    .little-things-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .little-thing-card {
+        padding: 20px 12px;
+    }
+
+    .little-thing-value {
+        font-size: 16px;
+    }
+}
+
+/* =====================================================
+   LITTLE THINGS ABOUT US - ORIGINAL CARD STYLE
+===================================================== */
+
+.little-things-section {
+    margin-top: 65px;
+    padding-bottom: 45px;
+}
+
+.little-things-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 20px;
+    margin-bottom: 25px;
+}
+
+.little-things-title h2 {
+    font-size: 25px;
+    font-weight: normal;
+}
+
+.little-things-title span {
+    color: #9b8c83;
+    font-size: 12px;
+}
+
+.little-things-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+}
+
+.little-thing-card {
+    background: #fffdf9;
+    border: 1px solid #eadfd7;
+    border-radius: 18px;
+
+    padding: 23px 15px;
+
+    text-align: center;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.little-thing-card:hover {
+    transform: translateY(-3px);
+
+    box-shadow:
+        0 10px 25px
+        rgba(63, 51, 44, 0.07);
+}
+
+.little-thing-icon {
+    display: block;
+
+    margin-bottom: 12px;
+
+    font-size: 20px;
+}
+
+.little-thing-value {
+    display: block;
+
+    color: #a86752;
+
+    font-size: 18px;
+
+    margin-bottom: 7px;
+}
+
+.little-thing-label {
+    display: block;
+
+    color: #9b8c83;
+
+    font-size: 11px;
+
+    line-height: 1.4;
+}
+
+@media (max-width: 850px) {
+
+    .little-things-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px) {
+
+    .little-things-section {
+        margin-top: 50px;
+    }
+
+    .little-things-title {
+        align-items: flex-end;
+    }
+
+    .little-things-title h2 {
+        font-size: 22px;
+    }
+
+    .little-things-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+    }
+
+    .little-thing-card {
+        padding: 20px 12px;
+    }
+
+    .little-thing-value {
+        font-size: 16px;
+    }
+}
