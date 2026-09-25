@@ -2819,50 +2819,50 @@ function openFavoriteRestaurant(
 
 const littleNotes = [
 
-    "Makan bareng selalu terasa lebih enak ♡",
+    "Meals always taste better together ♡",
 
-    "Satu meja, banyak cerita.",
+    "One table, countless stories.",
 
-    "Setiap tempat punya cerita sendiri.",
+    "Every place holds a story of its own.",
 
-    "Semoga selalu ada tempat baru untuk kita coba.",
+    "May there always be new places for us to discover.",
 
     "Food first, memories forever.",
 
-    "Ternyata makan bisa jadi salah satu cara menyimpan kenangan.",
+    "Sometimes, a meal becomes a memory.",
 
-    "Dari satu tempat ke tempat lainnya.",
+    "From one place to another.",
 
-    "Semoga daftar ini terus bertambah.",
+    "May this little list keep growing.",
 
-    "Hal kecil yang ternyata jadi kenangan besar.",
+    "Small moments can become the sweetest memories.",
 
-    "Satu review, satu cerita.",
+    "One review, one little story.",
 
-    "Tempatnya boleh berbeda, ceritanya tetap kita.",
+    "Different places, the same memories.",
 
     "Some meals become memories.",
 
-    "Yang penting bukan cuma makanannya.",
+    "It was never just about the food.",
 
-    "Semoga selalu menemukan makanan enak dan cerita baru.",
+    "May we always find good food and new stories.",
 
     "A little food diary of us.",
 
-    "Simpan dulu ceritanya di sini ♡",
+    "Keeping our little stories here ♡",
 
     "Every table has a story.",
 
-    "Makan, cerita, lalu simpan kenangannya.",
+    "Eat, talk, and keep the memories.",
 
     "Another place, another memory.",
 
-    "Untuk semua cerita kecil yang pernah kita punya."
+    "For all the little stories we have shared."
 
 ];
 
 
-function renderLittleNote() {
+function showRandomLittleNote() {
 
     const noteText =
         document.getElementById(
@@ -2871,9 +2871,7 @@ function renderLittleNote() {
 
 
     if (!noteText) {
-
         return;
-
     }
 
 
@@ -2887,22 +2885,15 @@ function renderLittleNote() {
         littleNotes.filter(
             function(note) {
 
-                return (
-                    note !==
-                    lastNote
-                );
+                return note !== lastNote;
 
             }
         );
 
 
-    if (
-        availableNotes.length ===
-        0
-    ) {
+    if (availableNotes.length === 0) {
 
-        availableNotes =
-            littleNotes;
+        availableNotes = littleNotes;
 
     }
 
@@ -2915,9 +2906,7 @@ function renderLittleNote() {
 
 
     const selectedNote =
-        availableNotes[
-            randomIndex
-        ];
+        availableNotes[randomIndex];
 
 
     noteText.textContent =

@@ -1988,7 +1988,7 @@ css
 }
 
 /* =====================================================
-   LITTLE NOTES - SMALL VERSION
+   LITTLE NOTES
 ===================================================== */
 
 .little-notes-section {
@@ -1998,20 +1998,23 @@ css
 
 .little-note-card {
     max-width: 520px;
+    min-height: 150px;
     margin: 0 auto;
-
-    padding: 20px 28px;
+    padding: 25px 30px;
 
     background: #fffaf5;
-
     border: 1px solid #eadfd7;
     border-radius: 16px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 
     text-align: center;
 
     box-shadow:
-        0 6px 18px
-        rgba(63, 51, 44, 0.04);
+        0 6px 18px rgba(63, 51, 44, 0.04);
 }
 
 .little-note-icon {
@@ -2026,9 +2029,13 @@ css
 }
 
 .little-note-text {
+    width: 100%;
     max-width: 420px;
+
     font-size: 14px;
     line-height: 1.6;
+
+    text-align: center;
 }
 
 .little-note-decoration {
@@ -2036,22 +2043,18 @@ css
     font-size: 9px;
 }
 
+
 @media (max-width: 650px) {
 
-    .little-notes-section {
-        margin-top: 30px;
-        padding-bottom: 15px;
-    }
-
     .little-note-card {
-        max-width: 100%;
-        padding: 18px 20px;
-        border-radius: 14px;
+        min-height: 140px;
+        padding: 22px 20px;
     }
 
     .little-note-text {
         font-size: 13px;
     }
+
 }
 
 /* =====================================================
