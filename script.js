@@ -3587,9 +3587,9 @@ if (resetPasswordForm) {
 function hasSupabaseClient() {
 
     return (
-        typeof supabaseClient !==
+        typeof window.supabaseClient !==
         "undefined" &&
-        supabaseClient !==
+        window.supabaseClient !==
         null
     );
 
