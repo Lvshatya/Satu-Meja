@@ -3580,6 +3580,7 @@ if (resetPasswordForm) {
 }
 
 
+```javascript
 // =====================================================
 // SAFE SUPABASE CHECK
 // =====================================================
@@ -3621,7 +3622,7 @@ async function getCurrentAuthUser() {
             data,
             error
         } =
-            await supabaseClient.auth.getUser();
+            await window.supabaseClient.auth.getUser();
 
 
         if (error) {
@@ -3669,7 +3670,7 @@ async function safeLogout() {
 
         try {
 
-            await supabaseClient.auth.signOut();
+            await window.supabaseClient.auth.signOut();
 
         } catch (error) {
 
@@ -3726,7 +3727,7 @@ function requireSupabase(
 
 
     console.error(
-        "supabaseClient tidak ditemukan."
+        "window.supabaseClient tidak ditemukan."
     );
 
 
@@ -3801,3 +3802,4 @@ document.addEventListener(
 
     }
 );
+```
