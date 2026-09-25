@@ -5,3 +5,5 @@ window.supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
 );
+
+var supabaseClient = window.supabaseClient;
