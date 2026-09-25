@@ -17,7 +17,6 @@
     >
 </head>
 
-
 <body>
 
     <!-- NAVBAR -->
@@ -97,6 +96,7 @@
             >
 
                 <button
+                    type="button"
                     class="edit-restaurant-button"
                     onclick="editRestaurant()"
                 >
@@ -105,6 +105,7 @@
 
 
                 <button
+                    type="button"
                     class="delete-restaurant-button"
                     onclick="deleteRestaurant()"
                 >
@@ -196,6 +197,7 @@
                 <!-- ADD REVIEW -->
 
                 <button
+                    type="button"
                     id="add-review-button"
                     class="add-review-button"
                     onclick="window.location.href='review.html'"
@@ -221,6 +223,7 @@
     >
 
         <button
+            type="button"
             class="lightbox-close"
             onclick="closePhotoViewer()"
         >
@@ -229,6 +232,7 @@
 
 
         <button
+            type="button"
             id="lightbox-prev"
             class="lightbox-nav lightbox-prev"
             onclick="previousPhoto(event)"
@@ -246,6 +250,7 @@
 
 
         <button
+            type="button"
             id="lightbox-next"
             class="lightbox-nav lightbox-next"
             onclick="nextPhoto(event)"
@@ -267,9 +272,7 @@
     <!-- SUPABASE -->
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
     <script src="supabase.js"></script>
-
     <script src="script.js"></script>
 
 </body>
