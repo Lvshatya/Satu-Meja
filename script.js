@@ -3579,31 +3579,6 @@ if (resetPasswordForm) {
 
 }
 
-// =====================================================
-// FINAL SAFETY CHECK
-// =====================================================
-
-(function () {
-
-    /*
-       Cek apakah Supabase sudah tersedia.
-       script.js tidak boleh langsung crash
-       hanya karena supabase.js belum termuat.
-    */
-
-    if (
-        typeof window.supabaseClient ===
-        "undefined"
-    ) {
-
-        console.warn(
-            "Supabase client belum tersedia."
-        );
-
-    }
-
-})();
-
 
 // =====================================================
 // SAFE SUPABASE CHECK
