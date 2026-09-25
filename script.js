@@ -620,6 +620,237 @@ if (restaurantList) {
 
     }
 
+// ======================
+// LOAD RESTAURANT REVIEWS
+// ======================
+
+async function loadRestaurantReviews(
+    restaurantId
+) {
+
+    const reviewsContainer =
+        document.getElementById(
+            "saved-reviews"
+        );
+
+    if (!reviewsContainer) {
+        return;
+    }
+
+
+    if (!hasSupabaseClient()) {
+        return;
+    }
+
+
+    reviewsContainer.innerHTML =
+        "<p>Memuat review...</p>";
+
+
+    const {
+        data: reviews,
+        error
+    } =
+        await supabaseClient
+            .from("reviews")
+            .select(
+                `
+                id,
+                user_name,
+                rating,
+                review_text,
+                created_at,
+                review_photos (
+                    id,
+                    photo_url
+                )
+                `
+            )
+            .eq(
+                "restaurant_id",
+                restaurantId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
+
+
+    if (error) {
+
+        console.error(
+            "Gagal mengambil review:",
+            error
+        );
+
+        reviewsContainer.innerHTML =
+            "<p>Gagal memuat review.</p>";
+
+        return;
+
+    }
+
+
+    if (
+        !reviews ||
+        reviews.length === 0
+    ) {
+
+        reviewsContainer.innerHTML = `
+            <div class="review-card">
+
+                <p class="review-text">
+                    Belum ada review untuk restoran ini.
+                </p>
+
+            </div>
+        `;
+
+        return;
+
+    }
+
+
+    reviewsContainer.innerHTML = "";
+
+
+    reviews.forEach(
+        function(review) {
+
+            const card =
+                document.createElement(
+                    "div"
+                );
+
+            card.className =
+                "review-card";
+
+
+            // ======================
+            // STARS
+            // ======================
+
+            const rating =
+                Number(
+                    review.rating
+                );
+
+
+            const stars =
+                "⭐".repeat(
+                    rating
+                );
+
+
+            // ======================
+            // DATE
+            // ======================
+
+            const date =
+                new Date(
+                    review.created_at
+                );
+
+
+            const formattedDate =
+                date.toLocaleDateString(
+                    "id-ID",
+                    {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    }
+                );
+
+
+            // ======================
+            // PHOTOS
+            // ======================
+
+            let photosHTML = "";
+
+
+            if (
+                review.review_photos &&
+                review.review_photos.length > 0
+            ) {
+
+                photosHTML =
+                    `
+                    <div class="review-photos">
+                    `;
+
+                review.review_photos.forEach(
+                    function(photo) {
+
+                        photosHTML += `
+                            <img
+                                src="${photo.photo_url}"
+                                class="review-photo"
+                                alt="Foto review"
+                            >
+                        `;
+
+                    }
+                );
+
+
+                photosHTML +=
+                    `
+                    </div>
+                    `;
+
+            }
+
+
+            // ======================
+            // CARD
+            // ======================
+
+            card.innerHTML = `
+
+                <div class="review-header">
+
+                    <div>
+
+                        <h3>
+                            ${review.user_name} ♡
+                        </h3>
+
+                        <p class="review-stars">
+                            ${stars}
+                        </p>
+
+                    </div>
+
+                </div>
+
+
+                <p class="review-text">
+                    ${review.review_text}
+                </p>
+
+
+                <p class="review-date">
+                    ${formattedDate}
+                </p>
+
+
+                ${photosHTML}
+
+            `;
+
+
+            reviewsContainer.appendChild(
+                card
+            );
+
+        }
+    );
+
+}
 
     async function initializeDashboard() {
 
@@ -3745,7 +3976,11 @@ function () {
        Halaman restaurant
     */
 
-    if (
+    // ======================
+// RESTAURANT PAGE
+// ======================
+
+if (
     document.getElementById(
         "restaurant-detail"
     )
@@ -3755,6 +3990,34 @@ function () {
         "Restaurant page loaded."
     );
 
+
+    // ======================
+    // GET SELECTED RESTAURANT
+    // ======================
+
+    const restaurantId =
+        localStorage.getItem(
+            "selectedRestaurantId"
+        );
+
+
+    if (!restaurantId) {
+
+        console.error(
+            "Restaurant ID tidak ditemukan."
+        );
+
+    } else {
+
+        // ======================
+        // LOAD REVIEWS
+        // ======================
+
+        loadRestaurantReviews(
+            restaurantId
+        );
+
+    }
 
     // =========================
     // ADD REVIEW BUTTON
