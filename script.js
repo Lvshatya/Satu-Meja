@@ -3092,7 +3092,7 @@ document.addEventListener(
 
         renderFavoritePlaces();
 
-        renderLittleNote();
+        showRandomLittleNote();
 
         renderLittleThings();
 
@@ -3108,7 +3108,7 @@ function refreshDashboardSections() {
 
     renderFavoritePlaces();
 
-    renderLittleNote();
+    showRandomLittleNote();
 
     renderLittleThings();
 
