@@ -1,258 +1,258 @@
 <!DOCTYPE html>
-
 <html lang="id">
 
 <head>
     <meta charset="UTF-8">
 
-```
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
-<title>Tambah Review — Satu Meja</title>
+    <title>Tambah Review — Satu Meja</title>
 
-<link
-    rel="stylesheet"
-    href="style.css"
->
-```
-
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
 </head>
 
 <body>
 
-```
-<!-- =========================
-     NAVBAR
-========================== -->
+    <!-- =========================
+         NAVBAR
+    ========================== -->
 
-<header class="navbar">
+    <header class="navbar">
 
-    <button
-        class="back-dashboard"
-        type="button"
-        onclick="window.location.href='restaurant.html'"
-    >
-        ← Kembali
-    </button>
+        <button
+            class="back-dashboard"
+            type="button"
+            onclick="window.location.href='restaurant.html'"
+        >
+            ← Kembali
+        </button>
 
-    <div class="nav-logo">
-        Satu Meja
-    </div>
+        <div class="nav-logo">
+            Satu Meja
+        </div>
 
-</header>
-
-
-<!-- =========================
-     REVIEW PAGE
-========================== -->
-
-<main class="review-page">
-
-    <p class="small-title">
-        OUR FOOD JOURNEY
-    </p>
-
-    <h1>
-        Tambah Review ♡
-    </h1>
-
-    <p
-        id="review-restaurant"
-        class="review-restaurant-name"
-    >
-        Memuat restoran...
-    </p>
+    </header>
 
 
-    <form id="review-form">
+    <!-- =========================
+         REVIEW PAGE
+    ========================== -->
+
+    <main class="review-page">
+
+        <p class="small-title">
+            OUR FOOD JOURNEY
+        </p>
+
+        <h1>
+            Tambah Review ♡
+        </h1>
+
+        <p
+            id="review-restaurant"
+            class="review-restaurant-name"
+        >
+            Memuat restoran...
+        </p>
 
 
-        <!-- =========================
-             RATING
-        ========================== -->
+        <form id="review-form">
 
-        <div class="form-group">
 
-            <label>
-                Kasih rating yuk
-            </label>
+            <!-- =========================
+                 RATING
+            ========================== -->
 
-            <div class="star-rating">
+            <div class="form-group">
 
-                <button
-                    type="button"
-                    data-rating="1"
-                >☆</button>
+                <label>
+                    Kasih rating yuk
+                </label>
 
-                <button
-                    type="button"
-                    data-rating="2"
-                >☆</button>
+                <div class="star-rating">
 
-                <button
-                    type="button"
-                    data-rating="3"
-                >☆</button>
+                    <button
+                        type="button"
+                        data-rating="1"
+                    >☆</button>
 
-                <button
-                    type="button"
-                    data-rating="4"
-                >☆</button>
+                    <button
+                        type="button"
+                        data-rating="2"
+                    >☆</button>
 
-                <button
-                    type="button"
-                    data-rating="5"
-                >☆</button>
+                    <button
+                        type="button"
+                        data-rating="3"
+                    >☆</button>
+
+                    <button
+                        type="button"
+                        data-rating="4"
+                    >☆</button>
+
+                    <button
+                        type="button"
+                        data-rating="5"
+                    >☆</button>
+
+                </div>
+
+                <p id="rating-text">
+                    Belum ada rating
+                </p>
 
             </div>
 
-            <p id="rating-text">
-                Belum ada rating
-            </p>
 
-        </div>
+            <!-- =========================
+                 REVIEW TEXT
+            ========================== -->
 
+            <div class="form-group">
 
-        <!-- =========================
-             REVIEW TEXT
-        ========================== -->
+                <label for="review-text">
+                    Ceritain pengalamanmu
+                </label>
 
-        <div class="form-group">
+                <textarea
+                    id="review-text"
+                    placeholder="Makanannya enak? Tempatnya nyaman? Ceritain di sini..."
+                    required
+                ></textarea>
 
-            <label for="review-text">
-                Ceritain pengalamanmu
-            </label>
-
-            <textarea
-                id="review-text"
-                placeholder="Makanannya enak? Tempatnya nyaman? Ceritain di sini..."
-                required
-            ></textarea>
-
-        </div>
+            </div>
 
 
-        <!-- =========================
-             PHOTO
-        ========================== -->
+            <!-- =========================
+                 PHOTO
+            ========================== -->
 
-        <div class="form-group">
+            <div class="form-group">
 
-            <label for="review-photo">
-                Tambahkan foto
-                <span>
-                    (opsional, maksimal 5 foto)
-                </span>
-            </label>
+                <label for="review-photo">
+                    Tambahkan foto
+                    <span>
+                        (opsional, maksimal 5 foto)
+                    </span>
+                </label>
 
-            <input
-                type="file"
-                id="review-photo"
-                accept="image/*"
-                multiple
+                <input
+                    type="file"
+                    id="review-photo"
+                    accept="image/*"
+                    multiple
+                >
+
+                <p class="photo-hint">
+                    Kamu bisa pilih beberapa foto sekaligus ♡
+                </p>
+
+            </div>
+
+
+            <!-- =========================
+                 PHOTO PREVIEW
+            ========================== -->
+
+            <div
+                id="photo-preview"
+                class="photo-preview"
+            ></div>
+
+
+            <!-- =========================
+                 SUBMIT
+            ========================== -->
+
+            <button
+                type="submit"
+                class="submit-review-button"
             >
+                Simpan Review ♡
+            </button>
 
-            <p class="photo-hint">
-                Kamu bisa pilih beberapa foto sekaligus ♡
-            </p>
+        </form>
 
-        </div>
-
-
-        <!-- =========================
-             PHOTO PREVIEW
-        ========================== -->
-
-        <div
-            id="photo-preview"
-            class="photo-preview"
-        ></div>
+    </main>
 
 
-        <!-- =========================
-             SUBMIT
-        ========================== -->
+    <!-- =========================
+         SUPABASE
+    ========================== -->
 
-        <button
-            type="submit"
-            class="submit-review-button"
-        >
-            Simpan Review ♡
-        </button>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-    </form>
+    <script src="supabase.js"></script>
 
-</main>
+    <script src="script.js"></script>
 
 
-<!-- =========================
-     SUPABASE
-========================== -->
+    <!-- =========================
+         REVIEW PAGE SCRIPT
+    ========================== -->
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
 
-<script src="supabase.js"></script>
-
-<script src="script.js"></script>
+        window.selectedRating = 0;
 
 
-<!-- =========================
-     REVIEW PAGE SCRIPT
-========================== -->
-
-<script>
-
-    window.selectedRating = 0;
+        document.addEventListener(
+            "DOMContentLoaded",
+            async function () {
 
 
-    document.addEventListener(
-        "DOMContentLoaded",
-        async function () {
+                // =========================
+                // GET RESTAURANT ID
+                // =========================
+
+                const restaurantId =
+                    localStorage.getItem(
+                        "selectedRestaurantId"
+                    );
 
 
-            // =========================
-            // GET RESTAURANT ID
-            // =========================
+                if (!restaurantId) {
 
-            const params =
-                new URLSearchParams(
-                    window.location.search
-                );
+                    alert(
+                        "Restoran tidak ditemukan."
+                    );
 
+                    window.location.href =
+                        "index.html";
 
-            const restaurantId =
-                params.get("id");
+                    return;
 
-
-            if (!restaurantId) {
-
-                alert(
-                    "Restoran tidak ditemukan."
-                );
-
-                window.location.href =
-                    "index.html";
-
-                return;
-
-            }
+                }
 
 
-            // =========================
-            // LOAD RESTAURANT
-            // =========================
+                // =========================
+                // LOAD RESTAURANT
+                // =========================
 
-            if (
-                typeof supabaseClient !==
-                "undefined"
-            ) {
+                if (
+                    typeof supabaseClient ===
+                    "undefined"
+                ) {
+
+                    alert(
+                        "Koneksi database belum tersedia ♡"
+                    );
+
+                    return;
+
+                }
+
 
                 const {
                     data: restaurant,
-                    error
+                    error: restaurantError
                 } =
                     await supabaseClient
                         .from("restaurants")
@@ -267,12 +267,12 @@
 
 
                 if (
-                    error ||
+                    restaurantError ||
                     !restaurant
                 ) {
 
                     console.error(
-                        error
+                        restaurantError
                     );
 
                     alert(
@@ -300,559 +300,564 @@
 
                 }
 
-            }
+
+                // =========================
+                // RATING
+                // =========================
+
+                const stars =
+                    document.querySelectorAll(
+                        ".star-rating button"
+                    );
 
 
-            // =========================
-            // RATING
-            // =========================
-
-            const stars =
-                document.querySelectorAll(
-                    ".star-rating button"
-                );
+                const ratingText =
+                    document.getElementById(
+                        "rating-text"
+                    );
 
 
-            const ratingText =
-                document.getElementById(
-                    "rating-text"
-                );
+                stars.forEach(
+                    function (star) {
+
+                        star.addEventListener(
+                            "click",
+                            function () {
+
+                                window.selectedRating =
+                                    Number(
+                                        this.dataset.rating
+                                    );
 
 
-            stars.forEach(
-                function (star) {
+                                stars.forEach(
+                                    function (item) {
 
-                    star.addEventListener(
-                        "click",
-                        function () {
+                                        const itemRating =
+                                            Number(
+                                                item.dataset.rating
+                                            );
 
-                            window.selectedRating =
-                                Number(
-                                    this.dataset.rating
+
+                                        item.textContent =
+                                            itemRating <=
+                                            window.selectedRating
+                                                ? "★"
+                                                : "☆";
+
+                                    }
                                 );
 
 
-                            stars.forEach(
-                                function (item) {
+                                if (ratingText) {
 
-                                    const itemRating =
-                                        Number(
-                                            item.dataset.rating
-                                        );
+                                    ratingText.textContent =
+                                        window.selectedRating +
+                                        " / 5";
+
+                                }
+
+                            }
+                        );
+
+                    }
+                );
 
 
-                                    item.textContent =
-                                        itemRating <=
-                                        window.selectedRating
-                                            ? "★"
-                                            : "☆";
+                // =========================
+                // PHOTO PREVIEW
+                // =========================
+
+                const photoInput =
+                    document.getElementById(
+                        "review-photo"
+                    );
+
+
+                const photoPreview =
+                    document.getElementById(
+                        "photo-preview"
+                    );
+
+
+                if (
+                    photoInput &&
+                    photoPreview
+                ) {
+
+                    photoInput.addEventListener(
+                        "change",
+                        function () {
+
+                            photoPreview.innerHTML =
+                                "";
+
+
+                            const files =
+                                Array.from(
+                                    this.files
+                                ).slice(0, 5);
+
+
+                            files.forEach(
+                                function (file) {
+
+                                    const reader =
+                                        new FileReader();
+
+
+                                    reader.onload =
+                                        function (event) {
+
+                                            const img =
+                                                document.createElement(
+                                                    "img"
+                                                );
+
+
+                                            img.src =
+                                                event.target.result;
+
+
+                                            img.alt =
+                                                "Preview foto";
+
+
+                                            photoPreview.appendChild(
+                                                img
+                                            );
+
+                                        };
+
+
+                                    reader.readAsDataURL(
+                                        file
+                                    );
 
                                 }
                             );
-
-
-                            if (ratingText) {
-
-                                ratingText.textContent =
-                                    window.selectedRating +
-                                    " / 5";
-
-                            }
 
                         }
                     );
 
                 }
-            );
 
 
-            // =========================
-            // PHOTO PREVIEW
-            // =========================
+                // =========================
+                // SUBMIT REVIEW
+                // =========================
 
-            const photoInput =
-                document.getElementById(
-                    "review-photo"
-                );
+                const reviewForm =
+                    document.getElementById(
+                        "review-form"
+                    );
 
 
-            const photoPreview =
-                document.getElementById(
-                    "photo-preview"
-                );
+                if (!reviewForm) {
 
+                    return;
 
-            if (
-                photoInput &&
-                photoPreview
-            ) {
+                }
 
-                photoInput.addEventListener(
-                    "change",
-                    function () {
 
-                        photoPreview.innerHTML =
-                            "";
+                reviewForm.addEventListener(
+                    "submit",
+                    async function (event) {
 
+                        event.preventDefault();
 
-                        const files =
-                            Array.from(
-                                this.files
-                            ).slice(0, 5);
 
+                        // =========================
+                        // CHECK SUPABASE
+                        // =========================
 
-                        files.forEach(
-                            function (file) {
+                        if (
+                            typeof supabaseClient ===
+                            "undefined"
+                        ) {
 
-                                const reader =
-                                    new FileReader();
+                            alert(
+                                "Koneksi database belum tersedia ♡"
+                            );
 
+                            return;
 
-                                reader.onload =
-                                    function (event) {
+                        }
 
-                                        const img =
-                                            document.createElement(
-                                                "img"
-                                            );
 
+                        // =========================
+                        // CHECK RATING
+                        // =========================
 
-                                        img.src =
-                                            event.target.result;
+                        const rating =
+                            Number(
+                                window.selectedRating
+                            );
 
 
-                                        img.alt =
-                                            "Preview foto";
+                        if (
+                            !rating ||
+                            rating < 1 ||
+                            rating > 5
+                        ) {
 
+                            alert(
+                                "Jangan lupa kasih rating dulu ♡"
+                            );
 
-                                        photoPreview.appendChild(
-                                            img
-                                        );
+                            return;
 
-                                    };
+                        }
 
 
-                                reader.readAsDataURL(
-                                    file
-                                );
+                        // =========================
+                        // REVIEW TEXT
+                        // =========================
 
-                            }
-                        );
+                        const reviewText =
+                            document.getElementById(
+                                "review-text"
+                            );
 
-                    }
-                );
 
-            }
+                        const text =
+                            reviewText.value.trim();
 
 
-            // =========================
-            // SUBMIT REVIEW
-            // =========================
+                        if (!text) {
 
-            const reviewForm =
-                document.getElementById(
-                    "review-form"
-                );
+                            alert(
+                                "Tulis review kamu dulu ya ♡"
+                            );
 
+                            return;
 
-            if (!reviewForm) {
-                return;
-            }
+                        }
 
 
-            reviewForm.addEventListener(
-                "submit",
-                async function (event) {
+                        // =========================
+                        // USER
+                        // =========================
 
-                    event.preventDefault();
+                        const {
+                            data: userData,
+                            error: userError
+                        } =
+                            await supabaseClient
+                                .auth
+                                .getUser();
 
 
-                    // =========================
-                    // CHECK SUPABASE
-                    // =========================
+                        const user =
+                            userData &&
+                            userData.user;
 
-                    if (
-                        typeof supabaseClient ===
-                        "undefined"
-                    ) {
 
-                        alert(
-                            "Koneksi database belum tersedia ♡"
-                        );
+                        if (
+                            userError ||
+                            !user
+                        ) {
 
-                        return;
+                            console.error(
+                                "User error:",
+                                userError
+                            );
 
-                    }
+                            alert(
+                                "Kamu harus login terlebih dahulu."
+                            );
 
+                            return;
 
-                    // =========================
-                    // CHECK RATING
-                    // =========================
+                        }
 
-                    const rating =
-                        Number(
-                            window.selectedRating
-                        );
 
+                        // =========================
+                        // PROFILE
+                        // =========================
 
-                    if (
-                        !rating ||
-                        rating < 1 ||
-                        rating > 5
-                    ) {
+                        const {
+                            data: profile,
+                            error: profileError
+                        } =
+                            await supabaseClient
+                                .from("profiles")
+                                .select(
+                                    "name"
+                                )
+                                .eq(
+                                    "id",
+                                    user.id
+                                )
+                                .single();
 
-                        alert(
-                            "Jangan lupa kasih rating dulu ♡"
-                        );
 
-                        return;
+                        if (
+                            profileError ||
+                            !profile
+                        ) {
 
-                    }
+                            console.error(
+                                "Profile error:",
+                                profileError
+                            );
 
+                            alert(
+                                "Data profile tidak ditemukan."
+                            );
 
-                    // =========================
-                    // REVIEW TEXT
-                    // =========================
+                            return;
 
-                    const reviewText =
-                        document.getElementById(
-                            "review-text"
-                        );
+                        }
 
 
-                    const text =
-                        reviewText.value.trim();
+                        // =========================
+                        // RESTAURANT ID
+                        // =========================
 
+                        const restaurantId =
+                            localStorage.getItem(
+                                "selectedRestaurantId"
+                            );
 
-                    if (!text) {
 
-                        alert(
-                            "Tulis review kamu dulu ya ♡"
-                        );
+                        if (!restaurantId) {
 
-                        return;
+                            alert(
+                                "Restoran tidak ditemukan."
+                            );
 
-                    }
+                            return;
 
+                        }
 
-                    // =========================
-                    // USER
-                    // =========================
 
-                    const {
-                        data: userData,
-                        error: userError
-                    } =
-                        await supabaseClient
-                            .auth
-                            .getUser();
+                        // =========================
+                        // DISABLE BUTTON
+                        // =========================
 
-
-                    const user =
-                        userData &&
-                        userData.user;
-
-
-                    if (
-                        userError ||
-                        !user
-                    ) {
-
-                        alert(
-                            "Kamu harus login terlebih dahulu."
-                        );
-
-                        return;
-
-                    }
-
-
-                    // =========================
-                    // PROFILE
-                    // =========================
-
-                    const {
-                        data: profile,
-                        error: profileError
-                    } =
-                        await supabaseClient
-                            .from("profiles")
-                            .select(
-                                "name"
-                            )
-                            .eq(
-                                "id",
-                                user.id
-                            )
-                            .single();
-
-
-                    if (
-                        profileError ||
-                        !profile
-                    ) {
-
-                        console.error(
-                            profileError
-                        );
-
-                        alert(
-                            "Data profile tidak ditemukan."
-                        );
-
-                        return;
-
-                    }
-
-
-                    // =========================
-                    // RESTAURANT ID
-                    // =========================
-
-                    const params =
-                        new URLSearchParams(
-                            window.location.search
-                        );
-
-
-                    const restaurantId =
-                        params.get("id");
-
-
-                    if (!restaurantId) {
-
-                        alert(
-                            "Restoran tidak ditemukan."
-                        );
-
-                        return;
-
-                    }
-
-
-                    // =========================
-                    // DISABLE BUTTON
-                    // =========================
-
-                    const submitButton =
-                        reviewForm.querySelector(
-                            'button[type="submit"]'
-                        );
-
-
-                    if (submitButton) {
-
-                        submitButton.disabled =
-                            true;
-
-                        submitButton.textContent =
-                            "Menyimpan...";
-
-                    }
-
-
-                    // =========================
-                    // INSERT REVIEW
-                    // =========================
-
-                    const {
-                        data: review,
-                        error: reviewError
-                    } =
-                        await supabaseClient
-                            .from("reviews")
-                            .insert({
-                                restaurant_id:
-                                    restaurantId,
-
-                                user_id:
-                                    user.id,
-
-                                user_name:
-                                    profile.name,
-
-                                rating:
-                                    rating,
-
-                                review_text:
-                                    text
-                            })
-                            .select()
-                            .single();
-
-
-                    if (reviewError) {
-
-                        console.error(
-                            "Review gagal disimpan:",
-                            reviewError
-                        );
+                        const submitButton =
+                            reviewForm.querySelector(
+                                'button[type="submit"]'
+                            );
 
 
                         if (submitButton) {
 
                             submitButton.disabled =
-                                false;
+                                true;
 
                             submitButton.textContent =
-                                "Simpan Review ♡";
+                                "Menyimpan...";
 
                         }
 
 
-                        alert(
-                            "Review gagal disimpan ♡"
-                        );
+                        // =========================
+                        // INSERT REVIEW
+                        // =========================
 
-                        return;
+                        const {
+                            data: review,
+                            error: reviewError
+                        } =
+                            await supabaseClient
+                                .from("reviews")
+                                .insert({
+                                    restaurant_id:
+                                        restaurantId,
 
-                    }
+                                    user_id:
+                                        user.id,
 
+                                    user_name:
+                                        profile.name,
 
-                    // =========================
-                    // UPLOAD PHOTOS
-                    // =========================
+                                    rating:
+                                        rating,
 
-                    const files =
-                        photoInput
-                            ? Array.from(
-                                photoInput.files
-                            ).slice(0, 5)
-                            : [];
-
-
-                    for (
-                        const file of files
-                    ) {
-
-                        try {
-
-                            let uploadFile =
-                                file;
-
-
-                            // Compress jika fungsi tersedia
-                            if (
-                                typeof compressImage ===
-                                "function"
-                            ) {
-
-                                uploadFile =
-                                    await compressImage(
-                                        file
-                                    );
-
-                            }
+                                    review_text:
+                                        text
+                                })
+                                .select()
+                                .single();
 
 
-                            const fileName =
-                                user.id +
-                                "/" +
-                                Date.now() +
-                                "-" +
-                                Math.random()
-                                    .toString(36)
-                                    .substring(
-                                        2,
-                                        8
-                                    ) +
-                                ".jpg";
-
-
-                            const {
-                                error:
-                                    uploadError
-                            } =
-                                await supabaseClient
-                                    .storage
-                                    .from(
-                                        "review-photos"
-                                    )
-                                    .upload(
-                                        fileName,
-                                        uploadFile,
-                                        {
-                                            contentType:
-                                                "image/jpeg"
-                                        }
-                                    );
-
-
-                            if (uploadError) {
-
-                                console.error(
-                                    "Upload foto gagal:",
-                                    uploadError
-                                );
-
-                                continue;
-
-                            }
-
-
-                            // =========================
-                            // SAVE PHOTO URL
-                            // =========================
-
-                            const {
-                                error:
-                                    photoError
-                            } =
-                                await supabaseClient
-                                    .from(
-                                        "review_photos"
-                                    )
-                                    .insert({
-                                        review_id:
-                                            review.id,
-
-                                        photo_url:
-                                            fileName
-                                    });
-
-
-                            if (photoError) {
-
-                                console.error(
-                                    "Data foto gagal disimpan:",
-                                    photoError
-                                );
-
-                            }
-
-                        } catch (error) {
+                        if (reviewError) {
 
                             console.error(
-                                "Foto error:",
-                                error
+                                "Review gagal disimpan:",
+                                reviewError
                             );
+
+
+                            if (submitButton) {
+
+                                submitButton.disabled =
+                                    false;
+
+                                submitButton.textContent =
+                                    "Simpan Review ♡";
+
+                            }
+
+
+                            alert(
+                                "Review gagal disimpan ♡"
+                            );
+
+                            return;
 
                         }
 
+
+                        console.log(
+                            "Review berhasil:",
+                            review
+                        );
+
+
+                        // =========================
+                        // UPLOAD PHOTOS
+                        // =========================
+
+                        const files =
+                            photoInput
+                                ? Array.from(
+                                    photoInput.files
+                                ).slice(0, 5)
+                                : [];
+
+
+                        for (
+                            const file of files
+                        ) {
+
+                            try {
+
+                                let uploadFile =
+                                    file;
+
+
+                                if (
+                                    typeof compressImage ===
+                                    "function"
+                                ) {
+
+                                    uploadFile =
+                                        await compressImage(
+                                            file
+                                        );
+
+                                }
+
+
+                                const fileName =
+                                    user.id +
+                                    "/" +
+                                    Date.now() +
+                                    "-" +
+                                    Math.random()
+                                        .toString(36)
+                                        .substring(
+                                            2,
+                                            8
+                                        ) +
+                                    ".jpg";
+
+
+                                const {
+                                    error:
+                                        uploadError
+                                } =
+                                    await supabaseClient
+                                        .storage
+                                        .from(
+                                            "review-photos"
+                                        )
+                                        .upload(
+                                            fileName,
+                                            uploadFile,
+                                            {
+                                                contentType:
+                                                    "image/jpeg"
+                                            }
+                                        );
+
+
+                                if (uploadError) {
+
+                                    console.error(
+                                        "Upload foto gagal:",
+                                        uploadError
+                                    );
+
+                                    continue;
+
+                                }
+
+
+                                // =========================
+                                // SAVE PHOTO DATA
+                                // =========================
+
+                                const {
+                                    error:
+                                        photoError
+                                } =
+                                    await supabaseClient
+                                        .from(
+                                            "review_photos"
+                                        )
+                                        .insert({
+                                            review_id:
+                                                review.id,
+
+                                            photo_url:
+                                                fileName
+                                        });
+
+
+                                if (photoError) {
+
+                                    console.error(
+                                        "Data foto gagal disimpan:",
+                                        photoError
+                                    );
+
+                                }
+
+                            } catch (error) {
+
+                                console.error(
+                                    "Foto error:",
+                                    error
+                                );
+
+                            }
+
+                        }
+
+
+                        // =========================
+                        // SUCCESS
+                        // =========================
+
+                        alert(
+                            "Review berhasil disimpan ♡"
+                        );
+
+
+                        window.location.href =
+                            "restaurant.html";
+
                     }
+                );
 
+            }
+        );
 
-                    // =========================
-                    // SUCCESS
-                    // =========================
-
-                    alert(
-                        "Review berhasil disimpan ♡"
-                    );
-
-
-                    window.location.href =
-                        "restaurant.html?id=" +
-                        restaurantId;
-
-                }
-            );
-
-        }
-    );
-
-</script>
-```
+    </script>
 
 </body>
 
