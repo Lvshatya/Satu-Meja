@@ -2805,1090 +2805,587 @@ document.addEventListener(
 );
 
 
-// =====================================================
+// ========================================
 // FOOD JOURNEY
-// =====================================================
+// ========================================
 
-window.renderFavoritePlaces = async function() {
+let currentJourneyFilter = "all";
 
-    const restaurants =
-        JSON.parse(
-            localStorage.getItem(
-                "restaurants"
-            )
-        ) || [];
-
-
-    const reviews =
-        JSON.parse(
-            localStorage.getItem(
-                "reviews"
-            )
-        ) || [];
-
-
-    const placeCount =
-        document.getElementById(
-            "journey-place-count"
-        );
-
-
-    const reviewCount =
-        document.getElementById(
-            "journey-review-count"
-        );
-async function renderFoodJourney() {
-    const placeCount = document.getElementById("journey-place-count");
-    const reviewCount = document.getElementById("journey-review-count");
-    const averageRating = document.getElementById("journey-average-rating");
-    const journeyList = document.getElementById("food-journey-list");
-
-    if (!placeCount || !reviewCount || !averageRating || !journeyList) {
-        return;
-    }
-
+async function getFoodJourneyData() {
     if (!hasSupabaseClient()) {
-        console.error("Supabase client tidak tersedia.");
+        return [];
+    }
+
+    const { data, error } = await supabaseClient
+        .from("reviews")
+        .select(`
+            id,
+            user_name,
+            rating,
+            review_text,
+            created_at,
+            restaurant_id,
+            restaurants (
+                name,
+                location,
+                image_url
+            )
+        `)
+        .order("created_at", { ascending: false });
+
+    if (error) {
+        console.error("Gagal mengambil Food Journey:", error);
+        return [];
+    }
+
+    return data || [];
+}
+
+async function renderFoodJourney() {
+    const container = document.getElementById("foodJourneyList");
+
+    if (!container) {
         return;
     }
 
-    try {
-        // Ambil semua restoran
-        const { data: restaurants, error: restaurantError } =
-            await supabaseClient
-                .from("restaurants")
-                .select("id, name");
+    const reviews = await getFoodJourneyData();
 
-        if (restaurantError) {
-            console.error(
-                "Gagal mengambil restoran untuk Food Journey:",
-                restaurantError
-            );
-            return;
-        }
+    renderJourneyList(reviews);
+}
 
-        // Ambil semua review + nama restoran
-        const { data: reviews, error: reviewError } =
-            await supabaseClient
-                .from("reviews")
-                .select(`
-                    id,
-                    restaurant_id,
-                    user_name,
-                    rating,
-                    review_text,
-                    created_at,
-                    restaurants (
-                        name
-                    )
-                `)
-                .order("created_at", {
-                    ascending: false
-                });
+function renderJourneyList(reviews) {
+    const container = document.getElementById("foodJourneyList");
 
-        if (reviewError) {
-            console.error(
-                "Gagal mengambil review untuk Food Journey:",
-                reviewError
-            );
-            return;
-        }
+    if (!container) {
+        return;
+    }
 
-        const restaurantData = restaurants || [];
-        const reviewData = reviews || [];
+    let filteredReviews = reviews;
 
-        // Jumlah tempat
-        placeCount.textContent = restaurantData.length;
-
-        // Jumlah review
-        reviewCount.textContent = reviewData.length;
-
-        // Rata-rata rating
-        if (reviewData.length > 0) {
-            const totalRating = reviewData.reduce(
-                function (total, review) {
-                    return total + Number(review.rating || 0);
-                },
-                0
-            );
-
-            averageRating.textContent = (
-                totalRating / reviewData.length
-            ).toFixed(1);
-        } else {
-            averageRating.textContent = "0.0";
-        }
-
-        // Belum ada review
-        if (reviewData.length === 0) {
-            journeyList.innerHTML = `
-                <div class="journey-empty">
-                    <p>Belum ada cerita di sini ♡</p>
-                    <small>
-                        Tambahkan review pertama kalian
-                        untuk mulai food journey.
-                    </small>
-                </div>
-            `;
-            return;
-        }
-
-        // Tampilkan review terbaru dulu
-        journeyList.innerHTML = reviewData
-            .map(function (review) {
-                const date = new Date(
-                    review.created_at || Date.now()
-                );
-
-                const formattedDate =
-                    date.toLocaleDateString("id-ID", {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric"
-                    });
-
-                const stars = "★".repeat(
-                    Number(review.rating || 0)
-                );
-
-                const user =
-                    review.user_name ||
-                    "Someone";
-
-                const restaurant =
-                    review.restaurants?.name ||
-                    "Restaurant";
-
-                const reviewText =
-                    review.review_text ||
-                    "Tidak ada cerita untuk review ini.";
-
-                return 
-                    <div class="journey-item">
-
-                        <div class="journey-date">
-                            ${formattedDate}
-                        </div>
-
-                        <div class="journey-card">
-
-                            <div class="journey-card-header">
-
-                                <div>
-
-                                    <div class="journey-restaurant">
-                                        ${escapeHTML(restaurant)}
-                                    </div>
-
-                                    <div class="journey-user">
-                                        ${escapeHTML(user)}
-                                    </div>
-
-                                </div>
-
-                                <div class="journey-rating">
-                                    ${stars}
-                                </div>
-
-                            </div>
-
-                            <div class="journey-review">
-                                ${escapeHTML(reviewText)}
-                            </div>
-
-                        </div>
-
-                    </div>
-                ;
-            })
-            .join("");
-
-    } catch (error) {
-        console.error(
-            "Error Food Journey:",
-            error
+    if (currentJourneyFilter === "ella") {
+        filteredReviews = reviews.filter(
+            review => review.user_name?.toLowerCase() === "ella"
         );
     }
+
+    if (currentJourneyFilter === "arka") {
+        filteredReviews = reviews.filter(
+            review => review.user_name?.toLowerCase() === "arka"
+        );
+    }
+
+    if (filteredReviews.length === 0) {
+        container.innerHTML = `
+            <div class="journey-empty">
+                <p>Belum ada cerita di sini ♡</p>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = filteredReviews.map(review => {
+        const restaurantName =
+            review.restaurants?.name || "Restaurant";
+
+        const location =
+            review.restaurants?.location || "";
+
+        const rating = Number(review.rating) || 0;
+
+        const stars =
+            "★".repeat(rating) +
+            "☆".repeat(5 - rating);
+
+        const date = review.created_at
+            ? new Date(review.created_at).toLocaleDateString(
+                "id-ID",
+                {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric"
+                }
+            )
+            : "";
+
+        return `
+            <div class="journey-item">
+
+                <div class="journey-item-header">
+                    <div>
+                        <h3>${escapeHTML(restaurantName)}</h3>
+
+                        ${
+                            location
+                                ? `<p>${escapeHTML(location)}</p>`
+                                : ""
+                        }
+                    </div>
+
+                    <span class="journey-user">
+                        ${escapeHTML(review.user_name || "")}
+                    </span>
+                </div>
+
+                <div class="journey-rating">
+                    ${stars}
+                </div>
+
+                ${
+                    review.review_text
+                        ? `
+                            <p class="journey-review">
+                                ${escapeHTML(review.review_text)}
+                            </p>
+                        `
+                        : ""
+                }
+
+                ${
+                    date
+                        ? `<span class="journey-date">${date}</span>`
+                        : ""
+                }
+
+            </div>
+        `;
+    }).join("");
 }
 
 
-// =====================================================
-// FAVORITE PLACES
-// =====================================================
+// FILTER FOOD JOURNEY
 
-async function renderFavoritePlaces() {
-    const container = document.getElementById(
-        "favorite-places-list"
-    );
+window.filterFoodJourney = async function(filter, button) {
+
+    currentJourneyFilter = filter;
+
+    document
+        .querySelectorAll(".journey-filter-button")
+        .forEach(btn => {
+            btn.classList.remove("active");
+        });
+
+    if (button) {
+        button.classList.add("active");
+    }
+
+    await renderFoodJourney();
+};
+
+
+// ========================================
+// FAVORITE PLACES
+// ========================================
+
+window.renderFavoritePlaces = async function() {
+
+    const container =
+        document.getElementById("favoritePlacesList");
 
     if (!container) {
         return;
     }
 
     if (!hasSupabaseClient()) {
-        console.error("Supabase client tidak tersedia.");
+        container.innerHTML = `
+            <div class="favorite-empty">
+                <p>Supabase belum terhubung.</p>
+            </div>
+        `;
         return;
     }
 
-    try {
-        // Ambil restoran
-        const { data: restaurants, error: restaurantError } =
-            await supabaseClient
-                .from("restaurants")
-                .select(`
-                    id,
-                    name,
-                    location,
-                    image_url
-                `);
-
-        if (restaurantError) {
-            console.error(
-                "Gagal mengambil restoran untuk Favorite Places:",
-                restaurantError
-            );
-            return;
-        }
-
-        // Ambil semua review
-        const { data: reviews, error: reviewError } =
-            await supabaseClient
-                .from("reviews")
-                .select(`
-                    id,
-                    restaurant_id,
+    const { data: restaurants, error } =
+        await supabaseClient
+            .from("restaurants")
+            .select(`
+                id,
+                name,
+                location,
+                image_url,
+                reviews (
                     rating
-                `);
+                )
+            `)
+            .order("created_at", {
+                ascending: false
+            });
 
-        if (reviewError) {
-            console.error(
-                "Gagal mengambil review untuk Favorite Places:",
-                reviewError
-            );
-            return;
-        }
-
-        const restaurantData = restaurants || [];
-        const reviewData = reviews || [];
-
-        if (restaurantData.length === 0) {
-            container.innerHTML = 
-                <div class="favorite-empty">
-                    <p>Belum ada tempat favorit ♡</p>
-
-                    <small>
-                        Tambahkan review untuk mulai
-                        mengumpulkan tempat favorit.
-                    </small>
-                </div>
-            ;
-            return;
-        }
-
-        // Hitung rating setiap restoran
-        const favoriteRestaurants = restaurantData
-            .map(function (restaurant) {
-
-                const restaurantReviews =
-                    reviewData.filter(function (review) {
-                        return (
-                            review.restaurant_id ===
-                            restaurant.id
-                        );
-                    });
-
-                const reviewCount =
-                    restaurantReviews.length;
-
-                let averageRating = 0;
-
-                if (reviewCount > 0) {
-                    const total =
-                        restaurantReviews.reduce(
-                            function (sum, review) {
-                                return (
-                                    sum +
-                                    Number(
-                                        review.rating || 0
-                                    )
-                                );
-                            },
-                            0
-                        );
-
-                    averageRating =
-                        total / reviewCount;
-                }
-
-                return {
-                    ...restaurant,
-                    reviewCount,
-                    averageRating
-                };
-            })
-
-            // Hanya tampilkan restoran yang sudah punya review
-            .filter(function (restaurant) {
-                return restaurant.reviewCount > 0;
-            })
-
-            // Rating tertinggi dulu
-            .sort(function (a, b) {
-
-                if (
-                    b.averageRating !==
-                    a.averageRating
-                ) {
-                    return (
-                        b.averageRating -
-                        a.averageRating
-                    );
-                }
-
-                return (
-                    b.reviewCount -
-                    a.reviewCount
-                );
-            })
-
-            // Maksimal 3 restoran
-            .slice(0, 3);
-
-        if (favoriteRestaurants.length === 0) {
-            container.innerHTML = 
-                <div class="favorite-empty">
-                    <p>Belum ada tempat favorit ♡</p>
-
-                    <small>
-                        Tambahkan review untuk melihat
-                        tempat favorit kalian.
-                    </small>
-                </div>
-            ;
-            return;
-        }
-
-        container.innerHTML =
-            favoriteRestaurants
-                .map(function (restaurant) {
-
-                    const rating =
-                        restaurant.averageRating.toFixed(1);
-
-                    const stars =
-                        "★".repeat(
-                            Math.round(
-                                restaurant.averageRating
-                            )
-                        );
-
-                    return `
-                        <div class="favorite-card">
-
-                            <div class="favorite-image-wrapper">
-
-                                <img
-                                    src="${
-                                        restaurant.image_url ||
-                                        "https://via.placeholder.com/500x350?text=Restaurant"
-                                    }"
-                                    alt="${escapeHTML(
-                                        restaurant.name
-                                    )}"
-                                    class="favorite-image"
-                                >
-
-                            </div>
-
-                            <div class="favorite-content">
-
-                                <h3>
-                                    ${escapeHTML(
-                                        restaurant.name
-                                    )}
-                                </h3>
-
-                                <p class="favorite-location">
-                                    ${escapeHTML(
-                                        restaurant.location ||
-                                        "Lokasi tidak tersedia"
-                                    )}
-                                </p>
-
-                                <div class="favorite-rating">
-
-                                    <span>
-                                        ${stars}
-                                    </span>
-
-                                    <strong>
-                                        ${rating}
-                                    </strong>
-
-                                </div>
-
-                                <div class="favorite-review-count">
-
-                                    ${restaurant.reviewCount}
-                                    ${
-                                        restaurant.reviewCount === 1
-                                            ? "review"
-                                            : "reviews"
-                                    }
-
-                                </div>
-
-                            </div>
-
-                        </div>
-                    `;
-                })
-                .join("");
-
-    } catch (error) {
+    if (error) {
         console.error(
-            "Error Favorite Places:",
+            "Gagal mengambil Favorite Places:",
             error
         );
+
+        container.innerHTML = `
+            <div class="favorite-empty">
+                <p>Gagal memuat favorite places.</p>
+            </div>
+        `;
+
+        return;
     }
-}
+
+    if (!restaurants || restaurants.length === 0) {
+        container.innerHTML = `
+            <div class="favorite-empty">
+                <p>Belum ada restaurant ♡</p>
+            </div>
+        `;
+
+        return;
+    }
+
+    container.innerHTML = restaurants.map(restaurant => {
+
+        const reviews = restaurant.reviews || [];
+
+        const reviewCount = reviews.length;
+
+        let averageRating = 0;
+
+        if (reviewCount > 0) {
+            averageRating =
+                reviews.reduce(
+                    (total, review) =>
+                        total + Number(review.rating || 0),
+                    0
+                ) / reviewCount;
+        }
+
+        const stars =
+            averageRating > 0
+                ? "★".repeat(
+                    Math.round(averageRating)
+                )
+                : "☆☆☆☆☆";
+
+        return `
+            <div class="favorite-card">
+
+                <div class="favorite-image-wrapper">
+
+                    <img
+                        src="${
+                            restaurant.image_url ||
+                            "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=800&q=80"
+                        }"
+                        alt="${escapeHTML(restaurant.name)}"
+                        class="favorite-image"
+                    >
+
+                </div>
+
+                <div class="favorite-content">
+
+                    <h3>
+                        ${escapeHTML(restaurant.name)}
+                    </h3>
+
+                    ${
+                        restaurant.location
+                            ? `
+                                <p class="favorite-location">
+                                    ${escapeHTML(
+                                        restaurant.location
+                                    )}
+                                </p>
+                            `
+                            : ""
+                    }
+
+                    <div class="favorite-rating">
+
+                        <span>
+                            ${stars}
+                        </span>
+
+                        <span>
+                            ${
+                                averageRating > 0
+                                    ? averageRating.toFixed(1)
+                                    : "-"
+                            }
+                        </span>
+
+                    </div>
+
+                    <p class="favorite-review-count">
+                        ${reviewCount}
+                        ${
+                            reviewCount === 1
+                                ? " review"
+                                : " reviews"
+                        }
+                    </p>
+
+                </div>
+
+            </div>
+        `;
+
+    }).join("");
+};
 
 
-// =====================================================
+// ========================================
 // LITTLE NOTES
-// =====================================================
+// ========================================
 
 const littleNotes = [
-
-    "Meals always taste better together ♡",
-
-    "One table, countless stories.",
-
-    "Every place holds a story of its own.",
-
-    "May there always be new places for us to discover.",
-
-    "Food first, memories forever.",
-
-    "Sometimes, a meal becomes a memory.",
-
-    "From one place to another.",
-
-    "May this little list keep growing.",
-
-    "Small moments can become the sweetest memories.",
-
-    "One review, one little story.",
-
-    "Different places, the same memories.",
-
-    "Some meals become memories.",
-
-    "It was never just about the food.",
-
-    "May we always find good food and new stories.",
-
-    "A little food diary of us.",
-
-    "Keeping our little stories here ♡",
-
-    "Every table has a story.",
-
-    "Eat, talk, and keep the memories.",
-
-    "Another place, another memory.",
-
-    "For all the little stories we have shared."
-
+    "Every meal becomes a little memory when we share the same table.",
+    "Good food, good company, good memories.",
+    "One table, two people, countless stories.",
+    "Small moments, big memories.",
+    "Another place, another memory to keep."
 ];
-
 
 function showRandomLittleNote() {
 
-    const noteText =
-        document.getElementById(
-            "little-note-text"
-        );
+    const noteElement =
+        document.getElementById("littleNoteText");
 
-
-    if (!noteText) {
-
+    if (!noteElement) {
         return;
-
     }
-
-
-    const lastNote =
-        localStorage.getItem(
-            "lastLittleNote"
-        );
-
-
-    let availableNotes =
-        littleNotes.filter(
-            function(note) {
-
-                return (
-                    note !==
-                    lastNote
-                );
-
-            }
-        );
-
-
-    if (
-        availableNotes.length === 0
-    ) {
-
-        availableNotes =
-            littleNotes;
-
-    }
-
 
     const randomIndex =
         Math.floor(
-            Math.random() *
-            availableNotes.length
+            Math.random() * littleNotes.length
         );
 
-
-    const selectedNote =
-        availableNotes[
-            randomIndex
-        ];
-
-
-    noteText.textContent =
-        selectedNote;
-
-
-    localStorage.setItem(
-        "lastLittleNote",
-        selectedNote
-    );
-
+    noteElement.textContent =
+        littleNotes[randomIndex];
 }
 
 
-// =====================================================
+// ========================================
 // LITTLE THINGS ABOUT US
-// =====================================================
+// ========================================
 
 async function renderLittleThings() {
 
-    const mostVisitedElement =
-        document.getElementById(
-            "most-visited-place"
-        );
+    const container =
+        document.getElementById("littleThingsContent");
 
-
-    const ellaCountElement =
-        document.getElementById(
-            "ella-review-count"
-        );
-
-
-    const arkaCountElement =
-        document.getElementById(
-            "arka-review-count"
-        );
-
-
-    const totalMemoryElement =
-        document.getElementById(
-            "total-memory-count"
-        );
-
-
-    if (
-        !mostVisitedElement &&
-        !ellaCountElement &&
-        !arkaCountElement &&
-        !totalMemoryElement
-    ) {
-
+    if (!container) {
         return;
-
     }
-
 
     if (!hasSupabaseClient()) {
-
-        console.error(
-            "Supabase client tidak tersedia."
-        );
-
         return;
-
     }
 
-
-    try {
-
-        // =====================================================
-        // AMBIL SEMUA REVIEW DARI SUPABASE
-        // =====================================================
-
-        const {
-            data: reviews,
-            error: reviewError
-        } =
-            await supabaseClient
-                .from("reviews")
-                .select(`
-                    id,
-                    restaurant_id,
-                    user_name
-                `);
-
-
-        if (reviewError) {
-
-            console.error(
-                "Gagal mengambil reviews:",
-                reviewError
-            );
-
-            return;
-
-        }
-
-
-        const allReviews =
-            reviews || [];
-
-
-        // =====================================================
-        // TOTAL MEMORIES
-        // =====================================================
-
-        if (totalMemoryElement) {
-
-            totalMemoryElement.textContent =
-                allReviews.length;
-
-        }
-
-
-        // =====================================================
-        // ELLA'S REVIEWS
-        // =====================================================
-
-        const ellaReviews =
-            allReviews.filter(
-                function(review) {
-
-                    const user =
-                        String(
-                            review.user_name || ""
-                        ).trim().toLowerCase();
-
-
-                    return user === "ella";
-
-                }
-            );
-
-
-        if (ellaCountElement) {
-
-            ellaCountElement.textContent =
-                ellaReviews.length;
-
-        }
-
-
-        // =====================================================
-        // ARKA'S REVIEWS
-        // =====================================================
-
-        const arkaReviews =
-            allReviews.filter(
-                function(review) {
-
-                    const user =
-                        String(
-                            review.user_name || ""
-                        ).trim().toLowerCase();
-
-
-                    return user === "arka";
-
-                }
-            );
-
-
-        if (arkaCountElement) {
-
-            arkaCountElement.textContent =
-                arkaReviews.length;
-
-        }
-
-
-        // =====================================================
-        // AMBIL DATA RESTAURANT
-        // =====================================================
-
-        const {
-            data: restaurants,
-            error: restaurantError
-        } =
-            await supabaseClient
-                .from("restaurants")
-                .select(`
-                    id,
+    const { data: reviews, error } =
+        await supabaseClient
+            .from("reviews")
+            .select(`
+                id,
+                user_name,
+                restaurant_id,
+                restaurants (
                     name
-                `);
+                )
+            `);
 
-
-        if (restaurantError) {
-
-            console.error(
-                "Gagal mengambil restaurants:",
-                restaurantError
-            );
-
-            return;
-
-        }
-
-
-        // =====================================================
-        // HITUNG MOST VISITED
-        // =====================================================
-
-        const restaurantVisits = {};
-
-
-        allReviews.forEach(
-            function(review) {
-
-                const restaurantId =
-                    review.restaurant_id;
-
-
-                if (!restaurantId) {
-
-                    return;
-
-                }
-
-
-                if (
-                    !restaurantVisits[
-                        restaurantId
-                    ]
-                ) {
-
-                    restaurantVisits[
-                        restaurantId
-                    ] = 0;
-
-                }
-
-
-                restaurantVisits[
-                    restaurantId
-                ]++;
-
-            }
-        );
-
-
-        const visitedPlaces =
-            Object.entries(
-                restaurantVisits
-            );
-
-
-        // =====================================================
-        // BELUM ADA REVIEW
-        // =====================================================
-
-        if (
-            visitedPlaces.length === 0
-        ) {
-
-            if (mostVisitedElement) {
-
-                mostVisitedElement.textContent =
-                    "—";
-
-            }
-
-            return;
-
-        }
-
-
-        // =====================================================
-        // URUTKAN DARI YANG PALING SERING DIREVIEW
-        // =====================================================
-
-        visitedPlaces.sort(
-            function(a, b) {
-
-                return (
-                    b[1] -
-                    a[1]
-                );
-
-            }
-        );
-
-
-        const mostVisitedId =
-            visitedPlaces[0][0];
-
-
-        const mostVisitedRestaurant =
-            (restaurants || []).find(
-                function(restaurant) {
-
-                    return (
-                        restaurant.id ===
-                        mostVisitedId
-                    );
-
-                }
-            );
-
-
-        // =====================================================
-        // TAMPILKAN MOST VISITED
-        // =====================================================
-
-        if (mostVisitedElement) {
-
-            if (
-                mostVisitedRestaurant
-            ) {
-
-                mostVisitedElement.textContent =
-                    mostVisitedRestaurant.name;
-
-            } else {
-
-                mostVisitedElement.textContent =
-                    "—";
-
-            }
-
-        }
-
-
-    } catch (error) {
-
+    if (error) {
         console.error(
-            "Error Little Things About Us:",
+            "Gagal mengambil Little Things:",
             error
         );
-
+        return;
     }
 
+    const allReviews = reviews || [];
+
+    const totalMemories =
+        allReviews.length;
+
+    const ellaReviews =
+        allReviews.filter(
+            review =>
+                review.user_name?.toLowerCase() === "ella"
+        ).length;
+
+    const arkaReviews =
+        allReviews.filter(
+            review =>
+                review.user_name?.toLowerCase() === "arka"
+        ).length;
+
+
+    // MOST VISITED
+
+    const visitCount = {};
+
+    allReviews.forEach(review => {
+
+        const restaurantId =
+            review.restaurant_id;
+
+        if (!restaurantId) {
+            return;
+        }
+
+        if (!visitCount[restaurantId]) {
+            visitCount[restaurantId] = {
+                name:
+                    review.restaurants?.name ||
+                    "Restaurant",
+                count: 0
+            };
+        }
+
+        visitCount[restaurantId].count++;
+
+    });
+
+    const mostVisited =
+        Object.values(visitCount)
+            .sort(
+                (a, b) =>
+                    b.count - a.count
+            )
+            .slice(0, 3);
+
+
+    const mostVisitedHTML =
+        mostVisited.length > 0
+            ? mostVisited.map(place => `
+                <div class="most-visited-card">
+
+                    <h4>
+                        ${escapeHTML(place.name)}
+                    </h4>
+
+                    <p>
+                        ${place.count}
+                        ${
+                            place.count === 1
+                                ? " visit"
+                                : " visits"
+                        }
+                    </p>
+
+                </div>
+            `).join("")
+            : `
+                <p>
+                    Belum ada restaurant yang dikunjungi.
+                </p>
+            `;
+
+
+    container.innerHTML = `
+
+        <div class="little-stat">
+
+            <span class="little-stat-number">
+                ${totalMemories}
+            </span>
+
+            <span class="little-stat-label">
+                Memories
+            </span>
+
+        </div>
+
+
+        <div class="little-stat">
+
+            <span class="little-stat-number">
+                ${ellaReviews}
+            </span>
+
+            <span class="little-stat-label">
+                Ella's Reviews
+            </span>
+
+        </div>
+
+
+        <div class="little-stat">
+
+            <span class="little-stat-number">
+                ${arkaReviews}
+            </span>
+
+            <span class="little-stat-label">
+                Arka's Reviews
+            </span>
+
+        </div>
+
+
+        <div class="most-visited-section">
+
+            <h3>
+                Most Visited
+            </h3>
+
+            <div class="most-visited-list">
+                ${mostVisitedHTML}
+            </div>
+
+        </div>
+
+    `;
 }
 
 
-// =====================================================
-// DASHBOARD DOM READY
-// =====================================================
+// ========================================
+// DASHBOARD LOAD
+// ========================================
 
 document.addEventListener(
     "DOMContentLoaded",
-    async function() {
+    async function () {
 
         await renderFoodJourney();
 
-        await renderFavoritePlaces();
+        await window.renderFavoritePlaces();
 
         showRandomLittleNote();
 
-        renderLittleThings();
+        await renderLittleThings();
 
     }
 );
 
-// =====================================================
-// HELPER ESCAPE HTML
-// =====================================================
 
-function escapeHTML(value) {
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
-function escapeFavoriteText(text) {
-    return String(text)
-        .replace(/\\/g, "\\\\")
-        .replace(/'/g, "\\'")
-        .replace(/"/g, '\\"');
-}
-
-
-// =====================================================
+// ========================================
 // BACK TO TOP
-// =====================================================
+// ========================================
 
-function scrollToTop() {
+const backToTopButton =
+    document.getElementById("backToTop");
 
-    window.scrollTo({
+if (backToTopButton) {
 
-        top:
-            0,
+    window.addEventListener(
+        "scroll",
+        function () {
 
-        behavior:
-            "smooth"
-
-    });
-
-}
-
-
-// =====================================================
-// GENERIC PAGE CHECK
-// =====================================================
-
-function isDashboardPage() {
-
-    return Boolean(
-        document.getElementById(
-            "food-journey-list"
-        )
-    );
-
-}
-
-
-function isRestaurantPage() {
-
-    return Boolean(
-        document.getElementById(
-            "restaurant-detail"
-        )
-    );
-
-}
-
-
-function isReviewPage() {
-
-    return Boolean(
-        document.getElementById(
-            "review-form"
-        )
-    );
-
-}
-
-
-// =====================================================
-// RESET PASSWORD
-// =====================================================
-
-const resetPasswordForm =
-    document.getElementById(
-        "reset-password-form"
-    );
-
-
-if (resetPasswordForm) {
-
-    resetPasswordForm.addEventListener(
-        "submit",
-        async function(event) {
-
-            event.preventDefault();
-
-
-            const newPassword =
-                document.getElementById(
-                    "new-password"
-                ).value;
-
-
-            const confirmPassword =
-                document.getElementById(
-                    "confirm-password"
-                ).value;
-
-
-            const message =
-                document.getElementById(
-                    "reset-message"
+            if (window.scrollY > 300) {
+                backToTopButton.classList.add(
+                    "show"
                 );
-
-
-            if (
-                newPassword !==
-                confirmPassword
-            ) {
-
-                message.textContent =
-                    "Password tidak sama ♡";
-
-                return;
-
-            }
-
-
-            if (!hasSupabaseClient()) {
-
-                message.textContent =
-                    "Koneksi Supabase belum tersedia ♡";
-
-                return;
-
-            }
-
-
-            const {
-                error
-            } =
-                await supabaseClient
-                    .auth
-                    .updateUser({
-
-                        password:
-                            newPassword
-
-                    });
-
-
-            if (error) {
-
-                console.error(
-                    error
+            } else {
+                backToTopButton.classList.remove(
+                    "show"
                 );
-
-                message.textContent =
-                    "Gagal mengubah password ♡";
-
-                return;
-
             }
 
+        }
+    );
 
-            message.textContent =
-                "Password berhasil diubah ♡";
+    backToTopButton.addEventListener(
+        "click",
+        function () {
 
-
-            setTimeout(
-                function() {
-
-                    window.location.href =
-                        "index.html";
-
-                },
-                1500
-            );
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
 
         }
     );
@@ -3896,36 +3393,68 @@ if (resetPasswordForm) {
 }
 
 
-// =====================================================
-// FINAL SAFETY HELPERS
-// =====================================================
+// ========================================
+// RESET PASSWORD
+// ========================================
 
-function safeLogout() {
+async function resetPassword() {
 
-    logout();
+    const email =
+        prompt(
+            "Masukkan email yang terdaftar:"
+        );
 
+    if (!email) {
+        return;
+    }
+
+    if (!hasSupabaseClient()) {
+        alert(
+            "Supabase belum terhubung."
+        );
+        return;
+    }
+
+    const { error } =
+        await supabaseClient.auth
+            .resetPasswordForEmail(
+                email,
+                {
+                    redirectTo:
+                        window.location.origin +
+                        "/reset-password.html"
+                }
+            );
+
+    if (error) {
+        alert(
+            "Gagal mengirim email reset password."
+        );
+
+        console.error(error);
+        return;
+    }
+
+    alert(
+        "Email reset password sudah dikirim ♡"
+    );
 }
 
 
-function requireSupabase(
-    message
-) {
+// ========================================
+// SUPABASE SAFETY
+// ========================================
+
+function requireSupabase(message) {
 
     if (hasSupabaseClient()) {
-
         return true;
-
     }
-
 
     alert(
         message ||
-        "Koneksi Supabase belum tersedia ♡"
+        "Supabase belum terhubung."
     );
 
-
     return false;
-
-    }
-
 }
