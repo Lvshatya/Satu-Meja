@@ -2451,34 +2451,6 @@ document.addEventListener(
 // FOOD JOURNEY
 // =====================================================
 
-window.renderFavoritePlaces = async function() {
-
-    const restaurants =
-        JSON.parse(
-            localStorage.getItem(
-                "restaurants"
-            )
-        ) || [];
-
-
-    const reviews =
-        JSON.parse(
-            localStorage.getItem(
-                "reviews"
-            )
-        ) || [];
-
-
-    const placeCount =
-        document.getElementById(
-            "journey-place-count"
-        );
-
-
-    const reviewCount =
-        document.getElementById(
-            "journey-review-count"
-        );
 async function renderFoodJourney() {
     const placeCount = document.getElementById("journey-place-count");
     const reviewCount = document.getElementById("journey-review-count");
@@ -2605,7 +2577,7 @@ async function renderFoodJourney() {
                     review.review_text ||
                     "Tidak ada cerita untuk review ini.";
 
-                return 
+                return `
                     <div class="journey-item">
 
                         <div class="journey-date">
@@ -2641,7 +2613,7 @@ async function renderFoodJourney() {
                         </div>
 
                     </div>
-                ;
+                `;
             })
             .join("");
 
@@ -2714,7 +2686,7 @@ async function renderFavoritePlaces() {
         const reviewData = reviews || [];
 
         if (restaurantData.length === 0) {
-            container.innerHTML = 
+            container.innerHTML = `
                 <div class="favorite-empty">
                     <p>Belum ada tempat favorit ♡</p>
 
@@ -2723,7 +2695,7 @@ async function renderFavoritePlaces() {
                         mengumpulkan tempat favorit.
                     </small>
                 </div>
-            ;
+            `;
             return;
         }
 
@@ -3226,16 +3198,6 @@ document.addEventListener(
 // HELPER ESCAPE HTML
 // =====================================================
 
-function escapeHTML(value) {
-    return String(value)
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-
 function escapeFavoriteText(text) {
     return String(text)
         .replace(/\\/g, "\\\\")
@@ -3439,4 +3401,3 @@ function requireSupabase(
 
     }
 
-}
