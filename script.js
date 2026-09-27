@@ -1,9 +1,77 @@
+console.log("SCRIPT.JS BERHASIL JALAN");
+
 let selectedUser = null;
 
 
-// ======================
+// =====================================================
+// HELPER SUPABASE
+// =====================================================
+
+function hasSupabaseClient() {
+
+    return (
+        typeof window.supabaseClient !== "undefined" &&
+        window.supabaseClient !== null
+    );
+
+}
+
+
+async function getCurrentAuthUser() {
+
+    if (!hasSupabaseClient()) {
+
+        console.warn(
+            "Supabase client tidak tersedia."
+        );
+
+        return null;
+
+    }
+
+
+    try {
+
+        const {
+            data,
+            error
+        } =
+            await window.supabaseClient
+                .auth
+                .getUser();
+
+
+        if (error) {
+
+            console.error(
+                "Gagal mengambil user:",
+                error
+            );
+
+            return null;
+
+        }
+
+
+        return data?.user || null;
+
+    } catch (error) {
+
+        console.error(
+            "Supabase error:",
+            error
+        );
+
+        return null;
+
+    }
+
+}
+
+
+// =====================================================
 // PILIH USER
-// ======================
+// =====================================================
 
 function selectUser(user) {
 
@@ -22,6 +90,7 @@ function selectUser(user) {
             "dashboard.html";
 
         return;
+
     }
 
 
@@ -40,9 +109,9 @@ function selectUser(user) {
 }
 
 
-// ======================
+// =====================================================
 // LOGIN
-// ======================
+// =====================================================
 
 const loginForm =
     document.getElementById(
@@ -57,10 +126,12 @@ if (loginForm) {
             "selectedUser"
         );
 
+
     const title =
         document.getElementById(
             "login-title"
         );
+
 
     if (title) {
 
@@ -114,17 +185,10 @@ if (loginForm) {
             }
 
 
-            if (
-                typeof supabaseClient ===
-                "undefined"
-            ) {
+            if (!hasSupabaseClient()) {
 
                 message.textContent =
                     "Koneksi database belum tersedia ♡";
-
-                console.error(
-                    "supabaseClient tidak ditemukan."
-                );
 
                 return;
 
@@ -176,9 +240,9 @@ if (loginForm) {
 }
 
 
-// ======================
+// =====================================================
 // FORGOT PASSWORD
-// ======================
+// =====================================================
 
 const forgotPasswordButton =
     document.getElementById(
@@ -229,17 +293,10 @@ if (forgotPasswordButton) {
             }
 
 
-            if (
-                typeof supabaseClient ===
-                "undefined"
-            ) {
+            if (!hasSupabaseClient()) {
 
                 message.textContent =
                     "Koneksi database belum tersedia ♡";
-
-                console.error(
-                    "supabaseClient tidak ditemukan."
-                );
 
                 return;
 
@@ -252,25 +309,22 @@ if (forgotPasswordButton) {
                 await supabaseClient
                     .auth
                     .resetPasswordForEmail(
-
                         email,
-
                         {
                             redirectTo:
                                 "http://localhost:5500/reset-password.html"
                         }
-
                     );
 
 
             if (error) {
 
-                message.textContent =
-                    "Gagal mengirim email reset password ♡";
-
                 console.error(
                     error
                 );
+
+                message.textContent =
+                    "Gagal mengirim email reset password ♡";
 
                 return;
 
@@ -286,42 +340,13 @@ if (forgotPasswordButton) {
 }
 
 
-
-
-// ======================
-// HELPER SUPABASE
-// ======================
-
-function hasSupabaseClient() {
-
-    if (
-        typeof supabaseClient ===
-        "undefined"
-    ) {
-
-        console.error(
-            "supabaseClient tidak ditemukan. Pastikan supabase.js dimuat sebelum script.js."
-        );
-
-        return false;
-
-    }
-
-
-    return true;
-
-}
-
-
-// ======================
+// =====================================================
 // LOAD RESTAURANTS
-// ======================
+// =====================================================
 
 async function loadRestaurants() {
 
-    if (
-        !hasSupabaseClient()
-    ) {
+    if (!hasSupabaseClient()) {
 
         return [];
 
@@ -360,45 +385,15 @@ async function loadRestaurants() {
 }
 
 
-// ======================
+// =====================================================
 // GET RESTAURANT RATING
-// ======================
+// =====================================================
 
 async function getRestaurantRating(
-    restaurantName
+    restaurantId
 ) {
 
-    if (
-        !hasSupabaseClient()
-    ) {
-
-        return 0;
-
-    }
-
-
-    const {
-        data: restaurant,
-        error: restaurantError
-    } =
-        await supabaseClient
-            .from("restaurants")
-            .select("id")
-            .eq(
-                "name",
-                restaurantName
-            )
-            .single();
-
-
-    if (
-        restaurantError ||
-        !restaurant
-    ) {
-
-        console.error(
-            restaurantError
-        );
+    if (!hasSupabaseClient()) {
 
         return 0;
 
@@ -407,21 +402,22 @@ async function getRestaurantRating(
 
     const {
         data: reviews,
-        error: reviewError
+        error
     } =
         await supabaseClient
             .from("reviews")
             .select("rating")
             .eq(
                 "restaurant_id",
-                restaurant.id
+                restaurantId
             );
 
 
-    if (reviewError) {
+    if (error) {
 
         console.error(
-            reviewError
+            "Gagal mengambil rating:",
+            error
         );
 
         return 0;
@@ -449,7 +445,7 @@ async function getRestaurantRating(
                 return (
                     sum +
                     Number(
-                        review.rating
+                        review.rating || 0
                     )
                 );
 
@@ -468,9 +464,9 @@ async function getRestaurantRating(
 }
 
 
-// ======================
+// =====================================================
 // DASHBOARD
-// ======================
+// =====================================================
 
 const restaurantList =
     document.getElementById(
@@ -503,8 +499,7 @@ if (restaurantList) {
 
 
         if (
-            restaurants.length ===
-            0
+            restaurants.length === 0
         ) {
 
             restaurantList.innerHTML = `
@@ -530,8 +525,7 @@ if (restaurantList) {
 
 
         for (
-            const restaurant of
-            restaurants
+            const restaurant of restaurants
         ) {
 
             const card =
@@ -569,7 +563,7 @@ if (restaurantList) {
 
             const overallRating =
                 await getRestaurantRating(
-                    restaurant.name
+                    restaurant.id
                 );
 
 
@@ -581,19 +575,25 @@ if (restaurantList) {
                         restaurant.image_url ||
                         "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4"
                     }"
-                    alt="${restaurant.name}"
+                    alt="${escapeHTML(
+                        restaurant.name
+                    )}"
                 >
 
                 <div class="restaurant-info">
 
                     <h3 class="restaurant-name">
-                        ${restaurant.name}
+                        ${escapeHTML(
+                            restaurant.name
+                        )}
                     </h3>
 
                     <p class="restaurant-location">
                         📍 ${
-                            restaurant.location ||
-                            "Lokasi belum ditambahkan"
+                            escapeHTML(
+                                restaurant.location ||
+                                "Lokasi belum ditambahkan"
+                            )
                         }
                     </p>
 
@@ -620,237 +620,6 @@ if (restaurantList) {
 
     }
 
-// ======================
-// LOAD RESTAURANT REVIEWS
-// ======================
-
-async function loadRestaurantReviews(
-    restaurantId
-) {
-
-    const reviewsContainer =
-        document.getElementById(
-            "saved-reviews"
-        );
-
-    if (!reviewsContainer) {
-        return;
-    }
-
-
-    if (!hasSupabaseClient()) {
-        return;
-    }
-
-
-    reviewsContainer.innerHTML =
-        "<p>Memuat review...</p>";
-
-
-    const {
-        data: reviews,
-        error
-    } =
-        await supabaseClient
-            .from("reviews")
-            .select(
-                `
-                id,
-                user_name,
-                rating,
-                review_text,
-                created_at,
-                review_photos (
-                    id,
-                    photo_url
-                )
-                `
-            )
-            .eq(
-                "restaurant_id",
-                restaurantId
-            )
-            .order(
-                "created_at",
-                {
-                    ascending: false
-                }
-            );
-
-
-    if (error) {
-
-        console.error(
-            "Gagal mengambil review:",
-            error
-        );
-
-        reviewsContainer.innerHTML =
-            "<p>Gagal memuat review.</p>";
-
-        return;
-
-    }
-
-
-    if (
-        !reviews ||
-        reviews.length === 0
-    ) {
-
-        reviewsContainer.innerHTML = `
-            <div class="review-card">
-
-                <p class="review-text">
-                    Belum ada review untuk restoran ini.
-                </p>
-
-            </div>
-        `;
-
-        return;
-
-    }
-
-
-    reviewsContainer.innerHTML = "";
-
-
-    reviews.forEach(
-        function(review) {
-
-            const card =
-                document.createElement(
-                    "div"
-                );
-
-            card.className =
-                "review-card";
-
-
-            // ======================
-            // STARS
-            // ======================
-
-            const rating =
-                Number(
-                    review.rating
-                );
-
-
-            const stars =
-                "⭐".repeat(
-                    rating
-                );
-
-
-            // ======================
-            // DATE
-            // ======================
-
-            const date =
-                new Date(
-                    review.created_at
-                );
-
-
-            const formattedDate =
-                date.toLocaleDateString(
-                    "id-ID",
-                    {
-                        day: "numeric",
-                        month: "long",
-                        year: "numeric"
-                    }
-                );
-
-
-            // ======================
-            // PHOTOS
-            // ======================
-
-            let photosHTML = "";
-
-
-            if (
-                review.review_photos &&
-                review.review_photos.length > 0
-            ) {
-
-                photosHTML =
-                    `
-                    <div class="review-photos">
-                    `;
-
-                review.review_photos.forEach(
-                    function(photo) {
-
-                        photosHTML += `
-                            <img
-                                src="${photo.photo_url}"
-                                class="review-photo"
-                                alt="Foto review"
-                            >
-                        `;
-
-                    }
-                );
-
-
-                photosHTML +=
-                    `
-                    </div>
-                    `;
-
-            }
-
-
-            // ======================
-            // CARD
-            // ======================
-
-            card.innerHTML = `
-
-                <div class="review-header">
-
-                    <div>
-
-                        <h3>
-                            ${review.user_name} ♡
-                        </h3>
-
-                        <p class="review-stars">
-                            ${stars}
-                        </p>
-
-                    </div>
-
-                </div>
-
-
-                <p class="review-text">
-                    ${review.review_text}
-                </p>
-
-
-                <p class="review-date">
-                    ${formattedDate}
-                </p>
-
-
-                ${photosHTML}
-
-            `;
-
-
-            reviewsContainer.appendChild(
-                card
-            );
-
-        }
-    );
-
-}
 
     async function initializeDashboard() {
 
@@ -936,43 +705,664 @@ async function loadRestaurantReviews(
 }
 
 
-// ======================
-// LOGOUT
-// ======================
+// =====================================================
+// LOAD RESTAURANT DETAIL
+// =====================================================
 
-async function logout() {
+async function loadRestaurantDetail(
+    restaurantId
+) {
 
-    if (
-        !hasSupabaseClient()
-    ) {
+    if (!hasSupabaseClient()) {
 
-        window.location.href =
-            "index.html";
+        console.error(
+            "Supabase client tidak tersedia."
+        );
 
         return;
 
     }
 
 
+    console.log(
+        "LOAD DETAIL RESTORAN:",
+        restaurantId
+    );
+
+
     const {
+        data: restaurant,
         error
     } =
         await supabaseClient
-            .auth
-            .signOut();
+            .from("restaurants")
+            .select(
+                "id, name, location, image_url"
+            )
+            .eq(
+                "id",
+                restaurantId
+            )
+            .single();
+
+
+    if (
+        error ||
+        !restaurant
+    ) {
+
+        console.error(
+            "Gagal mengambil detail restoran:",
+            error
+        );
+
+        return;
+
+    }
+
+
+    console.log(
+        "DETAIL RESTORAN:",
+        restaurant
+    );
+
+
+    const detailName =
+        document.getElementById(
+            "detail-name"
+        );
+
+
+    if (detailName) {
+
+        detailName.textContent =
+            restaurant.name;
+
+    }
+
+
+    const detailLocation =
+        document.getElementById(
+            "detail-location"
+        );
+
+
+    if (detailLocation) {
+
+        detailLocation.textContent =
+            `📍 ${
+                restaurant.location ||
+                "Lokasi belum ditambahkan"
+            }`;
+
+    }
+
+
+    const detailImage =
+        document.getElementById(
+            "detail-image"
+        );
+
+
+    if (detailImage) {
+
+        detailImage.src =
+            restaurant.image_url ||
+            "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4";
+
+
+        detailImage.alt =
+            restaurant.name;
+
+    }
+
+
+    const detailRating =
+        document.getElementById(
+            "detail-rating"
+        );
+
+
+    if (detailRating) {
+
+        const rating =
+            await getRestaurantRating(
+                restaurant.id
+            );
+
+
+        if (rating > 0) {
+
+            detailRating.textContent =
+                `⭐ ${rating}`;
+
+        } else {
+
+            detailRating.textContent =
+                "☆ Belum ada rating";
+
+        }
+
+    }
+
+}
+
+
+// =====================================================
+// LOAD RESTAURANT REVIEWS
+// =====================================================
+
+async function loadRestaurantReviews(
+    restaurantId
+) {
+
+    console.log(
+        "LOAD REVIEWS DIPANGGIL:",
+        restaurantId
+    );
+
+
+    const reviewsContainer =
+        document.getElementById(
+            "saved-reviews"
+        );
+
+
+    if (!reviewsContainer) {
+
+        console.error(
+            "saved-reviews tidak ditemukan."
+        );
+
+        return;
+
+    }
+
+
+    if (!hasSupabaseClient()) {
+
+        console.error(
+            "Supabase belum tersedia."
+        );
+
+        return;
+
+    }
+
+
+    reviewsContainer.innerHTML =
+        "<p>Memuat review...</p>";
+
+
+    const {
+        data: reviews,
+        error
+    } =
+        await supabaseClient
+            .from("reviews")
+            .select(
+                `
+                id,
+                user_name,
+                rating,
+                review_text,
+                created_at,
+                review_photos (
+                    id,
+                    photo_url
+                )
+                `
+            )
+            .eq(
+                "restaurant_id",
+                restaurantId
+            )
+            .order(
+                "created_at",
+                {
+                    ascending: false
+                }
+            );
 
 
     if (error) {
 
         console.error(
+            "Gagal mengambil review:",
             error
         );
 
-        alert(
-            "Gagal logout. Coba lagi ya ♡"
-        );
+
+        reviewsContainer.innerHTML = `
+
+            <div class="review-card">
+
+                <p class="review-text">
+                    Gagal memuat review.
+                </p>
+
+            </div>
+
+        `;
 
         return;
+
+    }
+
+
+    console.log(
+        "REVIEW YANG DITEMUKAN:",
+        reviews
+    );
+
+
+    if (
+        !reviews ||
+        reviews.length === 0
+    ) {
+
+        reviewsContainer.innerHTML = `
+
+            <div class="review-card">
+
+                <p class="review-text">
+                    Belum ada review untuk restoran ini.
+                </p>
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    reviewsContainer.innerHTML =
+        "";
+
+
+    for (
+        const review of reviews
+    ) {
+
+        const card =
+            document.createElement(
+                "div"
+            );
+
+
+        card.className =
+            "review-card";
+
+
+        const rating =
+            Number(
+                review.rating || 0
+            );
+
+
+        const stars =
+            "⭐".repeat(
+                rating
+            );
+
+
+        const date =
+            new Date(
+                review.created_at
+            );
+
+
+        const formattedDate =
+            date.toLocaleDateString(
+                "id-ID",
+                {
+                    day:
+                        "numeric",
+
+                    month:
+                        "long",
+
+                    year:
+                        "numeric"
+                }
+            );
+
+
+        let photosHTML =
+            "";
+
+
+        if (
+            review.review_photos &&
+            review.review_photos.length > 0
+        ) {
+
+            const photoURLs = [];
+
+
+            for (
+                const photo of review.review_photos
+            ) {
+
+                let photoURL =
+                    photo.photo_url;
+
+
+                if (
+                    photoURL &&
+                    !photoURL.startsWith(
+                        "http"
+                    )
+                ) {
+
+                    const {
+                        data: signedData,
+                        error: signedError
+                    } =
+                        await supabaseClient
+                            .storage
+                            .from(
+                                "review-photos"
+                            )
+                            .createSignedUrl(
+                                photoURL,
+                                60 * 60 * 24
+                            );
+
+
+                    if (
+                        signedError
+                    ) {
+
+                        console.error(
+                            "Gagal membuat signed URL:",
+                            signedError
+                        );
+
+                        continue;
+
+                    }
+
+
+                    photoURL =
+                        signedData?.signedUrl;
+
+                }
+
+
+                if (photoURL) {
+
+                    photoURLs.push(
+                        photoURL
+                    );
+
+                }
+
+            }
+
+
+            if (
+                photoURLs.length > 0
+            ) {
+
+                photosHTML = `
+                    <div class="review-photos">
+                `;
+
+
+                photoURLs.forEach(
+                    function(photoURL) {
+
+                        photosHTML += `
+
+                            <img
+                                src="${escapeHTML(photoURL)}"
+                                class="review-photo"
+                                alt="Foto review"
+                                onclick="openReviewPhoto('${escapeFavoriteText(photoURL)}')"
+                            >
+
+                        `;
+
+                    }
+                );
+
+
+                photosHTML += `
+                    </div>
+                `;
+
+            }
+
+        }
+
+
+        card.innerHTML = `
+
+            <div class="review-header">
+
+                <div>
+
+                    <h3>
+                        ${escapeHTML(
+                            review.user_name ||
+                            "Someone"
+                        )} ♡
+                    </h3>
+
+                    <p class="review-stars">
+                        ${stars}
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <p class="review-text">
+                ${escapeHTML(
+                    review.review_text ||
+                    ""
+                )}
+            </p>
+
+
+            <p class="review-date">
+                ${formattedDate}
+            </p>
+
+
+            ${photosHTML}
+
+        `;
+
+
+        reviewsContainer.appendChild(
+            card
+        );
+
+    }
+
+}
+
+
+// =====================================================
+// RESTAURANT PAGE
+// =====================================================
+
+document.addEventListener(
+    "DOMContentLoaded",
+    async function() {
+
+        const restaurantDetail =
+            document.getElementById(
+                "restaurant-detail"
+            );
+
+
+        if (!restaurantDetail) {
+
+            return;
+
+        }
+
+
+        console.log(
+            "Restaurant page loaded."
+        );
+
+
+        const restaurantId =
+            localStorage.getItem(
+                "selectedRestaurantId"
+            );
+
+
+        console.log(
+            "SELECTED RESTAURANT ID:",
+            restaurantId
+        );
+
+
+        if (!restaurantId) {
+
+            console.error(
+                "Restaurant ID tidak ditemukan."
+            );
+
+            return;
+
+        }
+
+
+        // LOAD DETAIL RESTORAN
+        await loadRestaurantDetail(
+            restaurantId
+        );
+
+
+        // LOAD REVIEW
+        await loadRestaurantReviews(
+            restaurantId
+        );
+
+
+        // TOMBOL TAMBAH REVIEW
+        const addReviewButton =
+            document.getElementById(
+                "add-review-button"
+            );
+
+
+        if (addReviewButton) {
+
+            addReviewButton.addEventListener(
+                "click",
+                function() {
+
+                    const id =
+                        localStorage.getItem(
+                            "selectedRestaurantId"
+                        );
+
+
+                    if (!id) {
+
+                        alert(
+                            "Restoran belum dipilih."
+                        );
+
+                        return;
+
+                    }
+
+
+                    window.location.href =
+                        "review.html";
+
+                }
+            );
+
+        }
+
+
+        // AKSES EDIT / HAPUS
+        const actions =
+            document.getElementById(
+                "restaurant-actions"
+            );
+
+
+        if (actions) {
+
+            const user =
+                await getCurrentAuthUser();
+
+
+            if (!user) {
+
+                actions.style.display =
+                    "none";
+
+            } else {
+
+                const {
+                    data: profile,
+                    error
+                } =
+                    await supabaseClient
+                        .from("profiles")
+                        .select("role")
+                        .eq(
+                            "id",
+                            user.id
+                        )
+                        .single();
+
+
+                if (
+                    error ||
+                    !profile ||
+                    profile.role !== "ella"
+                ) {
+
+                    actions.style.display =
+                        "none";
+
+                }
+
+            }
+
+        }
+
+    }
+);
+
+
+// =====================================================
+// LOGOUT
+// =====================================================
+
+async function logout() {
+
+    if (hasSupabaseClient()) {
+
+        try {
+
+            await supabaseClient
+                .auth
+                .signOut();
+
+        } catch (error) {
+
+            console.error(
+                "Gagal logout:",
+                error
+            );
+
+        }
 
     }
 
@@ -993,15 +1383,20 @@ async function logout() {
         "selectedRestaurantId"
     );
 
+    localStorage.removeItem(
+        "currentRestaurant"
+    );
+
 
     window.location.href =
         "index.html";
 
 }
 
-// =========================
+
+// =====================================================
 // KE HALAMAN REVIEW
-// =========================
+// =====================================================
 
 function goToReview() {
 
@@ -1009,6 +1404,7 @@ function goToReview() {
         localStorage.getItem(
             "selectedRestaurantId"
         );
+
 
     if (!restaurantId) {
 
@@ -1020,17 +1416,16 @@ function goToReview() {
 
     }
 
+
     window.location.href =
         "review.html";
+
 }
 
-// ======================
+
+// =====================================================
 // TAMBAH RESTORAN
-// ======================
-// PENTING:
-// Fungsi ini HANYA untuk pindah
-// ke halaman add-restaurant.
-// Jangan dibuat async Supabase.
+// =====================================================
 
 function addRestaurant() {
 
@@ -1059,9 +1454,9 @@ function addRestaurant() {
 }
 
 
-// ======================
+// =====================================================
 // FORM TAMBAH RESTORAN
-// ======================
+// =====================================================
 
 const restaurantForm =
     document.getElementById(
@@ -1073,9 +1468,7 @@ if (restaurantForm) {
 
     async function checkRestaurantAccess() {
 
-        if (
-            !hasSupabaseClient()
-        ) {
+        if (!hasSupabaseClient()) {
 
             alert(
                 "Koneksi database belum tersedia ♡"
@@ -1086,17 +1479,11 @@ if (restaurantForm) {
         }
 
 
-        const {
-            data: {
-                user: authUser
-            }
-        } =
-            await supabaseClient
-                .auth
-                .getUser();
+        const user =
+            await getCurrentAuthUser();
 
 
-        if (!authUser) {
+        if (!user) {
 
             window.location.href =
                 "index.html";
@@ -1115,7 +1502,7 @@ if (restaurantForm) {
                 .select("role")
                 .eq(
                     "id",
-                    authUser.id
+                    user.id
                 )
                 .single();
 
@@ -1153,9 +1540,7 @@ if (restaurantForm) {
             event.preventDefault();
 
 
-            if (
-                !hasSupabaseClient()
-            ) {
+            if (!hasSupabaseClient()) {
 
                 alert(
                     "Koneksi database belum tersedia ♡"
@@ -1195,7 +1580,7 @@ if (restaurantForm) {
             }
 
 
-            // Cek restoran dengan nama sama
+            // CEK DUPLIKAT
             const {
                 data: existingRestaurants,
                 error: duplicateError
@@ -1226,8 +1611,7 @@ if (restaurantForm) {
 
             if (
                 existingRestaurants &&
-                existingRestaurants.length >
-                0
+                existingRestaurants.length > 0
             ) {
 
                 alert(
@@ -1239,25 +1623,22 @@ if (restaurantForm) {
             }
 
 
-            let imageUrl = null;
+            let imageUrl =
+                null;
 
 
-            // ======================
             // UPLOAD FOTO
-            // ======================
-
             if (
                 imageInput &&
                 imageInput.files &&
-                imageInput.files.length >
-                0
+                imageInput.files.length > 0
             ) {
 
                 const file =
                     imageInput.files[0];
 
 
-                const fileExtension =
+                const extension =
                     file.name
                         .split(".")
                         .pop()
@@ -1265,11 +1646,7 @@ if (restaurantForm) {
 
 
                 const fileName =
-                    `${crypto.randomUUID()}.${fileExtension}`;
-
-
-                const filePath =
-                    `${fileName}`;
+                    `${crypto.randomUUID()}.${extension}`;
 
 
                 const {
@@ -1281,7 +1658,7 @@ if (restaurantForm) {
                             "restaurant-photos"
                         )
                         .upload(
-                            filePath,
+                            fileName,
                             file,
                             {
                                 upsert:
@@ -1306,8 +1683,8 @@ if (restaurantForm) {
 
 
                 const {
-                    data: signedUrlData,
-                    error: signedUrlError
+                    data: signedData,
+                    error: signedError
                 } =
                     await supabaseClient
                         .storage
@@ -1315,24 +1692,15 @@ if (restaurantForm) {
                             "restaurant-photos"
                         )
                         .createSignedUrl(
-                            filePath,
+                            fileName,
                             60 * 60 * 24 * 365
                         );
 
 
-                if (
-                    signedUrlError
-                ) {
-
-                    console.error(
-                        signedUrlError
-                    );
-
-                } else {
+                if (!signedError) {
 
                     imageUrl =
-                        signedUrlData
-                            ?.signedUrl ||
+                        signedData?.signedUrl ||
                         null;
 
                 }
@@ -1340,18 +1708,13 @@ if (restaurantForm) {
             }
 
 
-            // ======================
             // SIMPAN RESTORAN
-            // ======================
-
             const {
                 data,
                 error
             } =
                 await supabaseClient
-                    .from(
-                        "restaurants"
-                    )
+                    .from("restaurants")
                     .insert([
                         {
                             name:
@@ -1411,15 +1774,13 @@ if (restaurantForm) {
 }
 
 
-// ======================
+// =====================================================
 // EDIT RESTORAN
-// ======================
+// =====================================================
 
 async function editRestaurant() {
 
-    if (
-        !hasSupabaseClient()
-    ) {
+    if (!hasSupabaseClient()) {
 
         alert(
             "Koneksi database belum tersedia ♡"
@@ -1430,17 +1791,11 @@ async function editRestaurant() {
     }
 
 
-    const {
-        data: {
-            user: authUser
-        }
-    } =
-        await supabaseClient
-            .auth
-            .getUser();
+    const user =
+        await getCurrentAuthUser();
 
 
-    if (!authUser) {
+    if (!user) {
 
         window.location.href =
             "index.html";
@@ -1459,7 +1814,7 @@ async function editRestaurant() {
             .select("role")
             .eq(
                 "id",
-                authUser.id
+                user.id
             )
             .single();
 
@@ -1536,8 +1891,7 @@ async function editRestaurant() {
 
 
     if (
-        newName ===
-        null
+        newName === null
     ) {
 
         return;
@@ -1546,8 +1900,7 @@ async function editRestaurant() {
 
 
     if (
-        newName.trim() ===
-        ""
+        newName.trim() === ""
     ) {
 
         alert(
@@ -1562,14 +1915,12 @@ async function editRestaurant() {
     const newLocation =
         prompt(
             "Lokasi restoran:",
-            restaurant.location ||
-            ""
+            restaurant.location || ""
         );
 
 
     if (
-        newLocation ===
-        null
+        newLocation === null
     ) {
 
         return;
@@ -1623,15 +1974,13 @@ async function editRestaurant() {
 }
 
 
-// ======================
+// =====================================================
 // HAPUS RESTORAN
-// ======================
+// =====================================================
 
 async function deleteRestaurant() {
 
-    if (
-        !hasSupabaseClient()
-    ) {
+    if (!hasSupabaseClient()) {
 
         alert(
             "Koneksi database belum tersedia ♡"
@@ -1642,17 +1991,11 @@ async function deleteRestaurant() {
     }
 
 
-    const {
-        data: {
-            user: authUser
-        }
-    } =
-        await supabaseClient
-            .auth
-            .getUser();
+    const user =
+        await getCurrentAuthUser();
 
 
-    if (!authUser) {
+    if (!user) {
 
         window.location.href =
             "index.html";
@@ -1671,7 +2014,7 @@ async function deleteRestaurant() {
             .select("role")
             .eq(
                 "id",
-                authUser.id
+                user.id
             )
             .single();
 
@@ -1799,9 +2142,70 @@ async function deleteRestaurant() {
 
 }
 
-// ======================
-// TUTUP FOTO
-// ======================
+
+// =====================================================
+// TAMBAH RESTORAN - BACKUP
+// =====================================================
+
+function goToDashboard() {
+
+    window.location.href =
+        "dashboard.html";
+
+}
+
+
+// =====================================================
+// FOTO / LIGHTBOX
+// =====================================================
+
+let currentPhotos = [];
+
+let currentPhotoIndex = 0;
+
+
+function openReviewPhoto(
+    photoURL
+) {
+
+    currentPhotos = [
+        photoURL
+    ];
+
+    currentPhotoIndex = 0;
+
+
+    const lightbox =
+        document.getElementById(
+            "photo-lightbox"
+        );
+
+
+    if (!lightbox) {
+
+        window.open(
+            photoURL,
+            "_blank"
+        );
+
+        return;
+
+    }
+
+
+    updateLightbox();
+
+
+    lightbox.classList.add(
+        "active"
+    );
+
+
+    document.body.style.overflow =
+        "hidden";
+
+}
+
 
 function closePhotoViewer(
     event
@@ -1812,7 +2216,7 @@ function closePhotoViewer(
         event.target &&
         (
             event.target.id ===
-                "lightbox-image"
+            "lightbox-image"
 
             ||
 
@@ -1851,20 +2255,19 @@ function closePhotoViewer(
 }
 
 
-// ======================
-// FOTO SEBELUMNYA
-// ======================
-
 function previousPhoto(
     event
 ) {
 
-    event.stopPropagation();
+    if (event) {
+
+        event.stopPropagation();
+
+    }
 
 
     if (
-        currentPhotos.length <=
-        1
+        currentPhotos.length <= 1
     ) {
 
         return;
@@ -1876,8 +2279,7 @@ function previousPhoto(
 
 
     if (
-        currentPhotoIndex <
-        0
+        currentPhotoIndex < 0
     ) {
 
         currentPhotoIndex =
@@ -1891,20 +2293,19 @@ function previousPhoto(
 }
 
 
-// ======================
-// FOTO BERIKUTNYA
-// ======================
-
 function nextPhoto(
     event
 ) {
 
-    event.stopPropagation();
+    if (event) {
+
+        event.stopPropagation();
+
+    }
 
 
     if (
-        currentPhotos.length <=
-        1
+        currentPhotos.length <= 1
     ) {
 
         return;
@@ -1920,8 +2321,7 @@ function nextPhoto(
         currentPhotos.length
     ) {
 
-        currentPhotoIndex =
-            0;
+        currentPhotoIndex = 0;
 
     }
 
@@ -1930,10 +2330,6 @@ function nextPhoto(
 
 }
 
-
-// ======================
-// UPDATE LIGHTBOX
-// ======================
 
 function updateLightbox() {
 
@@ -1956,6 +2352,17 @@ function updateLightbox() {
     }
 
 
+    if (
+        !currentPhotos[
+            currentPhotoIndex
+        ]
+    ) {
+
+        return;
+
+    }
+
+
     image.src =
         currentPhotos[
             currentPhotoIndex
@@ -1971,10 +2378,6 @@ function updateLightbox() {
 
 }
 
-
-// ======================
-// KEYBOARD CONTROL
-// ======================
 
 document.addEventListener(
     "keydown",
@@ -2035,9 +2438,9 @@ document.addEventListener(
 );
 
 
-/* =====================================================
-   FOOD JOURNEY + STATISTICS
-===================================================== */
+// =====================================================
+// FOOD JOURNEY
+// =====================================================
 
 function renderFoodJourney() {
 
@@ -2093,10 +2496,6 @@ function renderFoodJourney() {
     }
 
 
-    /* =========================
-       STATISTIK
-    ========================= */
-
     placeCount.textContent =
         restaurants.length;
 
@@ -2119,8 +2518,7 @@ function renderFoodJourney() {
                     return (
                         total +
                         Number(
-                            review.rating ||
-                            0
+                            review.rating || 0
                         )
                     );
 
@@ -2129,13 +2527,11 @@ function renderFoodJourney() {
             );
 
 
-        const average =
-            totalRating /
-            reviews.length;
-
-
         averageRating.textContent =
-            average.toFixed(1);
+            (
+                totalRating /
+                reviews.length
+            ).toFixed(1);
 
     } else {
 
@@ -2144,10 +2540,6 @@ function renderFoodJourney() {
 
     }
 
-
-    /* =========================
-       FOOD JOURNEY
-    ========================= */
 
     if (
         reviews.length === 0
@@ -2179,25 +2571,17 @@ function renderFoodJourney() {
         [...reviews].sort(
             function(a, b) {
 
-                const dateA =
-                    new Date(
-                        a.date ||
-                        a.createdAt ||
-                        0
-                    );
-
-
-                const dateB =
+                return (
                     new Date(
                         b.date ||
                         b.createdAt ||
                         0
-                    );
-
-
-                return (
-                    dateB -
-                    dateA
+                    ) -
+                    new Date(
+                        a.date ||
+                        a.createdAt ||
+                        0
+                    )
                 );
 
             }
@@ -2236,8 +2620,7 @@ function renderFoodJourney() {
                     const stars =
                         "★".repeat(
                             Number(
-                                review.rating ||
-                                0
+                                review.rating || 0
                             )
                         );
 
@@ -2245,6 +2628,7 @@ function renderFoodJourney() {
                     const user =
                         review.user ||
                         review.reviewer ||
+                        review.user_name ||
                         "Someone";
 
 
@@ -2256,6 +2640,7 @@ function renderFoodJourney() {
                     const reviewText =
                         review.text ||
                         review.review ||
+                        review.review_text ||
                         "Tidak ada cerita untuk review ini.";
 
 
@@ -2264,49 +2649,39 @@ function renderFoodJourney() {
                         <div class="journey-item">
 
                             <div class="journey-date">
-
                                 ${formattedDate}
-
                             </div>
-
 
                             <div class="journey-card">
 
-                                <div
-                                    class="journey-card-header"
-                                >
+                                <div class="journey-card-header">
 
                                     <div>
 
-                                        <div
-                                            class="journey-restaurant"
-                                        >
-                                            ${restaurant}
+                                        <div class="journey-restaurant">
+                                            ${escapeHTML(
+                                                restaurant
+                                            )}
                                         </div>
 
-
-                                        <div
-                                            class="journey-user"
-                                        >
-                                            ${user}
+                                        <div class="journey-user">
+                                            ${escapeHTML(
+                                                user
+                                            )}
                                         </div>
 
                                     </div>
 
-
-                                    <div
-                                        class="journey-rating"
-                                    >
+                                    <div class="journey-rating">
                                         ${stars}
                                     </div>
 
                                 </div>
 
-
-                                <div
-                                    class="journey-review"
-                                >
-                                    ${reviewText}
+                                <div class="journey-review">
+                                    ${escapeHTML(
+                                        reviewText
+                                    )}
                                 </div>
 
                             </div>
@@ -2321,371 +2696,6 @@ function renderFoodJourney() {
 
 }
 
-
-// Jalankan saat halaman selesai dimuat
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        renderFoodJourney();
-
-    }
-);
-
-
-/* =====================================================
-   INTERACTIVE FOOD JOURNEY
-===================================================== */
-
-let currentJourneyFilter =
-    "all";
-
-
-function filterFoodJourney(
-    filter,
-    button
-) {
-
-    currentJourneyFilter =
-        filter;
-
-
-    const buttons =
-        document.querySelectorAll(
-            ".journey-filter button"
-        );
-
-
-    buttons.forEach(
-        function(btn) {
-
-            btn.classList.remove(
-                "active"
-            );
-
-        }
-    );
-
-
-    if (button) {
-
-        button.classList.add(
-            "active"
-        );
-
-    }
-
-
-    renderInteractiveFoodJourney();
-
-}
-
-
-function renderInteractiveFoodJourney() {
-
-    const journeyList =
-        document.getElementById(
-            "food-journey-list"
-        );
-
-
-    if (!journeyList) {
-
-        return;
-
-    }
-
-
-    const reviews =
-        JSON.parse(
-            localStorage.getItem(
-                "reviews"
-            )
-        ) || [];
-
-
-    let filteredReviews =
-        [...reviews];
-
-
-    if (
-        currentJourneyFilter !==
-        "all"
-    ) {
-
-        filteredReviews =
-            filteredReviews.filter(
-                function(review) {
-
-                    const user =
-                        review.user ||
-                        review.reviewer ||
-                        "";
-
-
-                    return (
-                        user.toLowerCase() ===
-                        currentJourneyFilter
-                            .toLowerCase()
-                    );
-
-                }
-            );
-
-    }
-
-
-    filteredReviews.sort(
-        function(a, b) {
-
-            const dateA =
-                new Date(
-                    a.date ||
-                    a.createdAt ||
-                    0
-                );
-
-
-            const dateB =
-                new Date(
-                    b.date ||
-                    b.createdAt ||
-                    0
-                );
-
-
-            return (
-                dateB -
-                dateA
-            );
-
-        }
-    );
-
-
-    if (
-        filteredReviews.length ===
-        0
-    ) {
-
-        journeyList.innerHTML = `
-
-            <div class="journey-empty">
-
-                <p>
-                    Belum ada cerita di sini ♡
-                </p>
-
-                <small>
-                    Coba pilih filter lainnya.
-                </small>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    journeyList.innerHTML =
-        filteredReviews
-            .map(
-                function(review) {
-
-                    const date =
-                        new Date(
-                            review.date ||
-                            review.createdAt ||
-                            Date.now()
-                        );
-
-
-                    const formattedDate =
-                        date.toLocaleDateString(
-                            "id-ID",
-                            {
-                                day:
-                                    "numeric",
-
-                                month:
-                                    "long",
-
-                                year:
-                                    "numeric"
-                            }
-                        );
-
-
-                    const rating =
-                        Number(
-                            review.rating ||
-                            0
-                        );
-
-
-                    const stars =
-                        "★".repeat(
-                            rating
-                        );
-
-
-                    const user =
-                        review.user ||
-                        review.reviewer ||
-                        "Someone";
-
-
-                    const restaurant =
-                        review.restaurantName ||
-                        "Restaurant";
-
-
-                    const reviewText =
-                        review.text ||
-                        review.review ||
-                        "Tidak ada cerita untuk review ini.";
-
-
-                    return `
-
-                        <div
-                            class="journey-item"
-                        >
-
-                            <div
-                                class="journey-date"
-                            >
-                                ${formattedDate}
-                            </div>
-
-
-                            <div
-                                class="journey-card"
-                                onclick="openJourneyRestaurant('${escapeJourneyText(restaurant)}')"
-                            >
-
-                                <div
-                                    class="journey-card-header"
-                                >
-
-                                    <div>
-
-                                        <div
-                                            class="journey-restaurant"
-                                        >
-                                            ${restaurant}
-                                        </div>
-
-
-                                        <div
-                                            class="journey-user"
-                                        >
-                                            ${user}
-                                        </div>
-
-                                    </div>
-
-
-                                    <div
-                                        class="journey-rating"
-                                    >
-                                        ${stars}
-                                    </div>
-
-                                </div>
-
-
-                                <div
-                                    class="journey-review"
-                                >
-                                    ${reviewText}
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    `;
-
-                }
-            )
-            .join("");
-
-}
-
-
-function escapeJourneyText(
-    text
-) {
-
-    return String(text)
-        .replace(
-            /\\/g,
-            "\\\\"
-        )
-        .replace(
-            /'/g,
-            "\\'"
-        )
-        .replace(
-            /"/g,
-            '\\"'
-        );
-
-}
-
-
-function openJourneyRestaurant(
-    restaurantName
-) {
-
-    const restaurants =
-        JSON.parse(
-            localStorage.getItem(
-                "restaurants"
-            )
-        ) || [];
-
-
-    const restaurant =
-        restaurants.find(
-            function(item) {
-
-                return (
-                    item.name ===
-                    restaurantName
-                );
-
-            }
-        );
-
-
-    if (!restaurant) {
-
-        alert(
-            "Restoran ini sudah tidak tersedia."
-        );
-
-        return;
-
-    }
-
-
-    localStorage.setItem(
-        "currentRestaurant",
-        JSON.stringify(
-            restaurant
-        )
-    );
-
-
-    window.location.href =
-        "restaurant.html";
-
-}
 
 // =====================================================
 // FAVORITE PLACES
@@ -2698,8 +2708,11 @@ function renderFavoritePlaces() {
             "favorite-places-list"
         );
 
+
     if (!container) {
+
         return;
+
     }
 
 
@@ -2745,11 +2758,6 @@ function renderFavoritePlaces() {
     }
 
 
-    /*
-       Hitung rating dan jumlah review
-       setiap restoran
-    */
-
     const favoriteRestaurants =
         restaurants
             .map(
@@ -2772,7 +2780,8 @@ function renderFavoritePlaces() {
                         restaurantReviews.length;
 
 
-                    let averageRating = 0;
+                    let averageRating =
+                        0;
 
 
                     if (
@@ -2789,8 +2798,7 @@ function renderFavoritePlaces() {
                                     return (
                                         sum +
                                         Number(
-                                            review.rating ||
-                                            0
+                                            review.rating || 0
                                         )
                                     );
 
@@ -2832,14 +2840,6 @@ function renderFavoritePlaces() {
             )
             .sort(
                 function(a, b) {
-
-                    /*
-                       Rating lebih tinggi
-                       diprioritaskan.
-
-                       Kalau sama,
-                       jumlah review lebih banyak.
-                    */
 
                     if (
                         b.averageRating !==
@@ -2913,14 +2913,9 @@ function renderFavoritePlaces() {
 
                     return `
 
-                        <div
-                            class="favorite-card"
-                            onclick="openFavoriteRestaurant('${escapeFavoriteText(restaurant.name)}')"
-                        >
+                        <div class="favorite-card">
 
-                            <div
-                                class="favorite-image-wrapper"
-                            >
+                            <div class="favorite-image-wrapper">
 
                                 <img
                                     src="${
@@ -2936,10 +2931,7 @@ function renderFavoritePlaces() {
 
                             </div>
 
-
-                            <div
-                                class="favorite-content"
-                            >
+                            <div class="favorite-content">
 
                                 <h3>
                                     ${escapeHTML(
@@ -2947,22 +2939,14 @@ function renderFavoritePlaces() {
                                     )}
                                 </h3>
 
-
-                                <p
-                                    class="favorite-location"
-                                >
-                                    ${
-                                        escapeHTML(
-                                            restaurant.location ||
-                                            "Lokasi tidak tersedia"
-                                        )
-                                    }
+                                <p class="favorite-location">
+                                    ${escapeHTML(
+                                        restaurant.location ||
+                                        "Lokasi tidak tersedia"
+                                    )}
                                 </p>
 
-
-                                <div
-                                    class="favorite-rating"
-                                >
+                                <div class="favorite-rating">
 
                                     <span>
                                         ${stars}
@@ -2974,16 +2958,15 @@ function renderFavoritePlaces() {
 
                                 </div>
 
+                                <div class="favorite-review-count">
 
-                                <div
-                                    class="favorite-review-count"
-                                >
                                     ${restaurant.reviewCount}
                                     ${
                                         restaurant.reviewCount === 1
                                             ? "review"
                                             : "reviews"
                                     }
+
                                 </div>
 
                             </div>
@@ -2999,140 +2982,121 @@ function renderFavoritePlaces() {
 }
 
 
-function escapeFavoriteText(
-    text
-) {
+// =====================================================
+// LITTLE NOTES
+// =====================================================
 
-    return String(text)
-        .replace(
-            /\\/g,
-            "\\\\"
-        )
-        .replace(
-            /'/g,
-            "\\'"
-        )
-        .replace(
-            /"/g,
-            '\\"'
+const littleNotes = [
+
+    "Meals always taste better together ♡",
+
+    "One table, countless stories.",
+
+    "Every place holds a story of its own.",
+
+    "May there always be new places for us to discover.",
+
+    "Food first, memories forever.",
+
+    "Sometimes, a meal becomes a memory.",
+
+    "From one place to another.",
+
+    "May this little list keep growing.",
+
+    "Small moments can become the sweetest memories.",
+
+    "One review, one little story.",
+
+    "Different places, the same memories.",
+
+    "Some meals become memories.",
+
+    "It was never just about the food.",
+
+    "May we always find good food and new stories.",
+
+    "A little food diary of us.",
+
+    "Keeping our little stories here ♡",
+
+    "Every table has a story.",
+
+    "Eat, talk, and keep the memories.",
+
+    "Another place, another memory.",
+
+    "For all the little stories we have shared."
+
+];
+
+
+function showRandomLittleNote() {
+
+    const noteText =
+        document.getElementById(
+            "little-note-text"
         );
 
-}
+
+    if (!noteText) {
+
+        return;
+
+    }
 
 
-function openFavoriteRestaurant(
-    restaurantName
-) {
-
-    const restaurants =
-        JSON.parse(
-            localStorage.getItem(
-                "restaurants"
-            )
-        ) || [];
+    const lastNote =
+        localStorage.getItem(
+            "lastLittleNote"
+        );
 
 
-    const restaurant =
-        restaurants.find(
-            function(item) {
+    let availableNotes =
+        littleNotes.filter(
+            function(note) {
 
                 return (
-                    item.name ===
-                    restaurantName
+                    note !==
+                    lastNote
                 );
 
             }
         );
 
 
-    if (!restaurant) {
+    if (
+        availableNotes.length === 0
+    ) {
 
-        alert(
-            "Restoran ini sudah tidak tersedia."
-        );
-
-        return;
+        availableNotes =
+            littleNotes;
 
     }
 
-
-    localStorage.setItem(
-        "currentRestaurant",
-        JSON.stringify(
-            restaurant
-        )
-    );
-
-
-    window.location.href =
-        "restaurant.html";
-
-}
-
-
-// =====================================================
-// LITTLE NOTES
-// =====================================================
-
-const littleNotes = [
-    "Meals always taste better together ♡",
-    "One table, countless stories.",
-    "Every place holds a story of its own.",
-    "May there always be new places for us to discover.",
-    "Food first, memories forever.",
-    "Sometimes, a meal becomes a memory.",
-    "From one place to another.",
-    "May this little list keep growing.",
-    "Small moments can become the sweetest memories.",
-    "One review, one little story.",
-    "Different places, the same memories.",
-    "Some meals become memories.",
-    "It was never just about the food.",
-    "May we always find good food and new stories.",
-    "A little food diary of us.",
-    "Keeping our little stories here ♡",
-    "Every table has a story.",
-    "Eat, talk, and keep the memories.",
-    "Another place, another memory.",
-    "For all the little stories we have shared."
-];
-
-function showRandomLittleNote() {
-
-    const noteText =
-        document.getElementById("little-note-text");
-
-    if (!noteText) {
-        return;
-    }
-
-    let lastNote =
-        localStorage.getItem("lastLittleNote");
-
-    let availableNotes =
-        littleNotes.filter(function(note) {
-            return note !== lastNote;
-        });
-
-    if (availableNotes.length === 0) {
-        availableNotes = littleNotes;
-    }
 
     const randomIndex =
         Math.floor(
-            Math.random() * availableNotes.length
+            Math.random() *
+            availableNotes.length
         );
 
+
     const selectedNote =
-        availableNotes[randomIndex];
+        availableNotes[
+            randomIndex
+        ];
+
 
     noteText.textContent =
         selectedNote;
+
 
     localStorage.setItem(
         "lastLittleNote",
         selectedNote
     );
+
 }
 
 
@@ -3142,48 +3106,40 @@ function showRandomLittleNote() {
 
 function renderLittleThings() {
 
-    const mostVisited =
+    const mostVisitedElement =
         document.getElementById(
-            "most-visited-value"
+            "most-visited-place"
         );
 
 
-    const ellaReviews =
+    const ellaCountElement =
         document.getElementById(
-            "ella-reviews-value"
+            "ella-review-count"
         );
 
 
-    const arkaReviews =
+    const arkaCountElement =
         document.getElementById(
-            "arka-reviews-value"
+            "arka-review-count"
         );
 
 
-    const totalMemories =
+    const totalMemoryElement =
         document.getElementById(
-            "total-memories-value"
+            "total-memory-count"
         );
 
 
     if (
-        !mostVisited &&
-        !ellaReviews &&
-        !arkaReviews &&
-        !totalMemories
+        !mostVisitedElement &&
+        !ellaCountElement &&
+        !arkaCountElement &&
+        !totalMemoryElement
     ) {
 
         return;
 
     }
-
-
-    const restaurants =
-        JSON.parse(
-            localStorage.getItem(
-                "restaurants"
-            )
-        ) || [];
 
 
     const reviews =
@@ -3194,78 +3150,15 @@ function renderLittleThings() {
         ) || [];
 
 
-    // =========================
-    // MOST VISITED
-    // =========================
+    if (totalMemoryElement) {
 
-    const visitCount = {};
-
-
-    reviews.forEach(
-        function(review) {
-
-            const name =
-                review.restaurantName;
-
-
-            if (!name) {
-                return;
-            }
-
-
-            visitCount[name] =
-                (
-                    visitCount[name] ||
-                    0
-                ) + 1;
-
-        }
-    );
-
-
-    let mostVisitedName =
-        "-";
-
-
-    let highestVisit =
-        0;
-
-
-    Object.keys(
-        visitCount
-    ).forEach(
-        function(name) {
-
-            if (
-                visitCount[name] >
-                highestVisit
-            ) {
-
-                highestVisit =
-                    visitCount[name];
-
-                mostVisitedName =
-                    name;
-
-            }
-
-        }
-    );
-
-
-    if (mostVisited) {
-
-        mostVisited.textContent =
-            mostVisitedName;
+        totalMemoryElement.textContent =
+            reviews.length;
 
     }
 
 
-    // =========================
-    // ELLA REVIEWS
-    // =========================
-
-    const ellaCount =
+    const ellaReviews =
         reviews.filter(
             function(review) {
 
@@ -3282,22 +3175,18 @@ function renderLittleThings() {
                 );
 
             }
-        ).length;
+        );
 
 
-    if (ellaReviews) {
+    if (ellaCountElement) {
 
-        ellaReviews.textContent =
-            ellaCount;
+        ellaCountElement.textContent =
+            ellaReviews.length;
 
     }
 
 
-    // =========================
-    // ARKA REVIEWS
-    // =========================
-
-    const arkaCount =
+    const arkaReviews =
         reviews.filter(
             function(review) {
 
@@ -3314,25 +3203,86 @@ function renderLittleThings() {
                 );
 
             }
-        ).length;
+        );
 
 
-    if (arkaReviews) {
+    if (arkaCountElement) {
 
-        arkaReviews.textContent =
-            arkaCount;
+        arkaCountElement.textContent =
+            arkaReviews.length;
 
     }
 
 
-    // =========================
-    // TOTAL MEMORIES
-    // =========================
+    const restaurantVisits =
+        {};
 
-    if (totalMemories) {
 
-        totalMemories.textContent =
-            reviews.length;
+    reviews.forEach(
+        function(review) {
+
+            const restaurant =
+                review.restaurantName;
+
+
+            if (!restaurant) {
+
+                return;
+
+            }
+
+
+            restaurantVisits[
+                restaurant
+            ] =
+                (
+                    restaurantVisits[
+                        restaurant
+                    ] || 0
+                ) + 1;
+
+        }
+    );
+
+
+    const visitedPlaces =
+        Object.entries(
+            restaurantVisits
+        );
+
+
+    if (
+        visitedPlaces.length === 0
+    ) {
+
+        if (mostVisitedElement) {
+
+            mostVisitedElement.textContent =
+                "—";
+
+        }
+
+        return;
+
+    }
+
+
+    visitedPlaces.sort(
+        function(a, b) {
+
+            return (
+                b[1] -
+                a[1]
+            );
+
+        }
+    );
+
+
+    if (mostVisitedElement) {
+
+        mostVisitedElement.textContent =
+            visitedPlaces[0][0];
 
     }
 
@@ -3340,12 +3290,14 @@ function renderLittleThings() {
 
 
 // =====================================================
-// DASHBOARD EXTRA FEATURES
+// DASHBOARD DOM READY
 // =====================================================
 
 document.addEventListener(
     "DOMContentLoaded",
     function() {
+
+        renderFoodJourney();
 
         renderFavoritePlaces();
 
@@ -3355,23 +3307,6 @@ document.addEventListener(
 
     }
 );
-
-
-// =====================================================
-// REFRESH DATA SETELAH PERUBAHAN
-// =====================================================
-
-function refreshDashboardSections() {
-
-    renderFavoritePlaces();
-
-    showRandomLittleNote();
-
-    renderLittleThings();
-
-    renderFoodJourney();
-
-}
 
 
 // =====================================================
@@ -3407,18 +3342,42 @@ function escapeHTML(
 }
 
 
+function escapeFavoriteText(
+    text
+) {
+
+    return String(text)
+        .replace(
+            /\\/g,
+            "\\\\"
+        )
+        .replace(
+            /'/g,
+            "\\'"
+        )
+        .replace(
+            /"/g,
+            '\\"'
+        );
+
+}
+
+
 // =====================================================
 // BACK TO TOP
 // =====================================================
 
 function scrollToTop() {
 
-    window.scrollTo(
-        {
-            top: 0,
-            behavior: "smooth"
-        }
-    );
+    window.scrollTo({
+
+        top:
+            0,
+
+        behavior:
+            "smooth"
+
+    });
 
 }
 
@@ -3458,215 +3417,6 @@ function isReviewPage() {
     );
 
 }
-
-/* =====================================================
-   LITTLE THINGS ABOUT US - STATISTICS
-===================================================== */
-
-function renderLittleThings() {
-
-    const mostVisitedElement =
-        document.getElementById(
-            "most-visited-place"
-        );
-
-
-    const ellaCountElement =
-        document.getElementById(
-            "ella-review-count"
-        );
-
-
-    const arkaCountElement =
-        document.getElementById(
-            "arka-review-count"
-        );
-
-
-    const totalMemoryElement =
-        document.getElementById(
-            "total-memory-count"
-        );
-
-
-    if (
-        !mostVisitedElement ||
-        !ellaCountElement ||
-        !arkaCountElement ||
-        !totalMemoryElement
-    ) {
-
-        return;
-
-    }
-
-
-    const reviews =
-        JSON.parse(
-            localStorage.getItem(
-                "reviews"
-            )
-        ) || [];
-
-
-    // =========================
-    // TOTAL MEMORIES
-    // =========================
-
-    totalMemoryElement.textContent =
-        reviews.length;
-
-
-    // =========================
-    // REVIEW ELLA
-    // =========================
-
-    const ellaReviews =
-        reviews.filter(
-            function(review) {
-
-                const user =
-                    review.user ||
-                    review.reviewer ||
-                    review.user_name ||
-                    "";
-
-
-                return (
-                    user.toLowerCase() ===
-                    "ella"
-                );
-
-            }
-        );
-
-
-    ellaCountElement.textContent =
-        ellaReviews.length;
-
-
-    // =========================
-    // REVIEW ARKA
-    // =========================
-
-    const arkaReviews =
-        reviews.filter(
-            function(review) {
-
-                const user =
-                    review.user ||
-                    review.reviewer ||
-                    review.user_name ||
-                    "";
-
-
-                return (
-                    user.toLowerCase() ===
-                    "arka"
-                );
-
-            }
-        );
-
-
-    arkaCountElement.textContent =
-        arkaReviews.length;
-
-
-    // =========================
-    // MOST VISITED
-    // =========================
-
-    const restaurantVisits =
-        {};
-
-
-    reviews.forEach(
-        function(review) {
-
-            const restaurant =
-                review.restaurantName;
-
-
-            if (!restaurant) {
-
-                return;
-
-            }
-
-
-            if (
-                !restaurantVisits[
-                    restaurant
-                ]
-            ) {
-
-                restaurantVisits[
-                    restaurant
-                ] = 0;
-
-            }
-
-
-            restaurantVisits[
-                restaurant
-            ]++;
-
-        }
-    );
-
-
-    const visitedPlaces =
-        Object.entries(
-            restaurantVisits
-        );
-
-
-    if (
-        visitedPlaces.length ===
-        0
-    ) {
-
-        mostVisitedElement.textContent =
-            "—";
-
-        return;
-
-    }
-
-
-    visitedPlaces.sort(
-        function(a, b) {
-
-            return (
-                b[1] -
-                a[1]
-            );
-
-        }
-    );
-
-
-    const mostVisited =
-        visitedPlaces[0][0];
-
-
-    mostVisitedElement.textContent =
-        mostVisited;
-
-}
-
-
-// Jalankan saat dashboard dibuka
-
-document.addEventListener(
-    "DOMContentLoaded",
-    function() {
-
-        renderLittleThings();
-
-    }
-);
 
 
 // =====================================================
@@ -3719,45 +3469,37 @@ if (resetPasswordForm) {
             }
 
 
-            /*
-               Pastikan Supabase tersedia
-               sebelum mencoba update password.
-            */
-
-            if (
-                typeof supabaseClient ===
-                "undefined"
-            ) {
+            if (!hasSupabaseClient()) {
 
                 message.textContent =
                     "Koneksi Supabase belum tersedia ♡";
-
-                console.error(
-                    "supabaseClient tidak ditemukan."
-                );
 
                 return;
 
             }
 
 
-            const { error } =
-                await supabaseClient.auth.updateUser(
-                    {
+            const {
+                error
+            } =
+                await supabaseClient
+                    .auth
+                    .updateUser({
+
                         password:
                             newPassword
-                    }
-                );
+
+                    });
 
 
             if (error) {
 
-                message.textContent =
-                    "Gagal mengubah password ♡";
-
                 console.error(
                     error
                 );
+
+                message.textContent =
+                    "Gagal mengubah password ♡";
 
                 return;
 
@@ -3784,140 +3526,22 @@ if (resetPasswordForm) {
 }
 
 
-
 // =====================================================
-// SAFE SUPABASE CHECK
+// FINAL SAFETY HELPERS
 // =====================================================
 
-function hasSupabaseClient() {
+function safeLogout() {
 
-    return (
-        typeof window.supabaseClient !==
-        "undefined" &&
-        window.supabaseClient !==
-        null
-    );
+    logout();
 
 }
 
-
-// =====================================================
-// SAFE GET CURRENT USER
-// =====================================================
-
-async function getCurrentAuthUser() {
-
-    if (
-        !hasSupabaseClient()
-    ) {
-
-        console.warn(
-            "Supabase client tidak tersedia."
-        );
-
-        return null;
-
-    }
-
-
-    try {
-
-        const {
-            data,
-            error
-        } =
-            await window.supabaseClient.auth.getUser();
-
-
-        if (error) {
-
-            console.error(
-                "Gagal mengambil user:",
-                error
-            );
-
-            return null;
-
-        }
-
-
-        return (
-            data &&
-            data.user
-        )
-            ? data.user
-            : null;
-
-    } catch (error) {
-
-        console.error(
-            "Supabase error:",
-            error
-        );
-
-        return null;
-
-    }
-
-}
-
-
-// =====================================================
-// SAFE LOGOUT
-// =====================================================
-
-async function safeLogout() {
-
-    if (
-        hasSupabaseClient()
-    ) {
-
-        try {
-
-            await window.supabaseClient.auth.signOut();
-
-        } catch (error) {
-
-            console.error(
-                "Gagal logout dari Supabase:",
-                error
-            );
-
-        }
-
-    }
-
-
-    localStorage.removeItem(
-        "loggedIn"
-    );
-
-    localStorage.removeItem(
-        "selectedUser"
-    );
-
-    localStorage.removeItem(
-        "currentRestaurant"
-    );
-
-
-    window.location.href =
-        "index.html";
-
-}
-
-
-// =====================================================
-// PROTECT SUPABASE ACTION
-// =====================================================
 
 function requireSupabase(
     message
 ) {
 
-    if (
-        hasSupabaseClient()
-    ) {
+    if (hasSupabaseClient()) {
 
         return true;
 
@@ -3930,556 +3554,6 @@ function requireSupabase(
     );
 
 
-    console.error(
-        "window.supabaseClient tidak ditemukan."
-    );
-
-
     return false;
 
 }
-
-
-// =====================================================
-// FINAL PAGE INITIALIZATION
-// =====================================================
-
-document.addEventListener(
-"DOMContentLoaded",
-function () {
-
-
-    /*
-       Dashboard
-    */
-
-    if (
-        document.getElementById(
-            "food-journey-list"
-        )
-    ) {
-
-        renderFoodJourney();
-
-        renderInteractiveFoodJourney();
-
-        renderFavoritePlaces();
-
-        showRandomLittleNote();
-
-        renderLittleThings();
-
-    }
-
-
-    /*
-       Halaman restaurant
-    */
-
-    // ======================
-// RESTAURANT PAGE
-// ======================
-
-if (
-    document.getElementById(
-        "restaurant-detail"
-    )
-) {
-
-    console.log(
-        "Restaurant page loaded."
-    );
-
-
-    // ======================
-    // GET SELECTED RESTAURANT
-    // ======================
-
-    const restaurantId =
-        localStorage.getItem(
-            "selectedRestaurantId"
-        );
-
-
-    if (!restaurantId) {
-
-        console.error(
-            "Restaurant ID tidak ditemukan."
-        );
-
-    } else {
-
-        // ======================
-        // LOAD REVIEWS
-        // ======================
-
-        loadRestaurantReviews(
-            restaurantId
-        );
-
-    }
-
-    // =========================
-    // ADD REVIEW BUTTON
-    // =========================
-
-    const addReviewButton =
-        document.getElementById(
-            "add-review-button"
-        );
-
-
-    if (addReviewButton) {
-
-        addReviewButton.addEventListener(
-            "click",
-            function () {
-
-                const restaurantId =
-                    localStorage.getItem(
-                        "selectedRestaurantId"
-                    );
-
-
-                if (!restaurantId) {
-
-                    alert(
-                        "Restoran belum dipilih."
-                    );
-
-                    return;
-
-                }
-
-
-                window.location.href =
-                    "review.html";
-
-            }
-        );
-
-    }
-
-}
-
-    /*
-       Halaman Review
-    */
-
-    if (
-        document.getElementById(
-            "review-form"
-        )
-    ) {
-
-        console.log(
-            "Review page loaded."
-        );
-
-
-        const reviewForm =
-            document.getElementById(
-                "review-form"
-            );
-
-
-        const reviewText =
-            document.getElementById(
-                "review-text"
-            );
-
-
-        const photoInput =
-            document.getElementById(
-                "review-photo"
-            );
-
-
-        // =========================
-        // SUBMIT REVIEW
-        // =========================
-
-        reviewForm.addEventListener(
-            "submit",
-            async function (event) {
-
-                event.preventDefault();
-
-
-                console.log(
-                    "Submit review..."
-                );
-
-
-                // =========================
-                // CEK SUPABASE
-                // =========================
-
-                if (
-                    typeof supabaseClient ===
-                    "undefined"
-                ) {
-
-                    alert(
-                        "Koneksi database belum tersedia ♡"
-                    );
-
-                    return;
-
-                }
-
-
-                // =========================
-                // CEK RATING
-                // =========================
-
-                const rating =
-                    window.selectedRating || 0;
-
-
-                if (
-                    rating === 0
-                ) {
-
-                    alert(
-                        "Jangan lupa kasih rating dulu ♡"
-                    );
-
-                    return;
-
-                }
-
-
-                // =========================
-                // CEK REVIEW
-                // =========================
-
-                const text =
-                    reviewText.value.trim();
-
-
-                if (!text) {
-
-                    alert(
-                        "Tulis review kamu dulu ya ♡"
-                    );
-
-                    return;
-
-                }
-
-
-                // =========================
-                // USER LOGIN
-                // =========================
-
-                const {
-                    data: {
-                        user
-                    },
-                    error: userError
-                } =
-                    await supabaseClient
-                        .auth
-                        .getUser();
-
-
-                if (
-                    userError ||
-                    !user
-                ) {
-
-                    console.error(
-                        "User tidak ditemukan:",
-                        userError
-                    );
-
-                    alert(
-                        "Kamu harus login terlebih dahulu."
-                    );
-
-                    return;
-
-                }
-
-
-                // =========================
-                // CARI RESTORAN
-                // =========================
-
-                const restaurantId =
-                    localStorage.getItem(
-                        "selectedRestaurantId"
-                    );
-
-
-                if (!restaurantId) {
-
-                    alert(
-                        "Restoran belum dipilih."
-                    );
-
-                    console.error(
-                        "selectedRestaurantId tidak ditemukan."
-                    );
-
-                    return;
-
-                }
-
-
-                // =========================
-                // AMBIL PROFILE
-                // =========================
-
-                const {
-                    data: profile,
-                    error: profileError
-                } =
-                    await supabaseClient
-                        .from("profiles")
-                        .select("name")
-                        .eq(
-                            "id",
-                            user.id
-                        )
-                        .single();
-
-
-                if (
-                    profileError ||
-                    !profile
-                ) {
-
-                    console.error(
-                        "Profile error:",
-                        profileError
-                    );
-
-                    alert(
-                        "Data profile tidak ditemukan."
-                    );
-
-                    return;
-
-                }
-
-
-                // =========================
-                // SIMPAN REVIEW
-                // =========================
-
-                const {
-                    data: review,
-                    error: reviewError
-                } =
-                    await supabaseClient
-                        .from("reviews")
-                        .insert({
-
-                            restaurant_id:
-                                restaurantId,
-
-                            user_id:
-                                user.id,
-
-                            user_name:
-                                profile.name,
-
-                            rating:
-                                rating,
-
-                            review_text:
-                                text
-
-                        })
-                        .select()
-                        .single();
-
-
-                if (
-                    reviewError
-                ) {
-
-                    console.error(
-                        "Gagal menyimpan review:",
-                        reviewError
-                    );
-
-                    alert(
-                        "Review gagal disimpan ♡"
-                    );
-
-                    return;
-
-                }
-
-
-                console.log(
-                    "Review berhasil disimpan:",
-                    review
-                );
-
-
-                // =========================
-                // SIMPAN FOTO
-                // =========================
-
-                if (
-                    photoInput &&
-                    photoInput.files.length > 0
-                ) {
-
-                    const files =
-                        Array.from(
-                            photoInput.files
-                        ).slice(
-                            0,
-                            5
-                        );
-
-
-                    for (
-                        const file of files
-                    ) {
-
-                        try {
-
-                            let compressed =
-                                file;
-
-
-                            // Compress kalau fungsi tersedia
-                            if (
-                                typeof compressImage ===
-                                "function"
-                            ) {
-
-                                compressed =
-                                    await compressImage(
-                                        file
-                                    );
-
-                            }
-
-
-                            const fileName =
-                                user.id +
-                                "/" +
-                                Date.now() +
-                                "-" +
-                                Math.random()
-                                    .toString(36)
-                                    .substring(
-                                        2,
-                                        8
-                                    ) +
-                                ".jpg";
-
-
-                            // =========================
-                            // UPLOAD FOTO
-                            // =========================
-
-                            const {
-                                error:
-                                    uploadError
-                            } =
-                                await supabaseClient
-                                    .storage
-                                    .from(
-                                        "review-photos"
-                                    )
-                                    .upload(
-                                        fileName,
-                                        compressed,
-                                        {
-                                            contentType:
-                                                "image/jpeg"
-                                        }
-                                    );
-
-
-                            if (
-                                uploadError
-                            ) {
-
-                                console.error(
-                                    "Foto gagal diupload:",
-                                    uploadError
-                                );
-
-                                continue;
-
-                            }
-
-
-                            // =========================
-                            // SIMPAN DATA FOTO
-                            // =========================
-
-                            const {
-                                error:
-                                    photoError
-                            } =
-                                await supabaseClient
-                                    .from(
-                                        "review_photos"
-                                    )
-                                    .insert({
-
-                                        review_id:
-                                            review.id,
-
-                                        photo_url:
-                                            fileName
-
-                                    });
-
-
-                            if (
-                                photoError
-                            ) {
-
-                                console.error(
-                                    "Data foto gagal disimpan:",
-                                    photoError
-                                );
-
-                            }
-
-                        } catch (
-                            error
-                        ) {
-
-                            console.error(
-                                "Error foto:",
-                                error
-                            );
-
-                        }
-
-                    }
-
-                }
-
-
-                // =========================
-                // SELESAI
-                // =========================
-
-                alert(
-                    "Review berhasil disimpan ♡"
-                );
-
-
-                window.location.href =
-                    "restaurant.html";
-
-            }
-        );
-
-    }
-
-
-}); 
