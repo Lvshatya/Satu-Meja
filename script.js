@@ -2451,7 +2451,7 @@ document.addEventListener(
 // FOOD JOURNEY
 // =====================================================
 
-function renderFoodJourney() {
+window.renderFavoritePlaces = async function() {
 
     const restaurants =
         JSON.parse(
