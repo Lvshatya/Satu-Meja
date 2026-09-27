@@ -3018,7 +3018,7 @@ function showRandomLittleNote() {
 // LITTLE THINGS ABOUT US
 // =====================================================
 
-function renderLittleThings() {
+async function renderLittleThings() {
 
     const mostVisitedElement =
         document.getElementById(
@@ -3056,147 +3056,278 @@ function renderLittleThings() {
     }
 
 
-    const reviews =
-        JSON.parse(
-            localStorage.getItem(
-                "reviews"
-            )
-        ) || [];
+    if (!hasSupabaseClient()) {
 
-
-    if (totalMemoryElement) {
-
-        totalMemoryElement.textContent =
-            reviews.length;
-
-    }
-
-
-    const ellaReviews =
-        reviews.filter(
-            function(review) {
-
-                const user =
-                    review.user ||
-                    review.reviewer ||
-                    review.user_name ||
-                    "";
-
-
-                return (
-                    user.toLowerCase() ===
-                    "ella"
-                );
-
-            }
+        console.error(
+            "Supabase client tidak tersedia."
         );
-
-
-    if (ellaCountElement) {
-
-        ellaCountElement.textContent =
-            ellaReviews.length;
-
-    }
-
-
-    const arkaReviews =
-        reviews.filter(
-            function(review) {
-
-                const user =
-                    review.user ||
-                    review.reviewer ||
-                    review.user_name ||
-                    "";
-
-
-                return (
-                    user.toLowerCase() ===
-                    "arka"
-                );
-
-            }
-        );
-
-
-    if (arkaCountElement) {
-
-        arkaCountElement.textContent =
-            arkaReviews.length;
-
-    }
-
-
-    const restaurantVisits =
-        {};
-
-
-    reviews.forEach(
-        function(review) {
-
-            const restaurant =
-                review.restaurantName;
-
-
-            if (!restaurant) {
-
-                return;
-
-            }
-
-
-            restaurantVisits[
-                restaurant
-            ] =
-                (
-                    restaurantVisits[
-                        restaurant
-                    ] || 0
-                ) + 1;
-
-        }
-    );
-
-
-    const visitedPlaces =
-        Object.entries(
-            restaurantVisits
-        );
-
-
-    if (
-        visitedPlaces.length === 0
-    ) {
-
-        if (mostVisitedElement) {
-
-            mostVisitedElement.textContent =
-                "—";
-
-        }
 
         return;
 
     }
 
 
-    visitedPlaces.sort(
-        function(a, b) {
+    try {
 
-            return (
-                b[1] -
-                a[1]
+        // =====================================================
+        // AMBIL SEMUA REVIEW DARI SUPABASE
+        // =====================================================
+
+        const {
+            data: reviews,
+            error: reviewError
+        } =
+            await supabaseClient
+                .from("reviews")
+                .select(`
+                    id,
+                    restaurant_id,
+                    user_name
+                `);
+
+
+        if (reviewError) {
+
+            console.error(
+                "Gagal mengambil reviews:",
+                reviewError
             );
 
+            return;
+
         }
-    );
 
 
-    if (mostVisitedElement) {
+        const allReviews =
+            reviews || [];
 
-        mostVisitedElement.textContent =
+
+        // =====================================================
+        // TOTAL MEMORIES
+        // =====================================================
+
+        if (totalMemoryElement) {
+
+            totalMemoryElement.textContent =
+                allReviews.length;
+
+        }
+
+
+        // =====================================================
+        // ELLA'S REVIEWS
+        // =====================================================
+
+        const ellaReviews =
+            allReviews.filter(
+                function(review) {
+
+                    const user =
+                        String(
+                            review.user_name || ""
+                        ).trim().toLowerCase();
+
+
+                    return user === "ella";
+
+                }
+            );
+
+
+        if (ellaCountElement) {
+
+            ellaCountElement.textContent =
+                ellaReviews.length;
+
+        }
+
+
+        // =====================================================
+        // ARKA'S REVIEWS
+        // =====================================================
+
+        const arkaReviews =
+            allReviews.filter(
+                function(review) {
+
+                    const user =
+                        String(
+                            review.user_name || ""
+                        ).trim().toLowerCase();
+
+
+                    return user === "arka";
+
+                }
+            );
+
+
+        if (arkaCountElement) {
+
+            arkaCountElement.textContent =
+                arkaReviews.length;
+
+        }
+
+
+        // =====================================================
+        // AMBIL DATA RESTAURANT
+        // =====================================================
+
+        const {
+            data: restaurants,
+            error: restaurantError
+        } =
+            await supabaseClient
+                .from("restaurants")
+                .select(`
+                    id,
+                    name
+                `);
+
+
+        if (restaurantError) {
+
+            console.error(
+                "Gagal mengambil restaurants:",
+                restaurantError
+            );
+
+            return;
+
+        }
+
+
+        // =====================================================
+        // HITUNG MOST VISITED
+        // =====================================================
+
+        const restaurantVisits = {};
+
+
+        allReviews.forEach(
+            function(review) {
+
+                const restaurantId =
+                    review.restaurant_id;
+
+
+                if (!restaurantId) {
+
+                    return;
+
+                }
+
+
+                if (
+                    !restaurantVisits[
+                        restaurantId
+                    ]
+                ) {
+
+                    restaurantVisits[
+                        restaurantId
+                    ] = 0;
+
+                }
+
+
+                restaurantVisits[
+                    restaurantId
+                ]++;
+
+            }
+        );
+
+
+        const visitedPlaces =
+            Object.entries(
+                restaurantVisits
+            );
+
+
+        // =====================================================
+        // BELUM ADA REVIEW
+        // =====================================================
+
+        if (
+            visitedPlaces.length === 0
+        ) {
+
+            if (mostVisitedElement) {
+
+                mostVisitedElement.textContent =
+                    "—";
+
+            }
+
+            return;
+
+        }
+
+
+        // =====================================================
+        // URUTKAN DARI YANG PALING SERING DIREVIEW
+        // =====================================================
+
+        visitedPlaces.sort(
+            function(a, b) {
+
+                return (
+                    b[1] -
+                    a[1]
+                );
+
+            }
+        );
+
+
+        const mostVisitedId =
             visitedPlaces[0][0];
+
+
+        const mostVisitedRestaurant =
+            (restaurants || []).find(
+                function(restaurant) {
+
+                    return (
+                        restaurant.id ===
+                        mostVisitedId
+                    );
+
+                }
+            );
+
+
+        // =====================================================
+        // TAMPILKAN MOST VISITED
+        // =====================================================
+
+        if (mostVisitedElement) {
+
+            if (
+                mostVisitedRestaurant
+            ) {
+
+                mostVisitedElement.textContent =
+                    mostVisitedRestaurant.name;
+
+            } else {
+
+                mostVisitedElement.textContent =
+                    "—";
+
+            }
+
+        }
+
+
+    } catch (error) {
+
+        console.error(
+            "Error Little Things About Us:",
+            error
+        );
 
     }
 
