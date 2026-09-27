@@ -870,38 +870,45 @@ async function loadRestaurantReviews(
         restaurantId
     );
 
-
     const reviewsContainer =
         document.getElementById(
             "saved-reviews"
         );
 
-
     if (!reviewsContainer) {
-
         console.error(
             "saved-reviews tidak ditemukan."
         );
-
         return;
-
     }
 
-
     if (!hasSupabaseClient()) {
-
         console.error(
             "Supabase belum tersedia."
         );
-
         return;
-
     }
-
 
     reviewsContainer.innerHTML =
         "<p>Memuat review...</p>";
 
+    // ==============================
+    // USER YANG SEDANG LOGIN
+    // ==============================
+
+    const {
+        data: {
+            user: authUser
+        }
+    } =
+        await supabaseClient
+            .auth
+            .getUser();
+
+
+    // ==============================
+    // AMBIL REVIEW
+    // ==============================
 
     const {
         data: reviews,
@@ -909,9 +916,9 @@ async function loadRestaurantReviews(
     } =
         await supabaseClient
             .from("reviews")
-            .select(
-                `
+            .select(`
                 id,
+                user_id,
                 user_name,
                 rating,
                 review_text,
@@ -920,8 +927,7 @@ async function loadRestaurantReviews(
                     id,
                     photo_url
                 )
-                `
-            )
+            `)
             .eq(
                 "restaurant_id",
                 restaurantId
@@ -941,21 +947,15 @@ async function loadRestaurantReviews(
             error
         );
 
-
         reviewsContainer.innerHTML = `
-
             <div class="review-card">
-
                 <p class="review-text">
                     Gagal memuat review.
                 </p>
-
             </div>
-
         `;
 
         return;
-
     }
 
 
@@ -971,25 +971,23 @@ async function loadRestaurantReviews(
     ) {
 
         reviewsContainer.innerHTML = `
-
             <div class="review-card">
-
                 <p class="review-text">
                     Belum ada review untuk restoran ini.
                 </p>
-
             </div>
-
         `;
 
         return;
-
     }
 
 
-    reviewsContainer.innerHTML =
-        "";
+    reviewsContainer.innerHTML = "";
 
+
+    // ==============================
+    // RENDER SETIAP REVIEW
+    // ==============================
 
     for (
         const review of reviews
@@ -1000,7 +998,6 @@ async function loadRestaurantReviews(
                 "div"
             );
 
-
         card.className =
             "review-card";
 
@@ -1009,7 +1006,6 @@ async function loadRestaurantReviews(
             Number(
                 review.rating || 0
             );
-
 
         const stars =
             "⭐".repeat(
@@ -1021,7 +1017,6 @@ async function loadRestaurantReviews(
             new Date(
                 review.created_at
             );
-
 
         const formattedDate =
             date.toLocaleDateString(
@@ -1039,8 +1034,11 @@ async function loadRestaurantReviews(
             );
 
 
-        let photosHTML =
-            "";
+        // ==============================
+        // FOTO REVIEW
+        // ==============================
+
+        let photosHTML = "";
 
 
         if (
@@ -1052,7 +1050,8 @@ async function loadRestaurantReviews(
 
 
             for (
-                const photo of review.review_photos
+                const photo of
+                review.review_photos
             ) {
 
                 let photoURL =
@@ -1091,13 +1090,11 @@ async function loadRestaurantReviews(
                         );
 
                         continue;
-
                     }
 
 
                     photoURL =
                         signedData?.signedUrl;
-
                 }
 
 
@@ -1108,7 +1105,6 @@ async function loadRestaurantReviews(
                     );
 
                 }
-
             }
 
 
@@ -1125,14 +1121,16 @@ async function loadRestaurantReviews(
                     function(photoURL) {
 
                         photosHTML += `
-
                             <img
-                                src="${escapeHTML(photoURL)}"
+                                src="${escapeHTML(
+                                    photoURL
+                                )}"
                                 class="review-photo"
                                 alt="Foto review"
-                                onclick="openReviewPhoto('${escapeFavoriteText(photoURL)}')"
+                                onclick="openReviewPhoto('${escapeFavoriteText(
+                                    photoURL
+                                )}')"
                             >
-
                         `;
 
                     }
@@ -1142,11 +1140,51 @@ async function loadRestaurantReviews(
                 photosHTML += `
                     </div>
                 `;
-
             }
-
         }
 
+
+        // ==============================
+        // TOMBOL EDIT / HAPUS
+        // HANYA UNTUK PEMILIK REVIEW
+        // ==============================
+
+        let reviewActions = "";
+
+
+        if (
+            authUser &&
+            review.user_id ===
+                authUser.id
+        ) {
+
+            reviewActions = `
+                <div class="review-actions">
+
+                    <button
+                        type="button"
+                        class="edit-review-button"
+                        onclick="editReview('${review.id}')"
+                    >
+                        ✏️ Edit
+                    </button>
+
+                    <button
+                        type="button"
+                        class="delete-review-button"
+                        onclick="deleteReview('${review.id}')"
+                    >
+                        🗑️ Hapus
+                    </button>
+
+                </div>
+            `;
+        }
+
+
+        // ==============================
+        // ISI CARD
+        // ==============================
 
         card.innerHTML = `
 
@@ -1185,16 +1223,336 @@ async function loadRestaurantReviews(
 
             ${photosHTML}
 
+
+            ${reviewActions}
+
         `;
 
 
         reviewsContainer.appendChild(
             card
         );
-
     }
-
 }
+
+
+// =====================================================
+// EDIT REVIEW
+// =====================================================
+
+window.editReview =
+    async function(reviewId) {
+
+        if (
+            !hasSupabaseClient()
+        ) {
+            return;
+        }
+
+
+        const {
+            data: {
+                user: authUser
+            }
+        } =
+            await supabaseClient
+                .auth
+                .getUser();
+
+
+        if (!authUser) {
+
+            alert(
+                "Kamu belum login ♡"
+            );
+
+            return;
+        }
+
+
+        // Ambil review
+        const {
+            data: review,
+            error: reviewError
+        } =
+            await supabaseClient
+                .from("reviews")
+                .select(`
+                    id,
+                    user_id,
+                    review_text
+                `)
+                .eq(
+                    "id",
+                    reviewId
+                )
+                .single();
+
+
+        if (
+            reviewError ||
+            !review
+        ) {
+
+            console.error(
+                reviewError
+            );
+
+            alert(
+                "Review tidak ditemukan."
+            );
+
+            return;
+        }
+
+
+        // Pastikan pemilik review
+        if (
+            review.user_id !==
+            authUser.id
+        ) {
+
+            alert(
+                "Kamu hanya bisa mengedit review milikmu sendiri."
+            );
+
+            return;
+        }
+
+
+        const newText =
+            prompt(
+                "Edit review kamu:",
+                review.review_text || ""
+            );
+
+
+        if (
+            newText === null
+        ) {
+            return;
+        }
+
+
+        if (
+            newText.trim() === ""
+        ) {
+
+            alert(
+                "Review tidak boleh kosong."
+            );
+
+            return;
+        }
+
+
+        // Update Supabase
+        const {
+            error: updateError
+        } =
+            await supabaseClient
+                .from("reviews")
+                .update({
+                    review_text:
+                        newText.trim()
+                })
+                .eq(
+                    "id",
+                    reviewId
+                )
+                .eq(
+                    "user_id",
+                    authUser.id
+                );
+
+
+        if (updateError) {
+
+            console.error(
+                updateError
+            );
+
+            alert(
+                "Review gagal diperbarui ♡"
+            );
+
+            return;
+        }
+
+
+        alert(
+            "Review berhasil diperbarui ♡"
+        );
+
+
+        location.reload();
+    };
+
+
+// =====================================================
+// HAPUS REVIEW
+// =====================================================
+
+window.deleteReview =
+    async function(reviewId) {
+
+        if (
+            !hasSupabaseClient()
+        ) {
+            return;
+        }
+
+
+        const {
+            data: {
+                user: authUser
+            }
+        } =
+            await supabaseClient
+                .auth
+                .getUser();
+
+
+        if (!authUser) {
+
+            alert(
+                "Kamu belum login ♡"
+            );
+
+            return;
+        }
+
+
+        // Ambil review
+        const {
+            data: review,
+            error: reviewError
+        } =
+            await supabaseClient
+                .from("reviews")
+                .select(`
+                    id,
+                    user_id
+                `)
+                .eq(
+                    "id",
+                    reviewId
+                )
+                .single();
+
+
+        if (
+            reviewError ||
+            !review
+        ) {
+
+            console.error(
+                reviewError
+            );
+
+            alert(
+                "Review tidak ditemukan."
+            );
+
+            return;
+        }
+
+
+        // Pastikan pemilik review
+        if (
+            review.user_id !==
+            authUser.id
+        ) {
+
+            alert(
+                "Kamu hanya bisa menghapus review milikmu sendiri."
+            );
+
+            return;
+        }
+
+
+        const confirmation =
+            confirm(
+                "Yakin mau menghapus review ini?"
+            );
+
+
+        if (
+            !confirmation
+        ) {
+            return;
+        }
+
+
+        // ==============================
+        // HAPUS FOTO DARI DATABASE
+        // ==============================
+
+        const {
+            error: photoDeleteError
+        } =
+            await supabaseClient
+                .from("review_photos")
+                .delete()
+                .eq(
+                    "review_id",
+                    reviewId
+                );
+
+
+        if (
+            photoDeleteError
+        ) {
+
+            console.error(
+                "Gagal menghapus foto review:",
+                photoDeleteError
+            );
+        }
+
+
+        // ==============================
+        // HAPUS REVIEW
+        // ==============================
+
+        const {
+            error: deleteError
+        } =
+            await supabaseClient
+                .from("reviews")
+                .delete()
+                .eq(
+                    "id",
+                    reviewId
+                )
+                .eq(
+                    "user_id",
+                    authUser.id
+                );
+
+
+        if (deleteError) {
+
+            console.error(
+                deleteError
+            );
+
+            alert(
+                "Review gagal dihapus ♡"
+            );
+
+            return;
+        }
+
+
+        alert(
+            "Review berhasil dihapus ♡"
+        );
+
+
+        location.reload();
+    };
 
 
 // =====================================================

@@ -1892,7 +1892,7 @@ css
 
 .favorite-place-image {
     width: 100%;
-    height: 180px;
+    height: 130px;
     object-fit: cover;
     display: block;
 }
@@ -1983,7 +1983,7 @@ css
     }
 
     .favorite-place-image {
-        height: 200px;
+        height: 150px;
     }
 }
 
