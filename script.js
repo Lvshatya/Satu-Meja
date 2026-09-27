@@ -2605,7 +2605,7 @@ async function renderFoodJourney() {
                     review.review_text ||
                     "Tidak ada cerita untuk review ini.";
 
-                return `
+                return 
                     <div class="journey-item">
 
                         <div class="journey-date">
@@ -2641,7 +2641,7 @@ async function renderFoodJourney() {
                         </div>
 
                     </div>
-                `;
+                ;
             })
             .join("");
 
@@ -2714,7 +2714,7 @@ async function renderFavoritePlaces() {
         const reviewData = reviews || [];
 
         if (restaurantData.length === 0) {
-            container.innerHTML = `
+            container.innerHTML = 
                 <div class="favorite-empty">
                     <p>Belum ada tempat favorit ♡</p>
 
@@ -2723,7 +2723,7 @@ async function renderFavoritePlaces() {
                         mengumpulkan tempat favorit.
                     </small>
                 </div>
-            `;
+            ;
             return;
         }
 
