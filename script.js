@@ -2470,230 +2470,178 @@ function renderFoodJourney() {
         document.getElementById(
             "journey-review-count"
         );
+async function renderFoodJourney() {
+    const placeCount = document.getElementById("journey-place-count");
+    const reviewCount = document.getElementById("journey-review-count");
+    const averageRating = document.getElementById("journey-average-rating");
+    const journeyList = document.getElementById("food-journey-list");
 
-
-    const averageRating =
-        document.getElementById(
-            "journey-average-rating"
-        );
-
-
-    const journeyList =
-        document.getElementById(
-            "food-journey-list"
-        );
-
-
-    if (
-        !placeCount ||
-        !reviewCount ||
-        !averageRating ||
-        !journeyList
-    ) {
-
+    if (!placeCount || !reviewCount || !averageRating || !journeyList) {
         return;
-
     }
 
+    if (!hasSupabaseClient()) {
+        console.error("Supabase client tidak tersedia.");
+        return;
+    }
 
-    placeCount.textContent =
-        restaurants.length;
+    try {
+        // Ambil semua restoran
+        const { data: restaurants, error: restaurantError } =
+            await supabaseClient
+                .from("restaurants")
+                .select("id, name");
 
+        if (restaurantError) {
+            console.error(
+                "Gagal mengambil restoran untuk Food Journey:",
+                restaurantError
+            );
+            return;
+        }
 
-    reviewCount.textContent =
-        reviews.length;
+        // Ambil semua review + nama restoran
+        const { data: reviews, error: reviewError } =
+            await supabaseClient
+                .from("reviews")
+                .select(`
+                    id,
+                    restaurant_id,
+                    user_name,
+                    rating,
+                    review_text,
+                    created_at,
+                    restaurants (
+                        name
+                    )
+                `)
+                .order("created_at", {
+                    ascending: false
+                });
 
+        if (reviewError) {
+            console.error(
+                "Gagal mengambil review untuk Food Journey:",
+                reviewError
+            );
+            return;
+        }
 
-    if (
-        reviews.length > 0
-    ) {
+        const restaurantData = restaurants || [];
+        const reviewData = reviews || [];
 
-        const totalRating =
-            reviews.reduce(
-                function(
-                    total,
-                    review
-                ) {
+        // Jumlah tempat
+        placeCount.textContent = restaurantData.length;
 
-                    return (
-                        total +
-                        Number(
-                            review.rating || 0
-                        )
-                    );
+        // Jumlah review
+        reviewCount.textContent = reviewData.length;
 
+        // Rata-rata rating
+        if (reviewData.length > 0) {
+            const totalRating = reviewData.reduce(
+                function (total, review) {
+                    return total + Number(review.rating || 0);
                 },
                 0
             );
 
-
-        averageRating.textContent =
-            (
-                totalRating /
-                reviews.length
+            averageRating.textContent = (
+                totalRating / reviewData.length
             ).toFixed(1);
+        } else {
+            averageRating.textContent = "0.0";
+        }
 
-    } else {
+        // Belum ada review
+        if (reviewData.length === 0) {
+            journeyList.innerHTML = `
+                <div class="journey-empty">
+                    <p>Belum ada cerita di sini ♡</p>
+                    <small>
+                        Tambahkan review pertama kalian
+                        untuk mulai food journey.
+                    </small>
+                </div>
+            `;
+            return;
+        }
 
-        averageRating.textContent =
-            "0.0";
-
-    }
-
-
-    if (
-        reviews.length === 0
-    ) {
-
-        journeyList.innerHTML = `
-
-            <div class="journey-empty">
-
-                <p>
-                    Belum ada cerita di sini ♡
-                </p>
-
-                <small>
-                    Tambahkan review pertama kalian
-                    untuk mulai food journey.
-                </small>
-
-            </div>
-
-        `;
-
-        return;
-
-    }
-
-
-    const sortedReviews =
-        [...reviews].sort(
-            function(a, b) {
-
-                return (
-                    new Date(
-                        b.date ||
-                        b.createdAt ||
-                        0
-                    ) -
-                    new Date(
-                        a.date ||
-                        a.createdAt ||
-                        0
-                    )
+        // Tampilkan review terbaru dulu
+        journeyList.innerHTML = reviewData
+            .map(function (review) {
+                const date = new Date(
+                    review.created_at || Date.now()
                 );
 
-            }
-        );
+                const formattedDate =
+                    date.toLocaleDateString("id-ID", {
+                        day: "numeric",
+                        month: "long",
+                        year: "numeric"
+                    });
 
+                const stars = "★".repeat(
+                    Number(review.rating || 0)
+                );
 
-    journeyList.innerHTML =
-        sortedReviews
-            .map(
-                function(review) {
+                const user =
+                    review.user_name ||
+                    "Someone";
 
-                    const date =
-                        new Date(
-                            review.date ||
-                            review.createdAt ||
-                            Date.now()
-                        );
+                const restaurant =
+                    review.restaurants?.name ||
+                    "Restaurant";
 
+                const reviewText =
+                    review.review_text ||
+                    "Tidak ada cerita untuk review ini.";
 
-                    const formattedDate =
-                        date.toLocaleDateString(
-                            "id-ID",
-                            {
-                                day:
-                                    "numeric",
+                return `
+                    <div class="journey-item">
 
-                                month:
-                                    "long",
+                        <div class="journey-date">
+                            ${formattedDate}
+                        </div>
 
-                                year:
-                                    "numeric"
-                            }
-                        );
+                        <div class="journey-card">
 
+                            <div class="journey-card-header">
 
-                    const stars =
-                        "★".repeat(
-                            Number(
-                                review.rating || 0
-                            )
-                        );
+                                <div>
 
+                                    <div class="journey-restaurant">
+                                        ${escapeHTML(restaurant)}
+                                    </div>
 
-                    const user =
-                        review.user ||
-                        review.reviewer ||
-                        review.user_name ||
-                        "Someone";
+                                    <div class="journey-user">
+                                        ${escapeHTML(user)}
+                                    </div>
 
+                                </div>
 
-                    const restaurant =
-                        review.restaurantName ||
-                        "Restaurant";
+                                <div class="journey-rating">
+                                    ${stars}
+                                </div>
 
-
-                    const reviewText =
-                        review.text ||
-                        review.review ||
-                        review.review_text ||
-                        "Tidak ada cerita untuk review ini.";
-
-
-                    return `
-
-                        <div class="journey-item">
-
-                            <div class="journey-date">
-                                ${formattedDate}
                             </div>
 
-                            <div class="journey-card">
-
-                                <div class="journey-card-header">
-
-                                    <div>
-
-                                        <div class="journey-restaurant">
-                                            ${escapeHTML(
-                                                restaurant
-                                            )}
-                                        </div>
-
-                                        <div class="journey-user">
-                                            ${escapeHTML(
-                                                user
-                                            )}
-                                        </div>
-
-                                    </div>
-
-                                    <div class="journey-rating">
-                                        ${stars}
-                                    </div>
-
-                                </div>
-
-                                <div class="journey-review">
-                                    ${escapeHTML(
-                                        reviewText
-                                    )}
-                                </div>
-
+                            <div class="journey-review">
+                                ${escapeHTML(reviewText)}
                             </div>
 
                         </div>
 
-                    `;
-
-                }
-            )
+                    </div>
+                `;
+            })
             .join("");
 
+    } catch (error) {
+        console.error(
+            "Error Food Journey:",
+            error
+        );
+    }
 }
 
 
@@ -2701,207 +2649,164 @@ function renderFoodJourney() {
 // FAVORITE PLACES
 // =====================================================
 
-function renderFavoritePlaces() {
-
-    const container =
-        document.getElementById(
-            "favorite-places-list"
-        );
-
+async function renderFavoritePlaces() {
+    const container = document.getElementById(
+        "favorite-places-list"
+    );
 
     if (!container) {
-
         return;
-
     }
 
-
-    const restaurants =
-        JSON.parse(
-            localStorage.getItem(
-                "restaurants"
-            )
-        ) || [];
-
-
-    const reviews =
-        JSON.parse(
-            localStorage.getItem(
-                "reviews"
-            )
-        ) || [];
-
-
-    if (
-        restaurants.length === 0
-    ) {
-
-        container.innerHTML = `
-
-            <div class="favorite-empty">
-
-                <p>
-                    Belum ada tempat favorit ♡
-                </p>
-
-                <small>
-                    Tambahkan review untuk mulai
-                    mengumpulkan tempat favorit.
-                </small>
-
-            </div>
-
-        `;
-
+    if (!hasSupabaseClient()) {
+        console.error("Supabase client tidak tersedia.");
         return;
-
     }
 
+    try {
+        // Ambil restoran
+        const { data: restaurants, error: restaurantError } =
+            await supabaseClient
+                .from("restaurants")
+                .select(`
+                    id,
+                    name,
+                    location,
+                    image_url
+                `);
 
-    const favoriteRestaurants =
-        restaurants
-            .map(
-                function(restaurant) {
-
-                    const restaurantReviews =
-                        reviews.filter(
-                            function(review) {
-
-                                return (
-                                    review.restaurantName ===
-                                    restaurant.name
-                                );
-
-                            }
-                        );
-
-
-                    const reviewCount =
-                        restaurantReviews.length;
-
-
-                    let averageRating =
-                        0;
-
-
-                    if (
-                        reviewCount > 0
-                    ) {
-
-                        const total =
-                            restaurantReviews.reduce(
-                                function(
-                                    sum,
-                                    review
-                                ) {
-
-                                    return (
-                                        sum +
-                                        Number(
-                                            review.rating || 0
-                                        )
-                                    );
-
-                                },
-                                0
-                            );
-
-
-                        averageRating =
-                            total /
-                            reviewCount;
-
-                    }
-
-
-                    return {
-
-                        ...restaurant,
-
-                        reviewCount:
-                            reviewCount,
-
-                        averageRating:
-                            averageRating
-
-                    };
-
-                }
-            )
-            .filter(
-                function(restaurant) {
-
-                    return (
-                        restaurant.reviewCount >
-                        0
-                    );
-
-                }
-            )
-            .sort(
-                function(a, b) {
-
-                    if (
-                        b.averageRating !==
-                        a.averageRating
-                    ) {
-
-                        return (
-                            b.averageRating -
-                            a.averageRating
-                        );
-
-                    }
-
-
-                    return (
-                        b.reviewCount -
-                        a.reviewCount
-                    );
-
-                }
-            )
-            .slice(
-                0,
-                3
+        if (restaurantError) {
+            console.error(
+                "Gagal mengambil restoran untuk Favorite Places:",
+                restaurantError
             );
+            return;
+        }
 
+        // Ambil semua review
+        const { data: reviews, error: reviewError } =
+            await supabaseClient
+                .from("reviews")
+                .select(`
+                    id,
+                    restaurant_id,
+                    rating
+                `);
 
-    if (
-        favoriteRestaurants.length === 0
-    ) {
+        if (reviewError) {
+            console.error(
+                "Gagal mengambil review untuk Favorite Places:",
+                reviewError
+            );
+            return;
+        }
 
-        container.innerHTML = `
+        const restaurantData = restaurants || [];
+        const reviewData = reviews || [];
 
-            <div class="favorite-empty">
+        if (restaurantData.length === 0) {
+            container.innerHTML = `
+                <div class="favorite-empty">
+                    <p>Belum ada tempat favorit ♡</p>
 
-                <p>
-                    Belum ada tempat favorit ♡
-                </p>
+                    <small>
+                        Tambahkan review untuk mulai
+                        mengumpulkan tempat favorit.
+                    </small>
+                </div>
+            `;
+            return;
+        }
 
-                <small>
-                    Tambahkan review untuk melihat
-                    tempat favorit kalian.
-                </small>
+        // Hitung rating setiap restoran
+        const favoriteRestaurants = restaurantData
+            .map(function (restaurant) {
 
-            </div>
+                const restaurantReviews =
+                    reviewData.filter(function (review) {
+                        return (
+                            review.restaurant_id ===
+                            restaurant.id
+                        );
+                    });
 
-        `;
+                const reviewCount =
+                    restaurantReviews.length;
 
-        return;
+                let averageRating = 0;
 
-    }
+                if (reviewCount > 0) {
+                    const total =
+                        restaurantReviews.reduce(
+                            function (sum, review) {
+                                return (
+                                    sum +
+                                    Number(
+                                        review.rating || 0
+                                    )
+                                );
+                            },
+                            0
+                        );
 
+                    averageRating =
+                        total / reviewCount;
+                }
 
-    container.innerHTML =
-        favoriteRestaurants
-            .map(
-                function(restaurant) {
+                return {
+                    ...restaurant,
+                    reviewCount,
+                    averageRating
+                };
+            })
+
+            // Hanya tampilkan restoran yang sudah punya review
+            .filter(function (restaurant) {
+                return restaurant.reviewCount > 0;
+            })
+
+            // Rating tertinggi dulu
+            .sort(function (a, b) {
+
+                if (
+                    b.averageRating !==
+                    a.averageRating
+                ) {
+                    return (
+                        b.averageRating -
+                        a.averageRating
+                    );
+                }
+
+                return (
+                    b.reviewCount -
+                    a.reviewCount
+                );
+            })
+
+            // Maksimal 3 restoran
+            .slice(0, 3);
+
+        if (favoriteRestaurants.length === 0) {
+            container.innerHTML = `
+                <div class="favorite-empty">
+                    <p>Belum ada tempat favorit ♡</p>
+
+                    <small>
+                        Tambahkan review untuk melihat
+                        tempat favorit kalian.
+                    </small>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML =
+            favoriteRestaurants
+                .map(function (restaurant) {
 
                     const rating =
-                        restaurant.averageRating
-                            .toFixed(1);
-
+                        restaurant.averageRating.toFixed(1);
 
                     const stars =
                         "★".repeat(
@@ -2910,16 +2815,13 @@ function renderFavoritePlaces() {
                             )
                         );
 
-
                     return `
-
                         <div class="favorite-card">
 
                             <div class="favorite-image-wrapper">
 
                                 <img
                                     src="${
-                                        restaurant.image ||
                                         restaurant.image_url ||
                                         "https://via.placeholder.com/500x350?text=Restaurant"
                                     }"
@@ -2972,13 +2874,16 @@ function renderFavoritePlaces() {
                             </div>
 
                         </div>
-
                     `;
+                })
+                .join("");
 
-                }
-            )
-            .join("");
-
+    } catch (error) {
+        console.error(
+            "Error Favorite Places:",
+            error
+        );
+    }
 }
 
 
@@ -3295,11 +3200,11 @@ function renderLittleThings() {
 
 document.addEventListener(
     "DOMContentLoaded",
-    function() {
+    async function() {
 
-        renderFoodJourney();
+        await renderFoodJourney();
 
-        renderFavoritePlaces();
+        await renderFavoritePlaces();
 
         showRandomLittleNote();
 
@@ -3307,7 +3212,6 @@ document.addEventListener(
 
     }
 );
-
 
 // =====================================================
 // HELPER ESCAPE HTML
@@ -3555,5 +3459,7 @@ function requireSupabase(
 
 
     return false;
+
+    }
 
 }
