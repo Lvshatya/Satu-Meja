@@ -100,39 +100,6 @@ if (loginForm) {
 }
 
 // =====================================================
-// FORGOT PASSWORD
-// =====================================================
-const forgotPasswordButton = document.getElementById("forgot-password-button");
-if (forgotPasswordButton) {
-    forgotPasswordButton.addEventListener("click", async function() {
-        const user = localStorage.getItem("selectedUser");
-        const message = document.getElementById("login-message");
-        const emailMap = {
-            Ella: "elfishasatya@gmail.com",
-            Arka: "naufalkenz@gmail.com"
-        };
-        const email = emailMap[user];
-        if (!email) {
-            message.textContent = "User tidak ditemukan ♡";
-            return;
-        }
-        if (!hasSupabaseClient()) {
-            message.textContent = "Koneksi database belum tersedia ♡";
-            return;
-        }
-        const { error } = await supabaseClient.auth.resetPasswordForEmail(email, {
-            redirectTo: window.location.origin + "/reset-password.html"
-        });
-        if (error) {
-            console.error(error);
-            message.textContent = "Gagal mengirim email reset password ♡";
-            return;
-        }
-        message.textContent = "Email reset password sudah dikirim ♡";
-    });
-}
-
-// =====================================================
 // LOAD RESTAURANTS & RATING
 // =====================================================
 async function loadRestaurants() {
@@ -325,7 +292,7 @@ async function loadRestaurantReviews(restaurantId) {
         if (authUser && review.user_id === authUser.id) {
             reviewActions = `
                 <div class="review-actions">
-                    <button type="button" class="edit-review-button" onclick="editReview('${review.id}')">✏️ Edit</button>
+                    <button type="button" class="edit-review-button" onclick="editReview('${review.id}')">✏️️ Edit</button>
                     <button type="button" class="delete-review-button" onclick="deleteReview('${review.id}')">🗑️ Hapus</button>
                 </div>
             `;
@@ -346,60 +313,6 @@ async function loadRestaurantReviews(restaurantId) {
         reviewsContainer.appendChild(card);
     }
 }
-
-// =====================================================
-// EDIT / HAPUS REVIEW
-// =====================================================
-window.editReview = async function(reviewId) {
-    if (!hasSupabaseClient()) return;
-    const authUser = await getCurrentAuthUser();
-    if (!authUser) {
-        alert("Kamu belum login ♡");
-        return;
-    }
-
-    const { data: review, error } = await supabaseClient.from("reviews").select("id, user_id, review_text").eq("id", reviewId).single();
-    if (error || !review || review.user_id !== authUser.id) {
-        alert("Akses ditolak atau review tidak ditemukan.");
-        return;
-    }
-
-    const newText = prompt("Edit review kamu:", review.review_text || "");
-    if (newText === null) return;
-    if (newText.trim() === "") {
-        alert("Review tidak boleh kosong.");
-        return;
-    }
-
-    const { error: updateError } = await supabaseClient.from("reviews").update({ review_text: newText.trim() }).eq("id", reviewId);
-    if (updateError) {
-        alert("Review gagal diperbarui ♡");
-        return;
-    }
-    alert("Review berhasil diperbarui ♡");
-    location.reload();
-};
-
-window.deleteReview = async function(reviewId) {
-    if (!hasSupabaseClient()) return;
-    const authUser = await getCurrentAuthUser();
-    if (!authUser) {
-        alert("Kamu belum login ♡");
-        return;
-    }
-
-    if (!confirm("Yakin mau menghapus review ini?")) return;
-
-    await supabaseClient.from("review_photos").delete().eq("review_id", reviewId);
-    const { error: deleteError } = await supabaseClient.from("reviews").delete().eq("id", reviewId).eq("user_id", authUser.id);
-
-    if (deleteError) {
-        alert("Review gagal dihapus ♡");
-        return;
-    }
-    alert("Review berhasil dihapus ♡");
-    location.reload();
-};
 
 // =====================================================
 // FOOD JOURNEY & FAVORITES
