@@ -114,3 +114,172 @@ body {
     margin: 0 auto;
     padding: 32px 24px;
 }
+
+/* =====================================================
+   STYLES UNTUK INDEX (LANDING) & LOGIN PAGE
+   ===================================================== */
+
+/* LANDING PAGE (INDEX.HTML) */
+.landing {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #faf8f5;
+}
+
+.card {
+    background: #ffffff;
+    padding: 40px 32px;
+    border-radius: 28px;
+    border: 1px solid #f0eae1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    max-width: 360px;
+    width: 100%;
+}
+
+.logo {
+    font-size: 2.2rem;
+    color: #d97706;
+    margin-bottom: 8px;
+}
+
+.card h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 0 0 6px 0;
+    color: #2b2625;
+}
+
+.tagline {
+    font-size: 0.95rem;
+    color: #8c827a;
+    margin: 0 0 20px 0;
+}
+
+.divider {
+    height: 1px;
+    background-color: #f0eae1;
+    margin: 20px 0;
+}
+
+.question {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #524a46;
+    margin-bottom: 16px;
+}
+
+.user-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.user-buttons button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    padding: 14px;
+    border-radius: 20px;
+    border: 1px solid #e8e2d8;
+    background-color: #faf8f5;
+    color: #2b2625;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.user-buttons button:hover {
+    background-color: #2b2625;
+    color: #ffffff;
+    border-color: #2b2625;
+    transform: translateY(-2px);
+}
+
+/* LOGIN PAGE (LOGIN.HTML) */
+.login-page {
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #faf8f5;
+}
+
+.login-card {
+    background: #ffffff;
+    padding: 40px 32px;
+    border-radius: 28px;
+    border: 1px solid #f0eae1;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+    text-align: center;
+    max-width: 360px;
+    width: 100%;
+}
+
+.login-card h1 {
+    font-size: 1.8rem;
+    font-weight: 700;
+    color: #2b2625;
+    margin-bottom: 20px;
+}
+
+.login-card input[type="password"] {
+    width: 100%;
+    padding: 14px 18px;
+    border: 1px solid #e8e2d8;
+    border-radius: 16px;
+    background-color: #faf8f5;
+    font-size: 0.95rem;
+    outline: none;
+    margin-bottom: 16px;
+    transition: border-color 0.2s ease;
+}
+
+.login-card input[type="password"]:focus {
+    border-color: #a89a8c;
+    background-color: #ffffff;
+}
+
+.login-btn {
+    width: 100%;
+    padding: 14px;
+    background-color: #2b2625;
+    color: #ffffff;
+    border: none;
+    border-radius: 20px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    margin-bottom: 12px;
+}
+
+.login-btn:hover {
+    background-color: #453e3c;
+}
+
+.forgot-btn {
+    background: none;
+    border: none;
+    color: #8c827a;
+    font-size: 0.85rem;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.forgot-btn:hover {
+    color: #2b2625;
+}
+
+.login-message {
+    margin-top: 14px;
+    font-size: 0.88rem;
+    color: #d97706;
+}
