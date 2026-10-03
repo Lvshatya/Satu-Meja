@@ -1,323 +1,112 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
-
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-
-    <title>Satu Meja</title>
-
-    <link rel="stylesheet"
-        href="style.css">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard — Satu Meja</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
-
     <header class="navbar">
-
-        <div class="nav-logo">
-            Satu Meja
-        </div>
-
-        <button
-            class="logout-button"
-            onclick="logout()">
-
-            Keluar
-
-        </button>
-
+        <div class="nav-logo">Satu Meja</div>
+        <button class="logout-button" type="button" onclick="logout()">Keluar</button>
     </header>
 
-
     <main class="dashboard">
-
-        <section class="hero">
-
-            <p class="small-title">
-                OUR FOOD JOURNEY
-            </p>
-
-            <h1 id="welcome-title">
-                Hai, Ella! ♡
-            </h1>
-
-            <p>
-                Tempat makan, cerita kita.
-            </p>
-
+        <!-- HEADER DASHBOARD -->
+        <section class="dashboard-header">
+            <div>
+                <p class="small-title">OUR FOOD JOURNEY</p>
+                <h1 id="welcome-title">Hai! ♡</h1>
+                <p class="subtitle">Tempat menyimpan kenangan kuliner dan cerita bersama.</p>
+            </div>
+            
+            <!-- TOMBOL KHUSUS ELLA -->
+            <div id="owner-actions" style="display: none;">
+                <button class="add-resto-btn" type="button" onclick="addRestaurant()">
+                    + Tambah Restoran
+                </button>
+            </div>
         </section>
 
-        <!-- LITTLE NOTES -->
-<section class="little-notes-section">
-
-    <div class="little-note-card">
-
-        <div class="little-note-icon">
-            ♡
-        </div>
-
-        <p class="little-note-label">
-            LITTLE NOTE
-        </p>
-
-        <p
-            class="little-note-text"
-            id="little-note-text"
-        >
-            Every meal becomes a little memory
-            when we share the same table.
-        </p>
-
-        <div class="little-note-decoration">
-            ─── ♡ ───
-        </div>
-
-    </div>
-
-</section>
-
-        <section class="search-section">
-
-            <input
-                type="text"
-                id="search-input"
-                placeholder="🔍  Cari tempat makan..."
-            >
-
-        </section>
-
-
-        <section
-            class="action-section"
-            id="owner-actions">
-
-            <button
-                class="add-restaurant-button"
-                onclick="addRestaurant()">
-
-                + Tambah Restoran
-
-            </button>
-
-        </section>
-
-
+        <!-- SEARCH BAR & LIST RESTORAN -->
         <section class="restaurant-section">
-
-            <div class="section-heading">
-
-                <h2>
-                    Our Places
-                </h2>
-
-                <span id="restaurant-count">
-                    2 places
-                </span>
-
+            <div class="section-header">
+                <h2>Daftar Restoran</h2>
+                <span id="restaurant-count">0 places</span>
+            </div>
+            
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="Cari nama restoran atau lokasi... 🔍">
             </div>
 
-
-            <div
-                class="restaurant-grid"
-                id="restaurant-list">
-
-                <!-- Restaurant cards akan muncul di sini -->
-
+            <div id="restaurant-list" class="restaurant-grid">
+                <!-- Restoran dimuat otomatis via script.js -->
             </div>
-
         </section>
 
-        <!-- FOOD JOURNEY -->
-<section class="food-journey-section">
+        <!-- OUR JOURNEY SECTION -->
+        <section class="journey-section">
+            <div class="section-header">
+                <div>
+                    <h2>Our Journey</h2>
+                    <p class="section-subtitle">Semua cerita dan rating dari perjalanan kuliner kita.</p>
+                </div>
+                <div class="journey-stats">
+                    <div><strong id="journey-place-count">0</strong><span>Tempat</span></div>
+                    <div><strong id="journey-review-count">0</strong><span>Review</span></div>
+                    <div><strong id="journey-average-rating">0.0</strong><span>Avg Rating</span></div>
+                </div>
+            </div>
 
-    <div class="food-journey-title">
-        <h2>Our Journey</h2>
-        <span>little memories ♡</span>
-    </div>
+            <div class="journey-filter">
+                <button type="button" class="active" onclick="filterFoodJourney('all', this)">Semua</button>
+                <button type="button" onclick="filterFoodJourney('Ella', this)">Ella</button>
+                <button type="button" onclick="filterFoodJourney('Arka', this)">Arka</button>
+            </div>
 
-    <div class="journey-filter">
+            <div id="food-journey-list" class="journey-timeline">
+                <!-- Timeline dimuat via script.js -->
+            </div>
+        </section>
 
-    <button
-        class="active"
-        onclick="filterFoodJourney('all', this)"
-    >
-        Semua
-    </button>
+        <!-- FAVORITE PLACES -->
+        <section class="favorite-section">
+            <div class="section-header">
+                <h2>Favorite Places</h2>
+                <span id="favorite-place-count">0 places</span>
+            </div>
+            <div id="favorite-places-list" class="favorite-grid">
+                <!-- Tempat favorit dimuat via script.js -->
+            </div>
+        </section>
 
-    <button
-        onclick="filterFoodJourney('Ella', this)"
-    >
-        Ella
-    </button>
+        <!-- LITTLE THINGS & NOTES -->
+        <section class="little-things-section">
+            <h2>Little Things ♡</h2>
+            <div class="little-things-grid">
+                <div class="little-card">
+                    <p class="little-label">Paling Sering Dikunjungi</p>
+                    <h3 id="most-visited-place">—</h3>
+                </div>
+                <div class="little-card">
+                    <p class="little-label">Review Ella vs Arka</p>
+                    <h3><span id="ella-review-count">0</span> vs <span id="arka-review-count">0</span></h3>
+                </div>
+                <div class="little-card">
+                    <p class="little-label">Total Memori</p>
+                    <h3 id="total-memory-count">0</h3>
+                </div>
+            </div>
 
-    <button
-        onclick="filterFoodJourney('Arka', this)"
-    >
-        Arka
-    </button>
-
-</div>
-
-    <div class="journey-stats">
-
-        <div class="journey-stat-card">
-            <span
-                class="journey-stat-number"
-                id="journey-place-count"
-            >
-                0
-            </span>
-
-            <span class="journey-stat-label">
-                Places
-            </span>
-        </div>
-
-        <div class="journey-stat-card">
-            <span
-                class="journey-stat-number"
-                id="journey-review-count"
-            >
-                0
-            </span>
-
-            <span class="journey-stat-label">
-                Reviews
-            </span>
-        </div>
-
-        <div class="journey-stat-card">
-            <span
-                class="journey-stat-number"
-                id="journey-average-rating"
-            >
-                0.0
-            </span>
-
-            <span class="journey-stat-label">
-                Average Rating
-            </span>
-        </div>
-
-    </div>
-
-    <div
-        class="food-journey-list"
-        id="food-journey-list"
-    ></div>
-
-</section>
-
-<!-- OUR FAVORITE PLACES -->
-<section class="favorite-places-section">
-
-    <div class="favorite-places-title">
-        <div>
-            <h2>Our Favorite Places</h2>
-            <p>places we loved ♡</p>
-        </div>
-
-        <span id="favorite-place-count">
-            0 places
-        </span>
-    </div>
-
-    <div
-        class="favorite-places-grid"
-        id="favorite-places-list"
-    ></div>
-
-</section>
-
-<!-- LITTLE THINGS ABOUT US -->
-<section class="little-things-section">
-
-    <div class="little-things-title">
-        <h2>Little Things About Us</h2>
-        <span>just a few numbers ♡</span>
-    </div>
-
-    <div class="little-things-grid">
-
-        <div class="little-thing-card">
-            <span class="little-thing-icon">🍜</span>
-
-            <span
-                class="little-thing-value"
-                id="most-visited-place"
-            >
-                —
-            </span>
-
-            <span class="little-thing-label">
-                Most Visited
-            </span>
-        </div>
-
-
-        <div class="little-thing-card">
-            <span class="little-thing-icon">♡</span>
-
-            <span
-                class="little-thing-value"
-                id="ella-review-count"
-            >
-                0
-            </span>
-
-            <span class="little-thing-label">
-                Ella's Reviews
-            </span>
-        </div>
-
-
-        <div class="little-thing-card">
-            <span class="little-thing-icon">♡</span>
-
-            <span
-                class="little-thing-value"
-                id="arka-review-count"
-            >
-                0
-            </span>
-
-            <span class="little-thing-label">
-                Arka's Reviews
-            </span>
-        </div>
-
-
-        <div class="little-thing-card">
-            <span class="little-thing-icon">📖</span>
-
-            <span
-                class="little-thing-value"
-                id="total-memory-count"
-            >
-                0
-            </span>
-
-            <span class="little-thing-label">
-                Total Memories
-            </span>
-        </div>
-
-    </div>
-
-</section>
-
+            <div class="note-box">
+                <p id="little-note-text">"Meals always taste better together ♡"</p>
+            </div>
+        </section>
     </main>
-
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script src="script.js"></script>
-
 </body>
-
 </html>

@@ -1,135 +1,89 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tambah Restoran — Satu Meja</title>
-
-    <link
-        rel="stylesheet"
-        href="style.css"
-    >
+    <link rel="stylesheet" href="style.css">
 </head>
-
-
 <body>
-
     <header class="navbar">
-
-        <button
-            class="back-dashboard"
-            onclick="goToDashboard()"
-        >
-            ← Satu Meja
+        <button class="back-dashboard" type="button" onclick="window.location.href='dashboard.html'">
+            ← Kembali
         </button>
-
-        <div class="nav-logo">
-            Satu Meja
-        </div>
-
+        <div class="nav-logo">Satu Meja</div>
     </header>
 
+    <main class="add-restaurant-page">
+        <p class="small-title">OUR FOOD JOURNEY</p>
+        <h1>Tambah Restoran Baru ♡</h1>
 
-    <main class="review-page">
-
-        <p class="small-title">
-            OUR FOOD JOURNEY
-        </p>
-
-
-        <h1>
-            Tambah Restoran ♡
-        </h1>
-
-
-        <p class="review-restaurant-name">
-            Tambahkan tempat makan baru ke cerita kita.
-        </p>
-
-
-        <form id="restaurant-form">
-
-
-            <!-- NAMA RESTORAN -->
-
+        <form id="add-restaurant-form">
             <div class="form-group">
-
-                <label for="restaurant-name">
-                    Nama restoran
-                </label>
-
-                <input
-                    type="text"
-                    id="restaurant-name"
-                    placeholder="Contoh: Mie Gacoan"
-                    required
-                >
-
+                <label for="restaurant-name">Nama Restoran</label>
+                <input type="text" id="restaurant-name" placeholder="Contoh: Kopi Kenangan" required>
             </div>
 
-
-            <!-- LOKASI -->
-
             <div class="form-group">
-
-                <label for="restaurant-location">
-                    Lokasi
-                </label>
-
-                <input
-                    type="text"
-                    id="restaurant-location"
-                    placeholder="Contoh: Bandung"
-                    required
-                >
-
+                <label for="restaurant-location">Lokasi</label>
+                <input type="text" id="restaurant-location" placeholder="Contoh: Jalan Dago No. 12, Bandung">
             </div>
 
-
-            <!-- FOTO -->
-
             <div class="form-group">
-
-                <label for="restaurant-image">
-                    Foto restoran
-                    <span>(opsional)</span>
-                </label>
-
-                <input
-                    type="file"
-                    id="restaurant-image"
-                    accept="image/*"
-                >
-
+                <label for="restaurant-image">URL Foto Restoran <span>(opsional)</span></label>
+                <input type="url" id="restaurant-image" placeholder="https://images.unsplash.com/...">
             </div>
 
-
-            <!-- BUTTON -->
-
-            <button
-                type="submit"
-                class="submit-review-button"
-            >
-                Simpan Restoran ♡
-            </button>
-
-
+            <button type="submit" class="submit-button">Simpan Restoran ♡</button>
         </form>
-
-
     </main>
-
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const form = document.getElementById("add-restaurant-form");
+            if (form) {
+                form.addEventListener("submit", async function (e) {
+                    e.preventDefault();
+                    if (typeof supabaseClient === "undefined") {
+                        alert("Koneksi database belum siap ♡");
+                        return;
+                    }
 
+                    const name = document.getElementById("restaurant-name").value.trim();
+                    const location = document.getElementById("restaurant-location").value.trim();
+                    const imageUrl = document.getElementById("restaurant-image").value.trim();
+
+                    if (!name) {
+                        alert("Nama restoran harus diisi!");
+                        return;
+                    }
+
+                    const { data, error } = await supabaseClient
+                        .from("restaurants")
+                        .insert({
+                            name: name,
+                            location: location,
+                            image_url: imageUrl || null
+                        })
+                        .select()
+                        .single();
+
+                    if (error) {
+                        console.error("Gagal menambah restoran:", error);
+                        alert("Gagal menambah restoran ♡");
+                        return;
+                    }
+
+                    alert("Restoran berhasil ditambahkan ♡");
+                    localStorage.setItem("selectedRestaurantId", data.id);
+                    localStorage.setItem("selectedRestaurant", JSON.stringify(data));
+                    window.location.href = "dashboard.html";
+                });
+            }
+        });
+    </script>
 </body>
-
 </html>
