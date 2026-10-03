@@ -208,7 +208,7 @@ async function initializeDashboardUI() {
 
     if (welcomeTitle) {
         if (selectedUser === "Tamu" || !selectedUser) {
-            welcomeTitle.textContent = "Hai, Tamu! ♡";
+            welcomeTitle.textContent = "Hi, There! ♡";
         } else {
             welcomeTitle.textContent = `Hai, ${selectedUser}! ♡`;
         }
@@ -692,8 +692,6 @@ function updateLightbox() {
 // INITIALIZATION ON DOM LOAD
 // =====================================================
 document.addEventListener("DOMContentLoaded", async function() {
-    const path = window.location.pathname;
-
     if (document.getElementById("restaurant-list")) {
         await initializeDashboardUI();
         await renderFoodJourney();
